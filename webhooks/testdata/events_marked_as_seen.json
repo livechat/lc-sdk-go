@@ -1,0 +1,11 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "events_marked_as_seen",
+	"payload": {
+		"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		"chat_id": "PJ0MRSHTDG",
+		"seen_up_to": "2017-10-12T15:19:21.010200Z"
+	},
+	"additional_data": {}
+}

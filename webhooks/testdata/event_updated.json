@@ -1,0 +1,19 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "event_updated",
+	"payload": {
+		"chat_id": "123-123-123-123",
+		"thread_id": "E2WDHA8A",
+		"event": {
+			"type": "message",
+			"text": "14",
+			"id": "PZ070E0W1B_3",
+			"custom_id": "1dnepb4z00t",
+			"recipients": "all",
+			"created_at": "2019-10-11T09:41:00.877000Z",
+			"author_id": "345f8235-d60d-433e-63c5-7f813a6ffe25"
+		}
+	},
+	"additional_data": {}
+}
