@@ -34,7 +34,7 @@ func NewAPI(t TokenGetter, httpClient *http.Client) *API {
 	return &API{
 		tokenGetter: t,
 		ApiURL:      "https://api.livechatinc.com/",
-		httpClient:  http.DefaultClient,
+		httpClient:  httpClient,
 	}
 }
 
