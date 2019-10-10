@@ -29,6 +29,7 @@ func NewAPI(clientID string, license int32) *API {
 	}
 }
 
+// SetToken sets customer token. This is required for requests authorization.
 func (a *API) SetToken(t string) {
 	a.tokenLock.Lock()
 	defer a.tokenLock.Unlock()
@@ -76,10 +77,27 @@ func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, er
 		"message:": map[string]string{
 			"type":       "message",
 			"text":       text,
-			"recepients": recipients,
+			"recipients": recipients,
 		},
 	}
 
+	return a.sendEvent(payload)
+}
+
+func (a *API) SendSystemMessage(chatID, text, messageType string) (eventID string, err error) {
+	payload := map[string]interface{}{
+		"chat_id": chatID,
+		"message:": map[string]string{
+			"type":                "system_message",
+			"text":                text,
+			"system_message_type": messageType,
+		},
+	}
+
+	return a.sendEvent(payload)
+}
+
+func (a *API) sendEvent(payload interface{}) (eventID string, err error) {
 	body, err := a.call("send_event", payload)
 
 	if err != nil {
@@ -98,8 +116,28 @@ func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, er
 	return resp.EventID, err
 }
 
-func (a *API) SendSystemMessage() {
+func (a *API) ActivateChat(chatID string) (threadID string, err error) {
+	payload := map[string]interface{}{
+		"chat": map[string]string{
+			"id": chatID,
+		},
+	}
 
+	body, err := a.call("activate_chat", payload)
+
+	if err != nil {
+		return "", err
+	}
+
+	resp := struct {
+		ThreadID string `json:"thread_id"`
+	}{}
+	err = json.Unmarshal(body, &resp)
+
+	if err != nil {
+		return "", err
+	}
+	return resp.ThreadID, nil
 }
 
 func (a *API) call(action string, payload interface{}) (json.RawMessage, error) {
