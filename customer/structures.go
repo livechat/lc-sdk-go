@@ -18,23 +18,9 @@ type Thread struct {
 	Active           bool       `json:"active"`
 	UserIDs          []string   `json:"user_ids"`
 	RestrictedAccess bool       `json:"restricted_access"`
-	Events           []Event    `json:"events"`
 	Order            int32      `json:"order"`
 	Properties       Properties `json:"properties"`
 	Access           Access     `json:"access"`
-}
-
-type Event struct {
-	ID         string     `json:"id,omitempty"`
-	CustomID   string     `json:"custom_id,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	Properties Properties `json:"properties,omitempty"`
-	Recipients string     `json:"recipients"`
-}
-
-type Message struct {
-	Event
-	Text string `json:"text"`
 }
 
 type Access struct {
