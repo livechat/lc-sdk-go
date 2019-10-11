@@ -2,7 +2,7 @@ package customer
 
 import "time"
 
-type Properties map[string]string
+type Properties map[string]map[string]interface{}
 
 type Chat struct {
 	ID         string            `json:"id,omitempty"`
