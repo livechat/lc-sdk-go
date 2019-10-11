@@ -29,9 +29,9 @@ type Token struct {
 
 type TokenGetter func() *Token
 
-func NewAPI(t TokenGetter, httpClient *http.Client) *API {
-	if httpClient == nil {
-		httpClient = &http.Client{
+func NewAPI(t TokenGetter, client *http.Client) *API {
+	if client == nil {
+		client = &http.Client{
 			Timeout: 20 * time.Second,
 		}
 	}
@@ -39,7 +39,7 @@ func NewAPI(t TokenGetter, httpClient *http.Client) *API {
 	return &API{
 		tokenGetter: t,
 		ApiURL:      "https://api.livechatinc.com/",
-		httpClient:  httpClient,
+		httpClient:  client,
 	}
 }
 
