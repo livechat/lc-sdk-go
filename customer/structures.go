@@ -5,11 +5,11 @@ import "time"
 type Properties map[string]map[string]interface{}
 
 type Chat struct {
-	ID         string            `json:"id,omitempty"`
-	Properties map[string]string `json:"properties,omitempty"`
-	Access     Access            `json:"access,omitempty"`
-	Users      []User            `json:"users,omitempty"`
-	Threads    []Thread          `json:"threads,omitempty"`
+	ID         string     `json:"id,omitempty"`
+	Properties Properties `json:"properties,omitempty"`
+	Access     Access     `json:"access,omitempty"`
+	Users      []User     `json:"users,omitempty"`
+	Threads    []Thread   `json:"threads,omitempty"`
 }
 
 type Thread struct {
@@ -32,6 +32,7 @@ type User struct {
 	Type     string    `json:"type"`
 	Name     string    `json:"name"`
 	Avatar   string    `json:"avatar"`
+	Email    string    `json:"email"`
 	Present  bool      `json:"present"`
 	LastSeen time.Time `json:"last_seen_timestamp"`
 }

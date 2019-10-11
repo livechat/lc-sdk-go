@@ -2,7 +2,7 @@ package events
 
 import "time"
 
-type Properties map[string]string
+type Properties map[string]map[string]interface{}
 
 type Event struct {
 	ID         string     `json:"id,omitempty"`
