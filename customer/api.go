@@ -170,10 +170,5 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 		return errors.WithStack(err)
 	}
 
-	err = json.Unmarshal(bodyBytes, response)
-
-	if err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(bodyBytes, response)
 }
