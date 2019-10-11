@@ -6,11 +6,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/livechat/lc-sdk-go/internal/events"
 
 	"github.com/pkg/errors"
 )
+
+const apiVersion = "v3.1"
 
 type API struct {
 	httpClient  *http.Client
@@ -28,7 +31,9 @@ type TokenGetter func() *Token
 
 func NewAPI(t TokenGetter, httpClient *http.Client) *API {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = &http.Client{
+			Timeout: 20 * time.Second,
+		}
 	}
 
 	return &API{
@@ -45,17 +50,13 @@ type continuousChat struct {
 
 func (a *API) StartChat(c *Chat, continuous bool) (chatID, threadID string, err error) {
 	cc := continuousChat{c, continuous}
-	body, err := a.call("start_chat", cc)
 
-	if err != nil {
-		return "", "", err
-	}
-
-	resp := struct {
+	var resp struct {
 		ChatID   string `json:"chat_id"`
 		ThreadID string `json:"thread_id"`
-	}{}
-	err = json.Unmarshal(body, &resp)
+	}
+
+	err = a.call("start_chat", cc, &resp)
 
 	if err != nil {
 		return "", "", err
@@ -86,8 +87,8 @@ func (a *API) SendSystemMessage(chatID, text, messageType string) (eventID strin
 		Event: events.Event{
 			Type: "system_message",
 		},
-		Text:              text,
-		SystemMessageType: messageType,
+		Text: text,
+		Type: messageType,
 	}
 
 	return a.SendEvent(chatID, e)
@@ -102,19 +103,13 @@ func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error
 		return "", fmt.Errorf("event type %s not supported", v)
 	}
 
-	body, err := a.call("send_event", map[string]interface{}{
+	var resp struct {
+		EventID string `json:"event_id"`
+	}
+	err = a.call("send_event", map[string]interface{}{
 		"chat_id": chatID,
 		"event":   e,
-	})
-
-	if err != nil {
-		return "", err
-	}
-
-	resp := struct {
-		EventID string `json:"event_id"`
-	}{}
-	err = json.Unmarshal(body, &resp)
+	}, &resp)
 
 	if err != nil {
 		return "", err
@@ -130,34 +125,28 @@ func (a *API) ActivateChat(chatID string) (threadID string, err error) {
 		},
 	}
 
-	body, err := a.call("activate_chat", payload)
-
-	if err != nil {
-		return "", err
-	}
-
-	resp := struct {
+	var resp struct {
 		ThreadID string `json:"thread_id"`
-	}{}
-	err = json.Unmarshal(body, &resp)
+	}
+	err = a.call("activate_chat", payload, &resp)
 
 	if err != nil {
 		return "", err
 	}
+
 	return resp.ThreadID, nil
 }
-
-func (a *API) call(action string, payload interface{}) (json.RawMessage, error) {
-	rawBody, err := json.Marshal(payload)
+func (a *API) call(action string, request interface{}, response interface{}) error {
+	rawBody, err := json.Marshal(request)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	token := a.tokenGetter()
 
-	url := fmt.Sprintf("%s/v3.1/customer/actions/%s?license_id=%v", a.ApiURL, action, token.License)
+	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.License)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -167,19 +156,24 @@ func (a *API) call(action string, payload interface{}) (json.RawMessage, error) 
 
 	resp, err := a.httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode == http.StatusUnauthorized {
-		return nil, fmt.Errorf("authorization error for token '%v'", token)
+		return fmt.Errorf("authorization error for token '%v'", token)
 	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("bad status code: " + resp.Status + ", " + string(bodyBytes))
+		return fmt.Errorf("bad status code: " + resp.Status + ", " + string(bodyBytes))
 	}
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return errors.WithStack(err)
 	}
 
-	return bodyBytes, nil
+	err = json.Unmarshal(bodyBytes, response)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

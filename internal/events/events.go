@@ -9,7 +9,7 @@ type Event struct {
 	CustomID   string     `json:"custom_id,omitempty"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
 	Properties Properties `json:"properties,omitempty"`
-	Recipients string     `json:"recipients, omitempty"`
+	Recipients string     `json:"recipients,omitempty"`
 	Type       string     `json:"type,omitempty"`
 }
 
@@ -20,6 +20,6 @@ type Message struct {
 
 type SystemMessage struct {
 	Event
-	SystemMessageType string `json:"system_message_type,omitempty"`
-	Text              string `json:"text,omitempty"`
+	Type string `json:"system_message_type,omitempty"`
+	Text string `json:"text,omitempty"`
 }
