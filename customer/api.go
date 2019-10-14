@@ -9,8 +9,6 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/internal/events"
-
-	"github.com/pkg/errors"
 )
 
 const apiVersion = "v3.1"
@@ -56,13 +54,7 @@ func (a *API) StartChat(c *Chat, continuous bool) (chatID, threadID string, err 
 		ThreadID string `json:"thread_id"`
 	}
 
-	err = a.call("start_chat", cc, &resp)
-
-	if err != nil {
-		return "", "", err
-	}
-
-	return resp.ChatID, resp.ThreadID, nil
+	return resp.ChatID, resp.ThreadID, a.call("start_chat", cc, &resp)
 }
 
 func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, err error) {
@@ -111,10 +103,6 @@ func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error
 		"event":   e,
 	}, &resp)
 
-	if err != nil {
-		return "", err
-	}
-
 	return resp.EventID, err
 }
 
@@ -128,13 +116,8 @@ func (a *API) ActivateChat(chatID string) (threadID string, err error) {
 	var resp struct {
 		ThreadID string `json:"thread_id"`
 	}
-	err = a.call("activate_chat", payload, &resp)
 
-	if err != nil {
-		return "", err
-	}
-
-	return resp.ThreadID, nil
+	return resp.ThreadID, a.call("activate_chat", payload, &resp)
 }
 func (a *API) call(action string, request interface{}, response interface{}) error {
 	rawBody, err := json.Marshal(request)
@@ -167,7 +150,7 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 		return fmt.Errorf("bad status code: " + resp.Status + ", " + string(bodyBytes))
 	}
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	return json.Unmarshal(bodyBytes, response)
