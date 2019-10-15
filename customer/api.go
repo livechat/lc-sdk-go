@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/livechat/lc-sdk-go/errors"
 	"github.com/livechat/lc-sdk-go/internal/events"
 )
 
@@ -144,11 +145,14 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("authorization error for token '%v'", token)
-	} else if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status code: " + resp.Status + ", " + string(bodyBytes))
+	if resp.StatusCode != http.StatusOK {
+		err := &errors.ErrAPI{}
+		if err := json.Unmarshal(bodyBytes, err); err != nil {
+			return fmt.Errorf("unexpected api error format: %s", string(bodyBytes))
+		}
+		return err
 	}
+
 	if err != nil {
 		return err
 	}
