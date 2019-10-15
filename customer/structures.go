@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/internal/events"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 type Properties map[string]map[string]interface{}

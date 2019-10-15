@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/livechat/lc-sdk-go/internal/events"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 func ParseIncomingEventPayload(body []byte) (*IncomingEventPayload, error) {

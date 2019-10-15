@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/internal/events"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 const apiVersion = "v3.1"
