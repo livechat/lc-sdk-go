@@ -23,3 +23,9 @@ func TestParseThreadClosedPayload(t *testing.T) {
 	eq(p.Payload.ThreadID, "PZ070E0W1B", t)
 	eq(p.Payload.UserID, "l.wojciechowski@livechatinc.com", t)
 }
+
+func BenchmarkParseThreadClosedPayload(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, _ = webhooks.ParseThreadClosedPayload([]byte(threadClosed))
+	}
+}
