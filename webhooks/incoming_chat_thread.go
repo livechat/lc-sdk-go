@@ -2,17 +2,10 @@ package webhooks
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/livechat/lc-sdk-go/customer"
 )
-
-type WebhookDetails struct {
-	WebhookID string `json:"webhook_id"`
-	SecretKey string `json:"secret_key"`
-	Action    string `json:"action"`
-}
 
 func ParseIncomingChatThreadPayload(body []byte) (*IncomingChatThreadPayload, error) {
 	var p IncomingChatThreadPayload
@@ -52,25 +45,12 @@ func (p *IncomingChatThreadPayload) UnmarshalJSON(data []byte) error {
 type IncomingChatThreadHandler func(*IncomingChatThreadPayload) error
 
 func NewIncomingChatThreadHandler(h IncomingChatThreadHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		payload, err := ParseIncomingChatThreadPayload(body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		err = h(payload)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-	}
+	return webhookHandler(
+		func(payload interface{}) error {
+			return h(payload.(*IncomingChatThreadPayload))
+		},
+		func(body []byte) (interface{}, error) {
+			return ParseIncomingChatThreadPayload(body)
+		},
+	)
 }

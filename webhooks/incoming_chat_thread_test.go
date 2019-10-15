@@ -114,7 +114,6 @@ func TestParseIncomingChatThreadPayload(t *testing.T) {
 }
 
 func BenchmarkParseIncomingChatThreadPayload(b *testing.B) {
-
 	for n := 0; n < b.N; n++ {
 		_, _ = webhooks.ParseIncomingChatThreadPayload([]byte(incomingChatThread))
 	}
