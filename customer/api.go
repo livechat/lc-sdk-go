@@ -64,7 +64,7 @@ func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, er
 	}
 
 	e := events.Message{
-		Event: events.Event{
+		Event: &events.Event{
 			Type:       "message",
 			Recipients: recipients,
 		},
