@@ -3,12 +3,13 @@ package customer
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/errors"
+	api_errors "github.com/livechat/lc-sdk-go/errors"
 	"github.com/livechat/lc-sdk-go/internal/events"
 )
 
@@ -17,18 +18,22 @@ const apiVersion = "v3.1"
 type API struct {
 	httpClient  *http.Client
 	ApiURL      string
+	clientID    string
 	tokenGetter func() *Token
 }
 type Token struct {
-	License     string
-	ClientID    string
+	LicenseID   int
 	AccessToken string
 	Region      string
 }
 
 type TokenGetter func() *Token
 
-func NewAPI(t TokenGetter, client *http.Client) *API {
+func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
+	if t == nil {
+		return nil, errors.New("cannot initialize api without TokenGetter")
+	}
+
 	if client == nil {
 		client = &http.Client{
 			Timeout: 20 * time.Second,
@@ -38,8 +43,9 @@ func NewAPI(t TokenGetter, client *http.Client) *API {
 	return &API{
 		tokenGetter: t,
 		ApiURL:      "https://api.livechatinc.com/",
+		clientID:    clientID,
 		httpClient:  client,
-	}
+	}, nil
 }
 
 type continuousChat struct {
@@ -127,7 +133,7 @@ func (a *API) call(action string, reqPayload interface{}, respPayload interface{
 	}
 	token := a.tokenGetter()
 
-	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.License)
+	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.LicenseID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
 	if err != nil {
 		return err
@@ -135,7 +141,7 @@ func (a *API) call(action string, reqPayload interface{}, respPayload interface{
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", token.ClientID))
+	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
 	req.Header.Set("X-Region", token.Region)
 
 	resp, err := a.httpClient.Do(req)
@@ -146,7 +152,7 @@ func (a *API) call(action string, reqPayload interface{}, respPayload interface{
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		apiErr := &errors.ErrAPI{}
+		apiErr := &api_errors.ErrAPI{}
 		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
 			return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
 		}
