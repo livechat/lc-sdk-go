@@ -146,11 +146,14 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		err := &errors.ErrAPI{}
-		if err := json.Unmarshal(bodyBytes, err); err != nil {
-			return fmt.Errorf("unexpected api error format: %s", string(bodyBytes))
+		apiErr := &errors.ErrAPI{}
+		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
+			return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
 		}
-		return err
+		if apiErr.Error() == "" {
+			return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
+		}
+		return apiErr
 	}
 
 	if err != nil {
