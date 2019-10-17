@@ -3,7 +3,7 @@ package errors
 import "fmt"
 
 type ErrAPI struct {
-	ErrorDetails *struct {
+	Details *struct {
 		Type    string `json:"type"`
 		Message string `json:"message"`
 	} `json:"error"`
@@ -11,8 +11,8 @@ type ErrAPI struct {
 }
 
 func (e *ErrAPI) Error() string {
-	if e.ErrorDetails == nil {
+	if e.Details == nil {
 		return ""
 	}
-	return fmt.Sprintf("API error: %s - %s", e.ErrorDetails.Type, e.ErrorDetails.Message)
+	return fmt.Sprintf("API error: %s - %s", e.Details.Type, e.Details.Message)
 }

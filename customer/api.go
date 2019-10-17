@@ -120,8 +120,8 @@ func (a *API) ActivateChat(chatID string) (threadID string, err error) {
 
 	return resp.ThreadID, a.call("activate_chat", payload, &resp)
 }
-func (a *API) call(action string, request interface{}, response interface{}) error {
-	rawBody, err := json.Marshal(request)
+func (a *API) call(action string, reqPayload interface{}, respPayload interface{}) error {
+	rawBody, err := json.Marshal(reqPayload)
 	if err != nil {
 		return err
 	}
@@ -160,5 +160,5 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 		return err
 	}
 
-	return json.Unmarshal(bodyBytes, response)
+	return json.Unmarshal(bodyBytes, respPayload)
 }
