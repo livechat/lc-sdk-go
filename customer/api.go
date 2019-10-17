@@ -113,18 +113,25 @@ func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error
 	return resp.EventID, err
 }
 
-func (a *API) ActivateChat(chatID string) (threadID string, err error) {
-	payload := map[string]interface{}{
-		"chat": map[string]string{
+func (a *API) ActivateChat(chatID string, events ...interface{}) (threadID string, eventIDs []string, err error) {
+	payload := map[string]map[string]interface{}{
+		"chat": map[string]interface{}{
 			"id": chatID,
 		},
 	}
 
-	var resp struct {
-		ThreadID string `json:"thread_id"`
+	if len(events) > 0 {
+		payload["chat"]["thread"] = map[string]interface{}{
+			"events": events,
+		}
 	}
 
-	return resp.ThreadID, a.call("activate_chat", payload, &resp)
+	var resp struct {
+		ThreadID string   `json:"thread_id"`
+		EventIDs []string `json:"event_ids"`
+	}
+
+	return resp.ThreadID, resp.EventIDs, a.call("activate_chat", payload, &resp)
 }
 func (a *API) call(action string, reqPayload interface{}, respPayload interface{}) error {
 	rawBody, err := json.Marshal(reqPayload)
