@@ -21,9 +21,7 @@ type IncomingEventPayload struct {
 	} `json:"payload"`
 }
 
-type IncomingEventHandler func(*IncomingEventPayload) error
-
-func NewIncomingEventHandler(h IncomingEventHandler) http.HandlerFunc {
+func NewIncomingEventHandler(h func(*IncomingEventPayload) error) http.HandlerFunc {
 	return webhookHandler(
 		func(payload interface{}) error {
 			return h(payload.(*IncomingEventPayload))

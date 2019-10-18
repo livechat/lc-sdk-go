@@ -16,12 +16,10 @@ type ThreadClosedPayload struct {
 		ChatID   string `json:"chat_id"`
 		ThreadID string `json:"thread_id"`
 		UserID   string `json:"user_id"`
-	}
+	} `json:"payload"`
 }
 
-type ThreadClosedHandler func(*ThreadClosedPayload) error
-
-func NewThreadClosedHandler(h ThreadClosedHandler) http.HandlerFunc {
+func NewThreadClosedHandler(h func(*ThreadClosedPayload) error) http.HandlerFunc {
 	return webhookHandler(
 		func(payload interface{}) error {
 			return h(payload.(*ThreadClosedPayload))

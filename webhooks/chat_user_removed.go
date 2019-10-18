@@ -16,12 +16,10 @@ type ChatUserRemovedPayload struct {
 		ChatID   string `json:"chat_id"`
 		UserType string `json:"user_type"`
 		UserID   string `json:"user_id"`
-	}
+	} `json:"payload"`
 }
 
-type ChatUserRemovedHandler func(*ChatUserRemovedPayload) error
-
-func NewChatUserRemovedHandler(h ChatUserRemovedHandler) http.HandlerFunc {
+func NewChatUserRemovedHandler(h func(*ChatUserRemovedPayload) error) http.HandlerFunc {
 	return webhookHandler(
 		func(payload interface{}) error {
 			return h(payload.(*ChatUserRemovedPayload))

@@ -42,9 +42,7 @@ func (p *IncomingChatThreadPayload) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type IncomingChatThreadHandler func(*IncomingChatThreadPayload) error
-
-func NewIncomingChatThreadHandler(h IncomingChatThreadHandler) http.HandlerFunc {
+func NewIncomingChatThreadHandler(h func(*IncomingChatThreadPayload) error) http.HandlerFunc {
 	return webhookHandler(
 		func(payload interface{}) error {
 			return h(payload.(*IncomingChatThreadPayload))
