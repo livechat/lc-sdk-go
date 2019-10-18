@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/internal/events"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 const apiVersion = "v3.1"
@@ -64,7 +64,7 @@ func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, er
 	}
 
 	e := events.Message{
-		Event: events.Event{
+		Event: &events.Event{
 			Type:       "message",
 			Recipients: recipients,
 		},
