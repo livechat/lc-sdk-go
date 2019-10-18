@@ -3,11 +3,13 @@ package customer
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
+	api_errors "github.com/livechat/lc-sdk-go/errors"
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
@@ -16,18 +18,22 @@ const apiVersion = "v3.1"
 type API struct {
 	httpClient  *http.Client
 	ApiURL      string
+	clientID    string
 	tokenGetter func() *Token
 }
 type Token struct {
-	License     string
-	ClientID    string
+	LicenseID   int
 	AccessToken string
 	Region      string
 }
 
 type TokenGetter func() *Token
 
-func NewAPI(t TokenGetter, client *http.Client) *API {
+func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
+	if t == nil {
+		return nil, errors.New("cannot initialize api without TokenGetter")
+	}
+
 	if client == nil {
 		client = &http.Client{
 			Timeout: 20 * time.Second,
@@ -37,8 +43,9 @@ func NewAPI(t TokenGetter, client *http.Client) *API {
 	return &API{
 		tokenGetter: t,
 		ApiURL:      "https://api.livechatinc.com/",
+		clientID:    clientID,
 		httpClient:  client,
-	}
+	}, nil
 }
 
 type continuousChat struct {
@@ -106,27 +113,34 @@ func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error
 	return resp.EventID, err
 }
 
-func (a *API) ActivateChat(chatID string) (threadID string, err error) {
-	payload := map[string]interface{}{
-		"chat": map[string]string{
+func (a *API) ActivateChat(chatID string, events ...interface{}) (threadID string, eventIDs []string, err error) {
+	payload := map[string]map[string]interface{}{
+		"chat": map[string]interface{}{
 			"id": chatID,
 		},
 	}
 
-	var resp struct {
-		ThreadID string `json:"thread_id"`
+	if len(events) > 0 {
+		payload["chat"]["thread"] = map[string]interface{}{
+			"events": events,
+		}
 	}
 
-	return resp.ThreadID, a.call("activate_chat", payload, &resp)
+	var resp struct {
+		ThreadID string   `json:"thread_id"`
+		EventIDs []string `json:"event_ids"`
+	}
+
+	return resp.ThreadID, resp.EventIDs, a.call("activate_chat", payload, &resp)
 }
-func (a *API) call(action string, request interface{}, response interface{}) error {
-	rawBody, err := json.Marshal(request)
+func (a *API) call(action string, reqPayload interface{}, respPayload interface{}) error {
+	rawBody, err := json.Marshal(reqPayload)
 	if err != nil {
 		return err
 	}
 	token := a.tokenGetter()
 
-	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.License)
+	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.LicenseID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
 	if err != nil {
 		return err
@@ -134,7 +148,7 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", token.ClientID))
+	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
 	req.Header.Set("X-Region", token.Region)
 
 	resp, err := a.httpClient.Do(req)
@@ -144,14 +158,20 @@ func (a *API) call(action string, request interface{}, response interface{}) err
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("authorization error for token '%v'", token)
-	} else if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status code: " + resp.Status + ", " + string(bodyBytes))
+	if resp.StatusCode != http.StatusOK {
+		apiErr := &api_errors.ErrAPI{}
+		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
+			return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
+		}
+		if apiErr.Error() == "" {
+			return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
+		}
+		return apiErr
 	}
+
 	if err != nil {
 		return err
 	}
 
-	return json.Unmarshal(bodyBytes, response)
+	return json.Unmarshal(bodyBytes, respPayload)
 }
