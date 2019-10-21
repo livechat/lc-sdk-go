@@ -95,11 +95,11 @@ func (a *API) SendSystemMessage(chatID, text, messageType string) (eventID strin
 
 func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error) {
 	switch v := e.(type) {
-	case events.Event:
-	case events.Message:
-	case events.SystemMessage:
+	case *events.Event:
+	case *events.Message:
+	case *events.SystemMessage:
 	default:
-		return "", fmt.Errorf("event type %s not supported", v)
+		return "", fmt.Errorf("event type %T not supported", v)
 	}
 
 	var resp struct {
