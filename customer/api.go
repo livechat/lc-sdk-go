@@ -14,7 +14,7 @@ import (
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
-const apiVersion = "v3.1"
+const apiVersion = "v3.2"
 
 type API struct {
 	httpClient  *http.Client
