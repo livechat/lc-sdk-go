@@ -19,7 +19,7 @@ type FollowUpRequiredPayload struct {
 	} `json:"payload"`
 }
 
-func NewFollowUpRequiredPayload(h func(*FollowUpRequiredPayload) error) http.HandlerFunc {
+func NewFollowUpRequiredHandler(h func(*FollowUpRequiredPayload) error) http.HandlerFunc {
 	return webhookHandler(
 		func(payload interface{}) error {
 			return h(payload.(*FollowUpRequiredPayload))
