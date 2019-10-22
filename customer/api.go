@@ -351,6 +351,12 @@ func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 	}, nil)
 }
 
+func (a *API) GetCustomer() (*Customer, error) {
+	var resp *Customer
+	err := a.call("get_customer", nil, resp)
+	return resp, err
+}
+
 func (a *API) send(req *http.Request, respPayload interface{}) error {
 	resp, err := a.httpClient.Do(req)
 	if err != nil {
