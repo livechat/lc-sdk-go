@@ -9,6 +9,7 @@ type WebhookDetails struct {
 	WebhookID string `json:"webhook_id"`
 	SecretKey string `json:"secret_key"`
 	Action    string `json:"action"`
+	LicenseID int    `json:"license_id"`
 }
 
 type handler func(payload interface{}) error
