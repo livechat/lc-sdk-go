@@ -331,17 +331,17 @@ func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
 }
 
 func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
-	var resp *PredictedAgent
+	var resp PredictedAgent
 	err := a.call("get_predicted_agent", nil, &resp)
-	return resp, err
+	return &resp, err
 }
 
 func (a *API) GetURLDetails(url string) (*URLDetails, error) {
-	var resp *URLDetails
+	var resp URLDetails
 	err := a.call("get_url_details", &getURLDetailsRequest{
 		URL: url,
 	}, &resp)
-	return resp, err
+	return &resp, err
 }
 
 func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
@@ -352,9 +352,9 @@ func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 }
 
 func (a *API) GetCustomer() (*Customer, error) {
-	var resp *Customer
-	err := a.call("get_customer", nil, resp)
-	return resp, err
+	var resp Customer
+	err := a.call("get_customer", nil, &resp)
+	return &resp, err
 }
 
 func (a *API) send(req *http.Request, respPayload interface{}) error {
