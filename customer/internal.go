@@ -1,8 +1,8 @@
 package customer
 
 type startChatRequest struct {
-	Chat       InitialChat `json:"chat,omitempty"`
-	Continuous bool        `json:"continuous,omitempty"`
+	Chat       *InitialChat `json:"chat,omitempty"`
+	Continuous bool         `json:"continuous,omitempty"`
 }
 
 type startChatResponse struct {
@@ -21,8 +21,8 @@ type sendEventResponse struct {
 }
 
 type activateChatRequest struct {
-	Chat       InitialChat `json:"chat"`
-	Continuous bool        `json:"continuous,omitempty"`
+	Chat       *InitialChat `json:"chat"`
+	Continuous bool         `json:"continuous,omitempty"`
 }
 
 type activateChatResponse struct {

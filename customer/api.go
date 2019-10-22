@@ -50,7 +50,7 @@ func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
 	}, nil
 }
 
-func (a *API) StartChat(initialChat InitialChat, continuous bool) (string, string, []string, error) {
+func (a *API) StartChat(initialChat *InitialChat, continuous bool) (string, string, []string, error) {
 	req := &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
@@ -107,7 +107,7 @@ func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
 	return resp.EventID, err
 }
 
-func (a *API) ActivateChat(initialChat InitialChat, continuous bool) (string, []string, error) {
+func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (string, []string, error) {
 	var resp activateChatResponse
 
 	if initialChat.Thread != nil {
