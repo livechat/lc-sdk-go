@@ -181,6 +181,9 @@ func (a *API) UploadFile(filename string, file []byte) (string, error) {
 		return "", fmt.Errorf("couldn't close multipart writer: %v", err)
 	}
 	token := a.tokenGetter()
+	if token == nil {
+		return "", fmt.Errorf("couldn't get token")
+	}
 	url := fmt.Sprintf("%s/%s/customer/action/upload_file?license_id=%v", a.ApiURL, apiVersion, token.LicenseID)
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
@@ -389,6 +392,9 @@ func (a *API) call(action string, reqPayload interface{}, respPayload interface{
 		return err
 	}
 	token := a.tokenGetter()
+	if token == nil {
+		return fmt.Errorf("couldn't get token")
+	}
 
 	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.LicenseID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
