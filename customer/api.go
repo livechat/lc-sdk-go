@@ -60,16 +60,11 @@ func (a *API) StartChat(initialChat *InitialChat, continuous bool) (string, stri
 	return resp.ChatID, resp.ThreadID, resp.EventIDs, err
 }
 
-func (a *API) SendMessage(chatID, text string, whisper bool) (string, error) {
-	recipients := "all"
-	if whisper {
-		recipients = "agents"
-	}
-
+func (a *API) SendMessage(chatID, text string, recipients Recipients) (string, error) {
 	e := events.Message{
 		Event: &events.Event{
 			Type:       "message",
-			Recipients: recipients,
+			Recipients: string(recipients),
 		},
 		Text: text,
 	}
@@ -295,7 +290,7 @@ func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
 	r := map[int]GroupStatus{}
 	if err != nil {
 		for g, s := range resp.Status {
-			r[g] = a.toGroupStatus(s)
+			r[g] = toGroupStatus(s)
 		}
 	}
 
@@ -311,23 +306,10 @@ func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]
 }
 
 func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
-	var t string
-	switch formType {
-	case FormTypePrechat:
-		t = "prechat"
-	case FormTypePostchat:
-		t = "postchat"
-	case FormTypeTicket:
-		t = "ticket"
-	case FormTypeEmail:
-		t = "email"
-	default:
-		return nil, false, errors.New("unsupported form type")
-	}
 	var resp getFormResponse
 	err := a.call("get_form", &getFormRequest{
 		GroupID: groupID,
-		Type:    t,
+		Type:    string(formType),
 	}, &resp)
 
 	return resp.Form, resp.Enabled, err
@@ -408,17 +390,4 @@ func (a *API) call(action string, reqPayload interface{}, respPayload interface{
 	req.Header.Set("X-Region", token.Region)
 
 	return a.send(req, respPayload)
-}
-
-func (a *API) toGroupStatus(s string) GroupStatus {
-	switch s {
-	case "online":
-		return GroupStatusOnline
-	case "offline":
-		return GroupStatusOffline
-	case "online_for_queue":
-		return GroupStatusOnlineForQueue
-	default:
-		return GroupStatusUnknown
-	}
 }

@@ -9,11 +9,31 @@ const (
 	GroupStatusOnlineForQueue
 )
 
-type FormType int
+type FormType string
 
 const (
-	FormTypePrechat = iota
-	FormTypePostchat
-	FormTypeTicket
-	FormTypeEmail
+	FormTypePrechat  = "prechat"
+	FormTypePostchat = "postchat"
+	FormTypeTicket   = "ticket"
+	FormTypeEmail    = "email"
 )
+
+type Recipients string
+
+const (
+	All    = "all"
+	Agents = "agents"
+)
+
+func toGroupStatus(s string) GroupStatus {
+	switch s {
+	case "online":
+		return GroupStatusOnline
+	case "offline":
+		return GroupStatusOffline
+	case "online_for_queue":
+		return GroupStatusOnlineForQueue
+	default:
+		return GroupStatusUnknown
+	}
+}
