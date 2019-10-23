@@ -2,12 +2,16 @@ package webhooks
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
+type ErrorHandler func(w http.ResponseWriter, err string, statusCode int)
+
 type Configuration struct {
-	Actions map[string]*ActionConfiguration
+	Actions     map[string]*ActionConfiguration
+	handleError ErrorHandler
 }
 
 type ActionConfiguration struct {
@@ -18,33 +22,42 @@ type ActionConfiguration struct {
 type Handler func(licenseID int, webhookPayload interface{}) error
 type parser func(json.RawMessage) (interface{}, error)
 
-func NewActionConfiguration(handler Handler) *ActionConfiguration {
-	return &ActionConfiguration{
-		Handler: handler,
+func NewConfiguration() *Configuration {
+	return &Configuration{
+		Actions:     make(map[string]*ActionConfiguration),
+		handleError: http.Error,
 	}
 }
 
-func (ac *ActionConfiguration) WithSecretKeyValidation(secretKey string) *ActionConfiguration {
-	ac.SecretKey = secretKey
-	return ac
+func (cfg *Configuration) WithAction(action string, handler Handler, secretKey string) *Configuration {
+	cfg.Actions[action] = &ActionConfiguration{
+		Handler:   handler,
+		SecretKey: secretKey,
+	}
+	return cfg
+}
+
+func (cfg *Configuration) WithErrorHandler(h func(w http.ResponseWriter, err string, statusCode int)) *Configuration {
+	cfg.handleError = h
+	return cfg
 }
 
 func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			cfg.handleError(w, fmt.Sprintf("couldn't read request body: %v", err), http.StatusInternalServerError)
 			return
 		}
 
 		var wh WebhookBase
 		if err := json.Unmarshal(body, &wh); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			cfg.handleError(w, fmt.Sprintf("couldn't unmarshal webhook base: %v", err), http.StatusInternalServerError)
 			return
 		}
 		acfg, exists := cfg.Actions[wh.Action]
 		if !exists {
-			http.Error(w, "Unsupported action", http.StatusBadRequest)
+			cfg.handleError(w, fmt.Sprintf("Unsupported action: %v", wh.Action), http.StatusBadRequest)
 			return
 		}
 		if acfg.SecretKey != "" && wh.SecretKey != acfg.SecretKey {
@@ -67,12 +80,12 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 		}
 
 		if err := json.Unmarshal(wh.Payload, payload); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("couldn't unmarshal webhook payload: %v", err), http.StatusInternalServerError)
 			return
 		}
 
 		if err = acfg.Handler(wh.LicenseID, payload); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}
 
