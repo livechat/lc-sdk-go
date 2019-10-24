@@ -61,7 +61,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			return
 		}
 		if acfg.SecretKey != "" && wh.SecretKey != acfg.SecretKey {
-			http.Error(w, "Invalid webhook secret key", http.StatusBadRequest)
+			cfg.handleError(w, "Invalid webhook secret key", http.StatusBadRequest)
 			return
 		}
 
@@ -80,12 +80,12 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 		}
 
 		if err := json.Unmarshal(wh.Payload, payload); err != nil {
-			http.Error(w, fmt.Sprintf("couldn't unmarshal webhook payload: %v", err), http.StatusInternalServerError)
+			cfg.handleError(w, fmt.Sprintf("couldn't unmarshal webhook payload: %v", err), http.StatusInternalServerError)
 			return
 		}
 
 		if err = acfg.Handler(wh.LicenseID, payload); err != nil {
-			http.Error(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
+			cfg.handleError(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}
 
