@@ -67,16 +67,39 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 
 		var payload interface{}
 		switch wh.Action {
-		case "chat_user_removed":
-			payload = &ChatUserRemoved{}
-		case "follow_up_requested":
-			payload = &FollowUpRequested{}
 		case "incoming_chat_thread":
 			payload = &IncomingChatThread{}
-		case "incoming_event":
-			payload = &IncomingEvent{}
 		case "thread_closed":
 			payload = &ThreadClosed{}
+		case "access_set":
+			payload = &AccessSet{}
+		case "chat_user_added":
+			payload = &ChatUserAdded{}
+		case "chat_user_removed":
+			payload = &ChatUserRemoved{}
+		case "incoming_event":
+			payload = &IncomingEvent{}
+		case "event_updated":
+			payload = &EventUpdated{}
+		case "incoming_rich_message_postback":
+			payload = &IncomingRichMessagePostback{}
+		case "chat_properties_updated":
+			payload = &ChatPropertiesUpdated{}
+		case "chat_properties_deleted":
+			payload = &ChatPropertiesDeleted{}
+		case "chat_thread_properties_updated":
+			payload = &ChatThreadPropertiesUpdated{}
+		case "chat_thread_properties_deleted":
+			payload = &ChatThreadPropertiesDeleted{}
+		case "event_properties_updated":
+			payload = &EventPropertiesUpdated{}
+		case "event_properties_deleted":
+			payload = &EventPropertiesDeleted{}
+		case "follow_up_requested":
+			payload = &FollowUpRequested{}
+		default:
+			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
+			return
 		}
 
 		if err := json.Unmarshal(wh.Payload, payload); err != nil {
