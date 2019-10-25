@@ -44,7 +44,7 @@ func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
 
 	return &API{
 		tokenGetter: t,
-		ApiURL:      "https://api.livechatinc.com/",
+		ApiURL:      "https://api.livechatinc.com",
 		clientID:    clientID,
 		httpClient:  client,
 	}, nil
@@ -56,7 +56,7 @@ func (a *API) StartChat(initialChat *InitialChat, continuous bool) (string, stri
 		Continuous: continuous,
 	}
 	var resp startChatResponse
-	err := a.call("start_chat", req, resp)
+	err := a.call("start_chat", req, &resp)
 	return resp.ChatID, resp.ThreadID, resp.EventIDs, err
 }
 
@@ -159,7 +159,7 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (Chat, error) {
 func (a *API) CloseThread(chatID string) error {
 	return a.call("close_thread", &closeThreadRequest{
 		ChatID: chatID,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) UploadFile(filename string, file []byte) (string, error) {
@@ -204,28 +204,28 @@ func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID stri
 			ID:      postbackID,
 			Toggled: toggled,
 		},
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) SendSneakPeek(chatID, text string) error {
 	return a.call("send_sneak_peek", &sendSneakPeekRequest{
 		ChatID:        chatID,
 		SneakPeekText: text,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) UpdateChatProperties(chatID string, properties Properties) error {
 	return a.call("update_chat_properties", &updateChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) DeleteChatProperties(chatID string, properties map[string][]string) error {
 	return a.call("delete_chat_properties", &deleteChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties Properties) error {
@@ -233,7 +233,7 @@ func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties Pro
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
@@ -241,7 +241,7 @@ func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) UpdateEventProperties(chatID, threadID, eventID string, properties Properties) error {
@@ -250,7 +250,7 @@ func (a *API) UpdateEventProperties(chatID, threadID, eventID string, properties
 		ThreadID:   threadID,
 		EventID:    eventID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties map[string][]string) error {
@@ -259,7 +259,7 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 		ThreadID:   threadID,
 		EventID:    eventID,
 		Properties: properties,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
@@ -268,13 +268,13 @@ func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]st
 		Email:  email,
 		Avatar: avatarURL,
 		Fields: fields,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) SetCustomerFields(fields map[string]string) error {
 	return a.call("set_customer_fields", &setCustomerFieldsRequest{
 		Fields: fields,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
@@ -288,7 +288,8 @@ func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
 	err := a.call("get_groups_status", req, &resp)
 
 	r := map[int]GroupStatus{}
-	if err != nil {
+
+	if err == nil {
 		for g, s := range resp.Status {
 			r[g] = toGroupStatus(s)
 		}
@@ -302,7 +303,7 @@ func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]
 		PageURL:        pageURL,
 		GroupID:        groupID,
 		CustomerFields: customerFields,
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
@@ -333,7 +334,7 @@ func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 	return a.call("mark_events_as_seen", &markEventsAsSeenRequest{
 		ChatID:   chatID,
 		SeenUpTo: seenUpTo.Format(time.RFC3339Nano),
-	}, nil)
+	}, &emptyResponse{})
 }
 
 func (a *API) GetCustomer() (*Customer, error) {
@@ -349,7 +350,6 @@ func (a *API) send(req *http.Request, respPayload interface{}) error {
 	}
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
-
 	if resp.StatusCode != http.StatusOK {
 		apiErr := &api_errors.ErrAPI{}
 		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {

@@ -165,3 +165,5 @@ type markEventsAsSeenRequest struct {
 	ChatID   string `json:"chat_id"`
 	SeenUpTo string `json:"seen_up_to"`
 }
+
+type emptyResponse struct {}
