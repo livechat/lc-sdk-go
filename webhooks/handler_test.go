@@ -23,7 +23,7 @@ var followUpRequested = `{
 }`
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
-	cfg := &webhooks.Configuration{}
+	cfg := webhooks.NewConfiguration()
 	h := webhooks.NewWebhookHandler(cfg)
 	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(followUpRequested))
 	resp := httptest.NewRecorder()
@@ -36,12 +36,30 @@ func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
 
 func TestRejectWebhooksIfFormatIsInvalid(t *testing.T) {
 	hook := followUpRequested + "}"
-	cfg := &webhooks.Configuration{}
+	cfg := webhooks.NewConfiguration()
 	h := webhooks.NewWebhookHandler(cfg)
 	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(hook))
 	resp := httptest.NewRecorder()
 	h(resp, req)
-	if resp.Code != http.StatusBadRequest {
+	if resp.Code != http.StatusInternalServerError {
+		t.Errorf("invalid code: %v", resp.Code)
+		return
+	}
+}
+
+func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
+	hook := followUpRequested + "}"
+	errHandler := func(w http.ResponseWriter, err string, statusCode int) {
+		if statusCode != http.StatusInternalServerError {
+			t.Errorf("invalid status code in error handler: %v", statusCode)
+		}
+	}
+	cfg := webhooks.NewConfiguration().WithErrorHandler(errHandler)
+	h := webhooks.NewWebhookHandler(cfg)
+	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(hook))
+	resp := httptest.NewRecorder()
+	h(resp, req)
+	if resp.Code != http.StatusOK {
 		t.Errorf("invalid code: %v", resp.Code)
 		return
 	}
@@ -49,11 +67,7 @@ func TestRejectWebhooksIfFormatIsInvalid(t *testing.T) {
 
 func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 	checker := func(int, interface{}) error { return nil }
-	cfg := &webhooks.Configuration{
-		Actions: map[string]*webhooks.ActionConfiguration{
-			"follow_up_requested": webhooks.NewActionConfiguration(checker).WithSecretKeyValidation("other_dummy_key"),
-		},
-	}
+	cfg := webhooks.NewConfiguration().WithAction("follow_up_requested", checker, "other_dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
 	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(followUpRequested))
 	resp := httptest.NewRecorder()
@@ -84,11 +98,7 @@ func TestOK(t *testing.T) {
 		}
 		return nil
 	}
-	cfg := &webhooks.Configuration{
-		Actions: map[string]*webhooks.ActionConfiguration{
-			"follow_up_requested": webhooks.NewActionConfiguration(checker).WithSecretKeyValidation("dummy_key"),
-		},
-	}
+	cfg := webhooks.NewConfiguration().WithAction("follow_up_requested", checker, "dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
 	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(followUpRequested))
 	resp := httptest.NewRecorder()
