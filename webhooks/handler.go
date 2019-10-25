@@ -37,7 +37,7 @@ func (cfg *Configuration) WithAction(action string, handler Handler, secretKey s
 	return cfg
 }
 
-func (cfg *Configuration) WithErrorHandler(h func(w http.ResponseWriter, err string, statusCode int)) *Configuration {
+func (cfg *Configuration) WithErrorHandler(h ErrorHandler) *Configuration {
 	cfg.handleError = h
 	return cfg
 }
