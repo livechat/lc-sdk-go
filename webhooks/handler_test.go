@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"io/ioutil"
 
 	"github.com/livechat/lc-sdk-go/webhooks"
+	wv "github.com/livechat/lc-sdk-go/webhooks/tests/validators"
 )
 
 var followUpRequested = `{
@@ -21,6 +23,24 @@ var followUpRequested = `{
 		"customer_id": "AAA-BBB-CCC"
 	}
 }`
+
+var verifiers = map[string]webhooks.Handler {
+	"incoming_chat_thread": wv.IncomingChatThread,
+	"thread_closed": wv.ThreadClosed,
+	"access_set": wv.AccessSet,
+	"chat_user_added": wv.ChatUserAdded,
+	"chat_user_removed": wv.ChatUserRemoved,
+	"incoming_event": wv.IncomingEvent,
+	"event_updated": wv.EventUpdated,
+	"incoming_rich_message_postback": wv.IncomingRichMessagePostback,
+	"chat_properties_updated": wv.ChatPropertiesUpdated,
+	"chat_properties_deleted": wv.ChatPropertiesDeleted,
+	"chat_thread_properties_updated": wv.ChatThreadPropertiesUpdated,
+	"chat_thread_properties_deleted": wv.ChatThreadPropertiesDeleted,
+	"event_properties_updated": wv.EventPropertiesUpdated,
+	"event_properties_deleted": wv.EventPropertiesDeleted,
+	"follow_up_requested": wv.FollowUpRequested,
+}
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
 	cfg := webhooks.NewConfiguration()
@@ -66,8 +86,8 @@ func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
 }
 
 func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
-	checker := func(int, interface{}) error { return nil }
-	cfg := webhooks.NewConfiguration().WithAction("follow_up_requested", checker, "other_dummy_key")
+	verifier := func(int, interface{}) error { return nil }
+	cfg := webhooks.NewConfiguration().WithAction("follow_up_requested", verifier, "other_dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
 	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(followUpRequested))
 	resp := httptest.NewRecorder()
@@ -78,33 +98,28 @@ func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 	}
 }
 
-func TestOK(t *testing.T) {
-	checker := func(licenseID int, payload interface{}) error {
-		if licenseID != 100012582 {
-			return fmt.Errorf("Invalid licenseID: %v", licenseID)
+func TestPayloadParsingOK(t *testing.T) {
+	testAction := func (action string, verifier webhooks.Handler) error{
+		cfg := webhooks.NewConfiguration().WithAction(action, verifier, "dummy_key")
+		h := webhooks.NewWebhookHandler(cfg)
+		payload, err := ioutil.ReadFile("./tests/payloads/" + action + ".json")
+		if err != nil {
+			return fmt.Errorf("Missing test payload for action %v", action)
 		}
-		wh, ok := payload.(*webhooks.FollowUpRequested)
-		if !ok {
-			return fmt.Errorf("invalid payload type: %T", payload)
-		}
-		if wh.ChatID != "XXXX" {
-			return fmt.Errorf("invalid ChatID: %s", wh.ChatID)
-		}
-		if wh.ThreadID != "YYYY" {
-			return fmt.Errorf("invalid ThreadID: %s", wh.ThreadID)
-		}
-		if wh.CustomerID != "AAA-BBB-CCC" {
-			return fmt.Errorf("invalid CustomerID: %s", wh.CustomerID)
+		req := httptest.NewRequest("POST", "https://example.com", bytes.NewBuffer(payload))
+		resp := httptest.NewRecorder()
+		h(resp, req)
+		if resp.Code != http.StatusOK {
+			return fmt.Errorf("%v", resp.Body)
 		}
 		return nil
 	}
-	cfg := webhooks.NewConfiguration().WithAction("follow_up_requested", checker, "dummy_key")
-	h := webhooks.NewWebhookHandler(cfg)
-	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBufferString(followUpRequested))
-	resp := httptest.NewRecorder()
-	h(resp, req)
-	if resp.Code != http.StatusOK {
-		t.Errorf("invalid code: %v", resp.Code)
-		return
+
+	for action, verifier := range verifiers {
+		stepError := testAction(action, verifier)
+		if stepError != nil {
+			t.Errorf("Payload incorrectly parsed for %v, error: %v", action, stepError)
+			return
+		}
 	}
 }

@@ -1,0 +1,17 @@
+{
+	"webhook_id": "1188f559c4bae6c4b9a87a1b32d78202",
+	"secret_key": "dummy_key",
+	"action": "incoming_rich_message_postback",
+	"license_id": 100012582,
+	"payload": {
+		"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8",
+		"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+		"postback": {
+			"id": "action_yes",
+			"toggled": true
+		}
+	},
+	"additional_data": {}
+}

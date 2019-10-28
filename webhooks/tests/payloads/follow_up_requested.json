@@ -1,0 +1,11 @@
+{
+	"webhook_id": "dummy_id",
+	"secret_key": "dummy_key",
+	"action": "follow_up_requested",
+	"license_id": 100012582,
+	"payload": {
+		"chat_id": "XXXX",
+		"thread_id": "YYYY",
+		"customer_id": "AAA-BBB-CCC"
+	}
+}

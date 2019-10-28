@@ -1,0 +1,22 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "chat_user_added",
+	"license_id": 100012582,
+	"payload": {
+	  "chat_id": "PJ0MRSHTDG",
+	  "thread_id": "K600PKZON8",
+	  "user": {
+			"id": "l.wojciechowski@livechatinc.com",
+			"name": "\u0141ukasz Wojciechowski",
+			"email": "l.wojciechowski@livechatinc.com",
+			"present": true,
+			"last_seen_timestamp": 0,
+			"type": "agent",
+			"avatar": "livechat.s3.amazonaws.com/default/avatars/a14.png",
+			"routing_status": "accepting_chats"
+		},
+	  "user_type": "agent"
+	},
+	"additional_data": {}
+  }
