@@ -168,7 +168,7 @@ func createMockedResponder(t *testing.T, method string) func(req *http.Request) 
 			responseError := `{
 				"error": {
 					"type": "MOCK_SERVER_ERROR",
-					"message": ` + message + `
+					"message": "` + message + `"
 				}
 			}`
 
@@ -204,7 +204,34 @@ func createMockedResponder(t *testing.T, method string) func(req *http.Request) 
 	}
 }
 
-// TESTS
+func createMockedErrorResponder(t *testing.T, method string) func(req *http.Request) *http.Response {
+	return func(req *http.Request) *http.Response {
+		responseError := `{
+			"error": {
+				"type": "Validation",
+				"message": "Wrong format of request"
+			}
+		}`
+
+		return &http.Response{
+			StatusCode: 400,
+			Body: ioutil.NopCloser(bytes.NewBufferString(responseError)),
+			Header: make(http.Header),
+		}
+	}
+}
+
+func verifyErrorResponse(method string, resp error, t *testing.T) {
+	if resp == nil {
+		t.Errorf("%v should fail", method)
+	}
+
+	if resp.Error() != "API error: Validation - Wrong format of request" {
+		t.Errorf("%v failed with wrong error: %v", method, resp)
+	}
+} 
+
+// TESTS OK Cases
 
 func TestRejectAPICreationWithoutTokenGetter(t *testing.T) {
 	_, err := customer.NewAPI(nil, nil, "client_id")
@@ -213,7 +240,7 @@ func TestRejectAPICreationWithoutTokenGetter(t *testing.T) {
 	}
 }
 
-func TestStartChatOK(t *testing.T) {
+func TestStartChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "start_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -234,7 +261,7 @@ func TestStartChatOK(t *testing.T) {
 	}
 }
 
-func TestSendEventOK(t *testing.T) {
+func TestSendEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_event"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -252,7 +279,7 @@ func TestSendEventOK(t *testing.T) {
 	}
 }
 
-func TestActivateChatOK(t *testing.T) {
+func TestActivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "activate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -270,7 +297,7 @@ func TestActivateChatOK(t *testing.T) {
 	}
 }
 
-func TestGetChatsSummaryOK(t *testing.T) {
+func TestGetChatsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_chats_summary"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -293,7 +320,7 @@ func TestGetChatsSummaryOK(t *testing.T) {
 	}
 }
 
-func TestGetChatThreadsSummaryOK(t *testing.T) {
+func TestGetChatThreadsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_chat_threads_summary"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -316,7 +343,7 @@ func TestGetChatThreadsSummaryOK(t *testing.T) {
 	}
 }
 
-func TestGetChatThreadsOK(t *testing.T) {
+func TestGetChatThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_chat_threads"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -334,7 +361,7 @@ func TestGetChatThreadsOK(t *testing.T) {
 	}
 }
 
-func TestCloseThreadOK(t *testing.T) {
+func TestCloseThreadShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "close_thread"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -348,7 +375,7 @@ func TestCloseThreadOK(t *testing.T) {
 	}
 }
 
-func TestUploadFileOK(t *testing.T) {
+func TestUploadFileShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "upload_file"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -366,7 +393,7 @@ func TestUploadFileOK(t *testing.T) {
 	}
 }
 
-func TestSendRichMessagePostbackOK(t *testing.T) {
+func TestSendRichMessagePostbackShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_rich_message_postback"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -380,7 +407,7 @@ func TestSendRichMessagePostbackOK(t *testing.T) {
 	}
 }
 
-func TestSendSneakPeekOK(t *testing.T) {
+func TestSendSneakPeekShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_sneak_peek"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -394,7 +421,7 @@ func TestSendSneakPeekOK(t *testing.T) {
 	}
 }
 
-func TestUpdateChatPropertiesOK(t *testing.T) {
+func TestUpdateChatPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_chat_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -408,7 +435,7 @@ func TestUpdateChatPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestDeleteChatPropertiesOK(t *testing.T) {
+func TestDeleteChatPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_chat_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -422,7 +449,7 @@ func TestDeleteChatPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestUpdateChatThreadPropertiesOK(t *testing.T) {
+func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_chat_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -436,7 +463,7 @@ func TestUpdateChatThreadPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestDeleteChatThreadPropertiesOK(t *testing.T) {
+func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_chat_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -450,7 +477,7 @@ func TestDeleteChatThreadPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestUpdateEventPropertiesOK(t *testing.T) {
+func TestUpdateEventPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_event_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -464,7 +491,7 @@ func TestUpdateEventPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestDeleteEventPropertiesOK(t *testing.T) {
+func TestDeleteEventPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_event_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -478,7 +505,7 @@ func TestDeleteEventPropertiesOK(t *testing.T) {
 	}
 }
 
-func TestUpdateCustomerOK(t *testing.T) {
+func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_customer"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -492,7 +519,7 @@ func TestUpdateCustomerOK(t *testing.T) {
 	}
 }
 
-func TestSetCustomerFieldsOK(t *testing.T) {
+func TestSetCustomerFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "set_customer_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -506,7 +533,7 @@ func TestSetCustomerFieldsOK(t *testing.T) {
 	}
 }
 
-func TestGetGroupsStatusOK(t *testing.T) {
+func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_groups_status"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -536,7 +563,7 @@ func TestGetGroupsStatusOK(t *testing.T) {
 	}
 }
 
-func TestCheckGoalsOK(t *testing.T) {
+func TestCheckGoalsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "check_goals"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -550,7 +577,7 @@ func TestCheckGoalsOK(t *testing.T) {
 	}
 }
 
-func TestGetFormOK(t *testing.T) {
+func TestGetFormShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_form"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -577,7 +604,7 @@ func TestGetFormOK(t *testing.T) {
 	}
 }
 
-func TestGetPredictedAgentOK(t *testing.T) {
+func TestGetPredictedAgentShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_predicted_agent"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -597,7 +624,7 @@ func TestGetPredictedAgentOK(t *testing.T) {
 	}
 }
 
-func TestGetURLDetailsOK(t *testing.T) {
+func TestGetURLDetailsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_url_details"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -616,7 +643,7 @@ func TestGetURLDetailsOK(t *testing.T) {
 	}
 }
 
-func TestMarkEventsAsSeenOK(t *testing.T) {
+func TestMarkEventsAsSeenShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "mark_events_as_seen"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -630,7 +657,7 @@ func TestMarkEventsAsSeenOK(t *testing.T) {
 	}
 }
 
-func TestGetCustomerOK(t *testing.T) {
+func TestGetCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_customer"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -648,4 +675,306 @@ func TestGetCustomerOK(t *testing.T) {
 	if customer == nil {
 		t.Errorf("Invalid Customer")
 	}
+}
+
+// TESTS Error Cases
+
+func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "start_chat"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, _, _, rErr := api.StartChat(&customer.InitialChat{}, true)
+	verifyErrorResponse("StartChat", rErr, t)
+}
+
+func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "send_event"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.SendEvent("stubChatID", &events.Event{})
+	verifyErrorResponse("SendEvent", rErr, t)
+}
+
+func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "activate_chat"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, _, rErr := api.ActivateChat(&customer.InitialChat{}, true)
+	verifyErrorResponse("ActivateChat", rErr, t)
+}
+
+func TestGetChatsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_chats_summary"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, _, rErr := api.GetChatsSummary(0, 20)
+	verifyErrorResponse("GetChatsSummary", rErr, t)
+}
+
+func TestGetChatThreadsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads_summary"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, _, rErr := api.GetChatThreadsSummary("stubChatID", 0, 20)
+	verifyErrorResponse("GetChatThreadsSummary", rErr, t)
+}
+
+func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.GetChatThreads("stubChatID", "stubThreadID")
+	verifyErrorResponse("GetChatThreads", rErr, t)
+}
+
+func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "close_thread"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.CloseThread("stubChatID")
+	verifyErrorResponse("CloseThread", rErr, t)
+}
+
+func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "upload_file"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.UploadFile("filename", []byte{})
+	verifyErrorResponse("UploadFile", rErr, t)
+}
+
+func TestSendRichMessagePostbackShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "send_rich_message_postback"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.SendRichMessagePostback("stubChatID", "stubThreadID", "stubEventID", "stubPostbackID", false)
+	verifyErrorResponse("SendRichMessagePostback", rErr, t)
+}
+
+func TestSendSneakPeekShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "send_sneak_peek"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.SendSneakPeek("stubChatID", "sneaky freaky baby")
+	verifyErrorResponse("SendSneakPeek", rErr, t)
+}
+
+func TestUpdateChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "update_chat_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateChatProperties("stubChatID", customer.Properties{})
+	verifyErrorResponse("UpdateChatProperties", rErr, t)
+}
+
+func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.DeleteChatProperties("stubChatID", map[string][]string{})
+	verifyErrorResponse("DeleteChatProperties", rErr, t)
+}
+
+func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "update_chat_thread_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateChatThreadProperties("stubChatID", "stubThreadID", customer.Properties{})
+	verifyErrorResponse("UpdateChatThreadProperties", rErr, t)
+}
+
+func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_thread_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	verifyErrorResponse("DeleteChatThreadProperties", rErr, t)
+}
+
+func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "update_event_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateEventProperties("stubChatID", "stubThreadID", "stubEventID", customer.Properties{})
+	verifyErrorResponse("UpdateEventProperties", rErr, t)
+}
+
+func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "delete_event_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.DeleteEventProperties("stubChatID", "stubThreadID", "stubEventID", map[string][]string{})
+	verifyErrorResponse("DeleteEventProperties", rErr, t)
+}
+
+func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "update_customer"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	verifyErrorResponse("UpdateCustomer", rErr, t)
+}
+
+func TestSetCustomerFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "set_customer_fields"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.SetCustomerFields(map[string]string{})
+	verifyErrorResponse("SetCustomerFields", rErr, t)
+}
+
+func TestGetGroupsStatusShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_groups_status"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.GetGroupsStatus([]int{1,2,3})
+	verifyErrorResponse("GetGroupsStatus", rErr, t)
+}
+
+func TestCheckGoalsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "check_goals"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.CheckGoals("http://page.url", 0, map[string]string{})
+	verifyErrorResponse("CheckGoals", rErr, t)
+}
+
+func TestGetFormShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_form"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, _, rErr := api.GetForm(0, customer.FormTypePrechat)
+	verifyErrorResponse("GetForm", rErr, t)
+}
+
+func TestGetPredictedAgentShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_predicted_agent"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.GetPredictedAgent()
+	verifyErrorResponse("GetPredictedAgent", rErr, t)
+}
+
+func TestGetURLDetailsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_url_details"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.GetURLDetails("http://totally.unsuspicious.url.com")
+	verifyErrorResponse("GetURLDetails", rErr, t)
+}
+
+func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "mark_events_as_seen"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.MarkEventsAsSeen("stubChatID", time.Time{})
+	verifyErrorResponse("MarkEventsAsSeen", rErr, t)
+}
+
+func TestGetCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_customer"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	_, rErr := api.GetCustomer()
+	verifyErrorResponse("GetCustomer", rErr, t)
 }
