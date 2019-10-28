@@ -224,6 +224,7 @@ func createMockedErrorResponder(t *testing.T, method string) func(req *http.Requ
 func verifyErrorResponse(method string, resp error, t *testing.T) {
 	if resp == nil {
 		t.Errorf("%v should fail", method)
+		return
 	}
 
 	if resp.Error() != "API error: Validation - Wrong format of request" {
