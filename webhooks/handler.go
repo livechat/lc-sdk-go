@@ -97,6 +97,16 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &EventPropertiesDeleted{}
 		case "follow_up_requested":
 			payload = &FollowUpRequested{}
+		case "chat_thread_tagged":
+			payload = &ChatThreadTagged{}
+		case "chat_thread_untagged":
+			payload = &ChatThreadUntagged{}
+		case "agent_status_changed":
+			payload = &AgentStatusChanged{}
+		case "agent_deleted":
+			payload = &AgentDeleted{}
+		case "events_marked_as_seen":
+			payload = &EventsMarkedAsSeen{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

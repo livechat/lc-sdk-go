@@ -111,6 +111,33 @@ type FollowUpRequested struct {
 	CustomerID string `json:"customer_id"`
 }
 
+type ChatThreadTagged struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+	Tag      string `json:"tag"`
+}
+
+type ChatThreadUntagged struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+	Tag      string `json:"tag"`
+}
+
+type AgentStatusChanged struct {
+	AgentID string `json:"agent_id"`
+	Status  string `json:"status"` // TODO - should this be enum?
+}
+
+type AgentDeleted struct {
+	AgentID string `json:"agent_id"`
+}
+
+type EventsMarkedAsSeen struct {
+	UserID   string `json:"user_id"`
+	ChatID   string `json:"chat_id"`
+	SeenUpTo string `json:"seen_up_to"` // TODO - should we parse this into time type?
+}
+
 func (p *IncomingChatThread) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChatThread
 	type SingleThread struct {

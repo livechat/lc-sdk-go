@@ -40,6 +40,11 @@ var verifiers = map[string]webhooks.Handler {
 	"event_properties_updated": wv.EventPropertiesUpdated,
 	"event_properties_deleted": wv.EventPropertiesDeleted,
 	"follow_up_requested": wv.FollowUpRequested,
+	"chat_thread_tagged": wv.ChatThreadTagged,
+	"chat_thread_untagged": wv.ChatThreadUntagged,
+	"agent_status_changed": wv.AgentStatusChanged,
+	"agent_deleted": wv.AgentDeleted,
+	"events_marked_as_seen": wv.EventsMarkedAsSeen,
 }
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
