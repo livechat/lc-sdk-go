@@ -2,7 +2,7 @@ package webhooks
 
 import (
 	"encoding/json"
-
+	"time"
 	"github.com/livechat/lc-sdk-go/customer"
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
@@ -32,11 +32,85 @@ type AccessSet struct {
 	Access   customer.Access `json:"access"`
 }
 
+type User struct {
+	ID       string `json:"id"`
+	Type     string `json:"type"`
+	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
+	Email    string `json:"email"`
+	Present  bool   `json:"present"`
+	LastSeen customer.Time   `json:"last_seen_timestamp"`
+	userSpecific
+}
+
+type userSpecific struct {
+	RoutingStatus json.RawMessage `json:"routing_status"`
+	LastVisit  json.RawMessage `json:"last_visit"`
+	Statistics json.RawMessage `json:"statistics"`
+	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at"`
+	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at"`
+}
+
+type Agent struct {
+	RoutingStatus string `json:"routing_status"`
+	*User
+}
+
+type Customer struct {
+	LastVisit  customer.Visit `json:"last_visit"`
+	Statistics struct {
+		VisitsCount            int `json:"visits_count"`
+		ThreadsCount           int `json:"threads_count"`
+		ChatsCount             int `json:"chats_count"`
+		PageViewsCount         int `json:"page_views_count"`
+		GreetingsShownCount    int `json:"greetings_shown_count"`
+		GreetingsAcceptedCount int `json:"greetings_accepted_count"`
+	}
+	AgentLastEventCreatedAt    time.Time `json:"agent_last_event_created_at"`
+	CustomerLastEventCreatedAt time.Time `json:"customer_last_event_created_at"`
+	*User
+}
+
+func (u *User) Agent() *Agent {
+	if u.Type != "agent" {
+		return nil
+	}
+	var a Agent
+
+	a.User = u
+	if err := json.Unmarshal(u.RoutingStatus, &a.RoutingStatus); err != nil {
+		return nil
+	}
+	return &a
+}
+
+func (u *User) Customer() *Customer {
+	if u.Type != "customer" {
+		return nil
+	}
+	var c Customer
+
+	c.User = u
+	if err := json.Unmarshal(u.LastVisit, &c.LastVisit); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.Statistics, &c.Statistics); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.AgentLastEventCreatedAt, &c.AgentLastEventCreatedAt); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.CustomerLastEventCreatedAt, &c.CustomerLastEventCreatedAt); err != nil {
+		return nil
+	}
+	return &c
+}
+
 type ChatUserAdded struct {
-	ChatID   string        `json:"chat_id"`
-	ThreadID string        `json:"thread_id"`
-	User     customer.User `json:"user"`
-	UserType string        `json:"user_type"` // TODO shall this be enum?
+	ChatID   string  `json:"chat_id"`
+	ThreadID string  `json:"thread_id"`
+	User     User    `json:"user"`
+	UserType string  `json:"user_type"` // TODO shall this be enum?
 }
 
 type ChatUserRemoved struct {
