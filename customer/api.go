@@ -71,7 +71,7 @@ func (a *API) SendMessage(chatID, text string, whisper bool) (eventID string, er
 		Text: text,
 	}
 
-	return a.SendEvent(chatID, e)
+	return a.SendEvent(chatID, &e)
 }
 
 func (a *API) SendSystemMessage(chatID, text, messageType string) (eventID string, err error) {
@@ -83,7 +83,7 @@ func (a *API) SendSystemMessage(chatID, text, messageType string) (eventID strin
 		Type: messageType,
 	}
 
-	return a.SendEvent(chatID, e)
+	return a.SendEvent(chatID, &e)
 }
 
 func (a *API) SendEvent(chatID string, e interface{}) (eventID string, err error) {
