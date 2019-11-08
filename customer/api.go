@@ -9,9 +9,7 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/internal"
-
 	"github.com/livechat/lc-sdk-go/objects/authorization"
-
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
