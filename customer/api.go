@@ -2,36 +2,26 @@ package customer
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"time"
 
-	api_errors "github.com/livechat/lc-sdk-go/errors"
+	"github.com/livechat/lc-sdk-go/internal"
+
+	"github.com/livechat/lc-sdk-go/objects/authorization"
+
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 const apiVersion = "v3.2"
 
 type API struct {
-	httpClient  *http.Client
-	ApiURL      string
-	clientID    string
-	tokenGetter func() *Token
+	base internal.APIBase
 }
 
-type Token struct {
-	LicenseID   int
-	AccessToken string
-	Region      string
-}
-
-type TokenGetter func() *Token
-
-func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
 	if t == nil {
 		return nil, errors.New("cannot initialize api without TokenGetter")
 	}
@@ -43,10 +33,14 @@ func NewAPI(t TokenGetter, client *http.Client, clientID string) (*API, error) {
 	}
 
 	return &API{
-		tokenGetter: t,
-		ApiURL:      "https://api.livechatinc.com",
-		clientID:    clientID,
-		httpClient:  client,
+		internal.APIBase{
+			ApiVersion:  apiVersion,
+			ApiName:     "customer",
+			TokenGetter: t,
+			ApiURL:      "https://api.livechatinc.com",
+			ClientID:    clientID,
+			HttpClient:  client,
+		},
 	}, nil
 }
 
@@ -56,7 +50,7 @@ func (a *API) StartChat(initialChat *InitialChat, continuous bool) (string, stri
 		Continuous: continuous,
 	}
 	var resp startChatResponse
-	err := a.call("start_chat", req, &resp)
+	err := a.base.Call("start_chat", req, &resp)
 	return resp.ChatID, resp.ThreadID, resp.EventIDs, err
 }
 
@@ -94,7 +88,7 @@ func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
 	}
 
 	var resp sendEventResponse
-	err := a.call("send_event", &sendEventRequest{
+	err := a.base.Call("send_event", &sendEventRequest{
 		ChatID: chatID,
 		Event:  e,
 	}, &resp)
@@ -117,7 +111,7 @@ func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (string, [
 		}
 	}
 
-	err := a.call("activate_chat", &activateChatRequest{
+	err := a.base.Call("activate_chat", &activateChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
 	}, &resp)
@@ -127,7 +121,7 @@ func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (string, [
 
 func (a *API) GetChatsSummary(offset, limit uint) ([]Chat, uint, error) {
 	var resp getChatsSummaryResponse
-	err := a.call("get_chats_summary", &getChatsSummaryRequest{
+	err := a.base.Call("get_chats_summary", &getChatsSummaryRequest{
 		Limit:  limit,
 		Offset: offset,
 	}, &resp)
@@ -137,7 +131,7 @@ func (a *API) GetChatsSummary(offset, limit uint) ([]Chat, uint, error) {
 
 func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) ([]ThreadSummary, uint, error) {
 	var resp getChatThreadsSummaryResponse
-	err := a.call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
+	err := a.base.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
 		Limit:  limit,
 		Offset: offset,
@@ -148,7 +142,7 @@ func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) ([]Thread
 
 func (a *API) GetChatThreads(chatID string, threadIDs ...string) (Chat, error) {
 	var resp getChatThreadsResponse
-	err := a.call("get_chat_threads", &getChatThreadsRequest{
+	err := a.base.Call("get_chat_threads", &getChatThreadsRequest{
 		ChatID:    chatID,
 		ThreadIDs: threadIDs,
 	}, &resp)
@@ -157,7 +151,7 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (Chat, error) {
 }
 
 func (a *API) CloseThread(chatID string) error {
-	return a.call("close_thread", &closeThreadRequest{
+	return a.base.Call("close_thread", &closeThreadRequest{
 		ChatID: chatID,
 	}, &emptyResponse{})
 }
@@ -175,11 +169,11 @@ func (a *API) UploadFile(filename string, file []byte) (string, error) {
 	if err := writer.Close(); err != nil {
 		return "", fmt.Errorf("couldn't close multipart writer: %v", err)
 	}
-	token := a.tokenGetter()
+	token := a.base.TokenGetter()
 	if token == nil {
 		return "", fmt.Errorf("couldn't get token")
 	}
-	url := fmt.Sprintf("%s/%s/customer/action/upload_file?license_id=%v", a.ApiURL, apiVersion, token.LicenseID)
+	url := fmt.Sprintf("%s/%s/customer/action/upload_file?license_id=%v", a.base.ApiURL, apiVersion, token.LicenseID)
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return "", fmt.Errorf("couldn't create new POST request to '%v': %v", url, err)
@@ -187,16 +181,16 @@ func (a *API) UploadFile(filename string, file []byte) (string, error) {
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
+	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.base.ClientID))
 	req.Header.Set("X-Region", token.Region)
 
 	var resp uploadFileResponse
-	err = a.send(req, &resp)
+	err = a.base.Send(req, &resp)
 	return resp.URL, err
 }
 
 func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID string, toggled bool) error {
-	return a.call("send_rich_message_postback", &sendRichMessagePostbackRequest{
+	return a.base.Call("send_rich_message_postback", &sendRichMessagePostbackRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		EventID:  eventID,
@@ -208,28 +202,28 @@ func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID stri
 }
 
 func (a *API) SendSneakPeek(chatID, text string) error {
-	return a.call("send_sneak_peek", &sendSneakPeekRequest{
+	return a.base.Call("send_sneak_peek", &sendSneakPeekRequest{
 		ChatID:        chatID,
 		SneakPeekText: text,
 	}, &emptyResponse{})
 }
 
 func (a *API) UpdateChatProperties(chatID string, properties Properties) error {
-	return a.call("update_chat_properties", &updateChatPropertiesRequest{
+	return a.base.Call("update_chat_properties", &updateChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
 
 func (a *API) DeleteChatProperties(chatID string, properties map[string][]string) error {
-	return a.call("delete_chat_properties", &deleteChatPropertiesRequest{
+	return a.base.Call("delete_chat_properties", &deleteChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
 
 func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties Properties) error {
-	return a.call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
+	return a.base.Call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
@@ -237,7 +231,7 @@ func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties Pro
 }
 
 func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
-	return a.call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
+	return a.base.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
@@ -245,7 +239,7 @@ func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map
 }
 
 func (a *API) UpdateEventProperties(chatID, threadID, eventID string, properties Properties) error {
-	return a.call("update_event_properties", &updateEventPropertiesRequest{
+	return a.base.Call("update_event_properties", &updateEventPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		EventID:    eventID,
@@ -254,7 +248,7 @@ func (a *API) UpdateEventProperties(chatID, threadID, eventID string, properties
 }
 
 func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties map[string][]string) error {
-	return a.call("delete_event_properties", &deleteEventPropertiesRequest{
+	return a.base.Call("delete_event_properties", &deleteEventPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		EventID:    eventID,
@@ -263,7 +257,7 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 }
 
 func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
-	return a.call("update_customer", &updateCustomerRequest{
+	return a.base.Call("update_customer", &updateCustomerRequest{
 		Name:   name,
 		Email:  email,
 		Avatar: avatarURL,
@@ -272,7 +266,7 @@ func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]st
 }
 
 func (a *API) SetCustomerFields(fields map[string]string) error {
-	return a.call("set_customer_fields", &setCustomerFieldsRequest{
+	return a.base.Call("set_customer_fields", &setCustomerFieldsRequest{
 		Fields: fields,
 	}, &emptyResponse{})
 }
@@ -285,7 +279,7 @@ func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
 		req.Groups = groups
 	}
 	var resp getGroupsStatusResponse
-	err := a.call("get_groups_status", req, &resp)
+	err := a.base.Call("get_groups_status", req, &resp)
 
 	r := map[int]GroupStatus{}
 
@@ -299,7 +293,7 @@ func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
 }
 
 func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]string) error {
-	return a.call("check_goals", &checkGoalsRequest{
+	return a.base.Call("check_goals", &checkGoalsRequest{
 		PageURL:        pageURL,
 		GroupID:        groupID,
 		CustomerFields: customerFields,
@@ -308,7 +302,7 @@ func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]
 
 func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
 	var resp getFormResponse
-	err := a.call("get_form", &getFormRequest{
+	err := a.base.Call("get_form", &getFormRequest{
 		GroupID: groupID,
 		Type:    string(formType),
 	}, &resp)
@@ -318,20 +312,20 @@ func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
 
 func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
 	var resp PredictedAgent
-	err := a.call("get_predicted_agent", nil, &resp)
+	err := a.base.Call("get_predicted_agent", nil, &resp)
 	return &resp, err
 }
 
 func (a *API) GetURLDetails(url string) (*URLDetails, error) {
 	var resp URLDetails
-	err := a.call("get_url_details", &getURLDetailsRequest{
+	err := a.base.Call("get_url_details", &getURLDetailsRequest{
 		URL: url,
 	}, &resp)
 	return &resp, err
 }
 
 func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
-	return a.call("mark_events_as_seen", &markEventsAsSeenRequest{
+	return a.base.Call("mark_events_as_seen", &markEventsAsSeenRequest{
 		ChatID:   chatID,
 		SeenUpTo: seenUpTo.Format(time.RFC3339Nano),
 	}, &emptyResponse{})
@@ -339,55 +333,6 @@ func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 
 func (a *API) GetCustomer() (*Customer, error) {
 	var resp Customer
-	err := a.call("get_customer", nil, &resp)
+	err := a.base.Call("get_customer", nil, &resp)
 	return &resp, err
-}
-
-func (a *API) send(req *http.Request, respPayload interface{}) error {
-	resp, err := a.httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if resp.StatusCode != http.StatusOK {
-		apiErr := &api_errors.ErrAPI{}
-		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
-			return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
-		}
-		if apiErr.Error() == "" {
-			return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
-		}
-		return apiErr
-	}
-
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(bodyBytes, respPayload)
-}
-
-func (a *API) call(action string, reqPayload interface{}, respPayload interface{}) error {
-	rawBody, err := json.Marshal(reqPayload)
-	if err != nil {
-		return err
-	}
-	token := a.tokenGetter()
-	if token == nil {
-		return fmt.Errorf("couldn't get token")
-	}
-
-	url := fmt.Sprintf("%s/%s/customer/action/%s?license_id=%v", a.ApiURL, apiVersion, action, token.LicenseID)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
-	req.Header.Set("X-Region", token.Region)
-
-	return a.send(req, respPayload)
 }

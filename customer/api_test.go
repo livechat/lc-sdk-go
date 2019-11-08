@@ -1,11 +1,13 @@
 package customer_test
 
 import (
-	"time"
 	"bytes"
 	"io/ioutil"
 	"net/http"
 	"testing"
+	"time"
+
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 
 	"github.com/livechat/lc-sdk-go/customer"
 	"github.com/livechat/lc-sdk-go/objects/events"
@@ -25,15 +27,15 @@ func NewTestClient(fn RoundTripFunc) *http.Client {
 	}
 }
 
-func stubTokenGetter() *customer.Token {
-	return &customer.Token{
-		LicenseID: 12345,
+func stubTokenGetter() *authorization.Token {
+	return &authorization.Token{
+		LicenseID:   12345,
 		AccessToken: "access_token",
-		Region: "region",
+		Region:      "region",
 	}
 }
 
-var mockedResponses = map[string]string {
+var mockedResponses = map[string]string{
 	"start_chat": `{
 		"chat_id": "PJ0MRSHTDG",
 		"thread_id": "PGDGHT5G"
@@ -97,16 +99,16 @@ var mockedResponses = map[string]string {
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
-	"send_rich_message_postback": `{}`,
-	"send_sneak_peek": `{}`,
-	"update_chat_properties": `{}`,
-	"delete_chat_properties": `{}`,
+	"send_rich_message_postback":    `{}`,
+	"send_sneak_peek":               `{}`,
+	"update_chat_properties":        `{}`,
+	"delete_chat_properties":        `{}`,
 	"update_chat_thread_properties": `{}`,
 	"delete_chat_thread_properties": `{}`,
-	"update_event_properties": `{}`,
-	"delete_event_properties": `{}`,
-	"update_customer": `{}`,
-	"set_customer_fields": `{}`,
+	"update_event_properties":       `{}`,
+	"delete_event_properties":       `{}`,
+	"update_customer":               `{}`,
+	"set_customer_fields":           `{}`,
 	"get_groups_status": `{
 		"groups_status": {
 			"1": "online",
@@ -159,12 +161,12 @@ var mockedResponses = map[string]string {
 		"url": "https://livechatinc.com"
 	}`,
 	"mark_events_as_seen": `{}`,
-	"get_customer": `{}`, //TODO - create some real structure here
+	"get_customer":        `{}`, //TODO - create some real structure here
 }
 
 func createMockedResponder(t *testing.T, method string) func(req *http.Request) *http.Response {
 	return func(req *http.Request) *http.Response {
-		createServerError := func (message string) *http.Response {
+		createServerError := func(message string) *http.Response {
 			responseError := `{
 				"error": {
 					"type": "MOCK_SERVER_ERROR",
@@ -174,12 +176,12 @@ func createMockedResponder(t *testing.T, method string) func(req *http.Request) 
 
 			return &http.Response{
 				StatusCode: 400,
-				Body: ioutil.NopCloser(bytes.NewBufferString(responseError)),
-				Header: make(http.Header),
+				Body:       ioutil.NopCloser(bytes.NewBufferString(responseError)),
+				Header:     make(http.Header),
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.2/customer/action/" + method + "?license_id=12345" {
+		if req.URL.String() != "https://api.livechatinc.com/v3.2/customer/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
@@ -215,8 +217,8 @@ func createMockedErrorResponder(t *testing.T, method string) func(req *http.Requ
 
 		return &http.Response{
 			StatusCode: 400,
-			Body: ioutil.NopCloser(bytes.NewBufferString(responseError)),
-			Header: make(http.Header),
+			Body:       ioutil.NopCloser(bytes.NewBufferString(responseError)),
+			Header:     make(http.Header),
 		}
 	}
 }
@@ -230,7 +232,7 @@ func verifyErrorResponse(method string, resp error, t *testing.T) {
 	if resp.Error() != "API error: Validation - Wrong format of request" {
 		t.Errorf("%v failed with wrong error: %v", method, resp)
 	}
-} 
+}
 
 // TESTS OK Cases
 
@@ -542,7 +544,7 @@ func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	groupsStatus, rErr := api.GetGroupsStatus([]int{1,2,3})
+	groupsStatus, rErr := api.GetGroupsStatus([]int{1, 2, 3})
 	if rErr != nil {
 		t.Errorf("GetGroupsStatus failed: %v", rErr)
 	}
@@ -904,7 +906,7 @@ func TestGetGroupsStatusShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetGroupsStatus([]int{1,2,3})
+	_, rErr := api.GetGroupsStatus([]int{1, 2, 3})
 	verifyErrorResponse("GetGroupsStatus", rErr, t)
 }
 
