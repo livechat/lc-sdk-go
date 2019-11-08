@@ -83,3 +83,7 @@ func (a *API) UnregisterWebhook(id string) error {
 	req := map[string]string{"webhook_id": id}
 	return a.base.Call("unregister_webhook", req, nil)
 }
+
+func (a *API) ChangeURL(url string) {
+	a.base.ApiURL = url
+}

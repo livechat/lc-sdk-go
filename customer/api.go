@@ -336,3 +336,7 @@ func (a *API) GetCustomer() (*Customer, error) {
 	err := a.base.Call("get_customer", nil, &resp)
 	return &resp, err
 }
+
+func (a *API) ChangeURL(url string) {
+	a.base.ApiURL = url
+}
