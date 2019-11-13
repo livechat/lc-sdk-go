@@ -38,18 +38,18 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 	}, nil
 }
 
-func (a *API) RegisterWebhook(w *Webhook) error {
+func (a *API) RegisterWebhook(w *Webhook) (string, error) {
 	var resp struct {
 		WebhookID string `json:"webhook_id"`
 	}
 	err := a.base.Call("register_webhook", w, &resp)
 	if err != nil {
-		w.ID = resp.WebhookID
+		return "", err
 	}
-	return err
+	return resp.WebhookID, err
 }
 
-func (a *API) WebhooksConfig() ([]Webhook, error) {
+func (a *API) GetWebhooksConfig() ([]Webhook, error) {
 	req := map[string]string{}
 	ws := make([]Webhook, 0)
 	err := a.base.Call("get_webhooks_config", req, ws)
@@ -62,6 +62,6 @@ func (a *API) UnregisterWebhook(id string) error {
 	return a.base.Call("unregister_webhook", req, nil)
 }
 
-func (a *API) ChangeURL(url string) {
+func (a *API) SetAPIURL(url string) {
 	a.base.ApiURL = url
 }

@@ -13,10 +13,10 @@ type Webhook struct {
 }
 
 type WebhookFilters struct {
-	AuthorType    string `json:"author_type"`
-	OnlyMyChats   bool   `json:"only_my_chats"`
+	AuthorType    string `json:"author_type,omitempty"`
+	OnlyMyChats   bool   `json:"only_my_chats,omitempty"`
 	ChatMemberIds struct {
 		AgentsAny     []string `json:"agents_any,omitempty"`
 		AgentsExclude []string `json:"agents_exclude,omitempty"`
-	} `json:"chat_member_ids"`
+	} `json:"chat_member_ids,omitempty"`
 }

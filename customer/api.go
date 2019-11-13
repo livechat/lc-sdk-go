@@ -335,6 +335,6 @@ func (a *API) GetCustomer() (*Customer, error) {
 	return &resp, err
 }
 
-func (a *API) ChangeURL(url string) {
+func (a *API) SetAPIURL(url string) {
 	a.base.ApiURL = url
 }
