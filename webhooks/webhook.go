@@ -14,6 +14,7 @@ type WebhookDetails struct {
 type handler func(payload interface{}) error
 type parser func(body []byte) (interface{}, error)
 
+kurde faja
 func webhookHandler(h handler, p parser) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
