@@ -1,0 +1,49 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "chat_user_added",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8",
+		"user": {
+			"id": "345f8235-d60d-433e-63c5-7f813a6ffe25",
+			"name": "test",
+			"email": "test@test.pl",
+			"present": true,
+			"last_seen_timestamp": 1570535813,
+			"type": "customer",
+			"created_at": "2019-06-11T11:00:10.329000Z",
+			"last_visit": {
+				"ip": "37.248.156.62",
+				"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+				"geolocation": {
+					"country": "Poland",
+					"country_code": "PL",
+					"region": "test",
+					"city": "Wroclaw",
+					"timezone": "test_timezone"
+				},
+				"started_at": "2019-10-11T09:40:56.071345Z",
+				"last_pages": [
+					{
+						"opened_at": "2019-10-11T09:40:56.071345Z",
+						"url": "https://cdn.livechatinc.com/labs/?license=100007977/",
+						"title": "LiveChat"
+					}
+				]
+			},
+			"statistics": {
+				"visits_count": 29,
+				"threads_count": 18,
+				"chats_count": 1,
+				"page_views_count": 5,
+				"greetings_shown_count": 6,
+				"greetings_accepted_count": 8
+			},
+			"agent_last_event_created_at": "2019-10-11T09:40:59.249000Z",
+			"customer_last_event_created_at": "2019-10-11T09:40:59.219001Z"
+		},
+		"user_type": "customer"
+	},
+	"additional_data": {}
+}

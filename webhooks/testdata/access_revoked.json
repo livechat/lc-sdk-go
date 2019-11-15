@@ -1,0 +1,16 @@
+{
+	"webhook_id": "37901609f767dea5bc3a8acf5458bd11",
+	"secret_key": "dummy_key",
+	"action": "access_revoked",
+	"payload": {
+		"resource": "chat",
+		"id": "PJ0MRSHTDV",
+		"access": {
+			"group_ids": [
+				3,
+				4
+			]
+		}
+	},
+	"additional_data": {}
+}
