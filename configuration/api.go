@@ -49,9 +49,9 @@ func (a *API) RegisterWebhook(w *Webhook) (string, error) {
 	return resp.WebhookID, err
 }
 
-func (a *API) GetWebhooksConfig() ([]Webhook, error) {
+func (a *API) GetWebhooksConfig() ([]WebhookInfo, error) {
 	req := map[string]string{}
-	ws := make([]Webhook, 0)
+	ws := make([]WebhookInfo, 0)
 	err := a.base.Call("get_webhooks_config", req, ws)
 
 	return ws, err

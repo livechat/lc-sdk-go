@@ -20,3 +20,8 @@ type WebhookFilters struct {
 		AgentsExclude []string `json:"agents_exclude,omitempty"`
 	} `json:"chat_member_ids,omitempty"`
 }
+
+type WebhookInfo struct {
+	Webhook
+	OwnerClientID string `json:"owner_client_id"`
+}
