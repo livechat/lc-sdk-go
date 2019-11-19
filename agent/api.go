@@ -125,7 +125,18 @@ func (a *API) validateInitialChat(chat *InitialChat) error {
 	return nil
 }
 
-// func (a *API) GetChatsSummary() {}
+func (a *API) GetChatsSummary(filters *ChatsFilters, page, limit uint64) ([]ChatSummary, uint, error) {
+	var resp getChatsSummaryResponse
+	err := a.call("get_chats_summary", &getChatsSummaryRequest{
+		Filters: filters,
+		Pagination: paginationRequest{
+			Page:  page,
+			Limit: limit,
+		},
+	}, &resp)
+
+	return resp.ChatsSummary, resp.FoundChats, err
+}
 
 func (a *API) GetChatThreadsSummary(chatID, order, pageID string, limit uint64) ([]ThreadSummary, int, string, string, error) {
 	var resp getChatThreadsSummaryResponse
@@ -151,13 +162,17 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, 
 	return resp.Chat, err
 }
 
-func (a *API) GetArchives(filters Filters, page uint64) ([]objects.Chat, paginationResponse, error) {
+func (a *API) GetArchives(filters *ArchivesFilters, page, limit uint64) ([]objects.Chat, uint64, uint64, error) {
 	var resp getArchivesResponse
 	err := a.call("get_archives", &getArchivesRequest{
-		// Filters: filters,
+		Filters: filters,
+		Pagination: paginationRequest{
+			Page:  page,
+			Limit: limit,
+		},
 	}, &resp)
 
-	return resp.Chats, resp.Pagination, err
+	return resp.Chats, resp.Pagination.Page, resp.Pagination.Total, err
 }
 
 func (a *API) StartChat(initialChat *InitialChat, continuous bool) (string, string, []string, error) {
@@ -347,7 +362,17 @@ func (a *API) UntagChatThread(chatID, threadID, tag string) error {
 	}, &emptyResponse{})
 }
 
-// func (a *API) GetCustomer() {}
+func (a *API) GetCustomers(limit uint, pageID, order string, filters *CustomersFilters) ([]objects.Customer, uint64, string, string, error) {
+	var resp getCustomersResponse
+	err := a.call("get_customers", &getCustomersRequest{
+		PageID:  pageID,
+		Limit:   limit,
+		Order:   order,
+		Filters: filters,
+	}, &resp)
+
+	return resp.Customers, resp.TotalCustomers, resp.PreviousPageID, resp.NextPageID, err
+}
 
 func (a *API) CreateCustomer(name, email, avatar string, fields map[string]string) (string, error) {
 	var resp createCustomerResponse

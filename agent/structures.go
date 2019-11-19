@@ -2,22 +2,23 @@ package agent
 
 import "github.com/livechat/lc-sdk-go/objects"
 
-type Filters struct {
-	IncludeActive bool               `json:"include_active,omitempty"`
-	GroupIDs      []int32            `json:"group_ids,omitempty"`
-	AgentIDs      []int32            `json:"agent_ids,omitempty"`
-	ThreadIDs     []int32            `json:"thread_ids,omitempty"`
-	Properties    objects.Properties `json:"properties,omitempty"`
-	Query         string             `json:"query,omitempty"`
-	DateFrom      string             `json:"date_from,omitempty"`
-	DateTo        string             `json:"date_to,omitempty"`
-}
-
 // ThreadSummary represents a short summary of a thread.
 type ThreadSummary struct {
 	ID          string `json:"id"`
 	Order       int32  `json:"order"`
 	TotalEvents uint   `json:"total_events"`
+}
+
+// ChatSummary represents a short summary of a chat
+type ChatSummary struct {
+	ID                string             `json:"id"`
+	LastEventPerType  interface{}        `json:"last_event_per_type,omitempty"`
+	Users             []interface{}      `json:"users"`
+	LastThreadSummary *ThreadSummary     `json:"last_thread_summary,omitempty"`
+	Properties        objects.Properties `json:"properties,omitempty"`
+	Access            interface{}        `json:"access,omitempty"`
+	Order             uint64             `json:"order,omitempty"`
+	IsFollowed        bool               `json:"is_followed"`
 }
 
 // Form struct describes schema of custom form (e-mail, prechat or postchat survey).

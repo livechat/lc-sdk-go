@@ -7,8 +7,13 @@ import (
 )
 
 type getChatsSummaryRequest struct {
-	// Filters    ChatsSummaryFilters                  `json:"filters"`
-	Pagination *hashedPaginationRequest `json:"pagination"`
+	Filters    *ChatsFilters     `json:"filters"`
+	Pagination paginationRequest `json:"pagination"`
+}
+
+type getChatsSummaryResponse struct {
+	ChatsSummary []ChatSummary `json:"chats_summary"`
+	FoundChats   uint          `json:"found_chats"`
 }
 
 type getChatThreadsSummaryRequest struct {
@@ -32,7 +37,7 @@ type getChatThreadsResponse struct {
 }
 
 type getArchivesRequest struct {
-	// Filters    ArchivesFilters           `json:"filters"`
+	Filters    *ArchivesFilters  `json:"filters"`
 	Pagination paginationRequest `json:"pagination"`
 }
 
@@ -155,10 +160,16 @@ type changeChatThreadTagRequest struct {
 }
 
 type getCustomersRequest struct {
-	PageID  string  `json:"page_id"`
-	Limit   uint    `json:"limit"`
-	Order   string  `json:"order"`
-	Filters Filters `json:"filters"`
+	PageID  string            `json:"page_id"`
+	Limit   uint              `json:"limit"`
+	Order   string            `json:"order"`
+	Filters *CustomersFilters `json:"filters"`
+}
+
+type getCustomersResponse struct {
+	*hashedPaginationResponse
+	Customers      []objects.Customer `json:"customers"`
+	TotalCustomers uint64             `json:"total_customers"`
 }
 
 type createCustomerRequest struct {
