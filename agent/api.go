@@ -206,7 +206,7 @@ func (a *AgentAPI) UpdateChatProperties(chatID string, properties objects.Proper
 	}, &emptyResponse{})
 }
 
-func (a *AgentAPI) DeleteChatProperties(chatID string, properties objects.Properties) error {
+func (a *AgentAPI) DeleteChatProperties(chatID string, properties map[string][]string) error {
 	return a.Call("delete_chat_properties", &deleteChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
@@ -221,7 +221,7 @@ func (a *AgentAPI) UpdateChatThreadProperties(chatID, threadID string, propertie
 	}, &emptyResponse{})
 }
 
-func (a *AgentAPI) DeleteChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
+func (a *AgentAPI) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
 	return a.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
@@ -238,7 +238,7 @@ func (a *AgentAPI) UpdateEventProperties(chatID, threadID, eventID string, prope
 	}, &emptyResponse{})
 }
 
-func (a *AgentAPI) DeleteEventProperties(chatID, threadID, eventID string, properties objects.Properties) error {
+func (a *AgentAPI) DeleteEventProperties(chatID, threadID, eventID string, properties map[string][]string) error {
 	return a.Call("delete_event_properties", &deleteEventPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,

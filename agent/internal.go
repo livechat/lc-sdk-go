@@ -12,9 +12,9 @@ type getChatsSummaryRequest struct {
 }
 
 type getChatsSummaryResponse struct {
+	hashedPaginationResponse
 	ChatsSummary []objects.ChatSummary `json:"chats_summary"`
 	FoundChats   uint                  `json:"found_chats"`
-	*hashedPaginationResponse
 }
 
 type getChatThreadsSummaryRequest struct {
@@ -23,7 +23,7 @@ type getChatThreadsSummaryRequest struct {
 }
 
 type getChatThreadsSummaryResponse struct {
-	*hashedPaginationResponse
+	hashedPaginationResponse
 	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
 	FoundThreads   uint                    `json:"found_threads"`
 }
@@ -123,8 +123,8 @@ type updateChatPropertiesRequest struct {
 }
 
 type deleteChatPropertiesRequest struct {
-	ChatID     string             `json:"chat_id"`
-	Properties objects.Properties `json:"properties"`
+	ChatID     string              `json:"chat_id"`
+	Properties map[string][]string `json:"properties"`
 }
 
 type updateChatThreadPropertiesRequest struct {
@@ -134,9 +134,9 @@ type updateChatThreadPropertiesRequest struct {
 }
 
 type deleteChatThreadPropertiesRequest struct {
-	ChatID     string             `json:"chat_id"`
-	ThreadID   string             `json:"thread_id"`
-	Properties objects.Properties `json:"properties"`
+	ChatID     string              `json:"chat_id"`
+	ThreadID   string              `json:"thread_id"`
+	Properties map[string][]string `json:"properties"`
 }
 
 type updateEventPropertiesRequest struct {
@@ -147,10 +147,10 @@ type updateEventPropertiesRequest struct {
 }
 
 type deleteEventPropertiesRequest struct {
-	ChatID     string             `json:"chat_id"`
-	ThreadID   string             `json:"thread_id"`
-	EventID    string             `json:"event_id"`
-	Properties objects.Properties `json:"properties"`
+	ChatID     string              `json:"chat_id"`
+	ThreadID   string              `json:"thread_id"`
+	EventID    string              `json:"event_id"`
+	Properties map[string][]string `json:"properties"`
 }
 
 // used for both tagging and untagging
