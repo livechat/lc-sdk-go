@@ -68,3 +68,13 @@ type SystemMessage struct {
 	Type string `json:"system_message_type,omitempty"`
 	Text string `json:"text,omitempty"`
 }
+
+type File struct {
+	Event
+	ContentType    string `json:"content_type"`
+	URL            string `json:"url"`
+	Width          int    `json:"width,omitempty"`
+	Height         int    `json:"height,omitempty"`
+	ThumbnailURL   string `json:"thumbnail_url,omitempty"`
+	Thumbnail2xURL string `json:"thumbnail2x_url,omitempty"`
+}
