@@ -13,7 +13,7 @@ import (
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.
 type Properties map[string]map[string]interface{}
 
-// User represents base of both Customer and Agent objects.
+// User represents base of both Customer and Agent
 //
 // To get speficic user type's structure, call Agent() or Customer() (based on Type value).
 type User struct {
@@ -290,4 +290,38 @@ type SystemMessage struct {
 	Event
 	Type string `json:"system_message_type,omitempty"`
 	Text string `json:"text,omitempty"`
+}
+
+// ThreadSummary represents a short summary of a thread.
+type ThreadSummary struct {
+	ID          string `json:"id"`
+	Order       int32  `json:"order"`
+	TotalEvents uint   `json:"total_events"`
+}
+
+// ChatSummary represents a short summary of a chat
+type ChatSummary struct {
+	ID                string         `json:"id"`
+	LastEventPerType  interface{}    `json:"last_event_per_type,omitempty"`
+	Users             []interface{}  `json:"users"`
+	LastThreadSummary *ThreadSummary `json:"last_thread_summary,omitempty"`
+	Properties        Properties     `json:"properties,omitempty"`
+	Access            interface{}    `json:"access,omitempty"`
+	Order             uint64         `json:"order,omitempty"`
+	IsFollowed        bool           `json:"is_followed"`
+}
+
+// InitialChat represents initial chat used in StartChat or ActivateChat.
+type InitialChat struct {
+	ID         string         `json:"id"`
+	Access     *Access        `json:"access,omitempty"`
+	Properties Properties     `json:"properties,omitempty"`
+	Users      []*User        `json:"users,omitempty"`
+	Thread     *InitialThread `json:"thread,omitempty"`
+}
+
+// InitialThread represents initial chat thread used in StartChat or ActivateChat.
+type InitialThread struct {
+	Events     []interface{} `json:"events,omitempty"`
+	Properties Properties    `json:"properties,omitempty"`
 }

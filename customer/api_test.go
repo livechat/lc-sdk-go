@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/customer"
+	"github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
@@ -25,8 +26,8 @@ func NewTestClient(fn roundTripFunc) *http.Client {
 	}
 }
 
-func stubTokenGetter() *customer.Token {
-	return &customer.Token{
+func stubTokenGetter() *internal.Token {
+	return &internal.Token{
 		LicenseID:   12345,
 		AccessToken: "access_token",
 		Region:      "region",
@@ -249,7 +250,7 @@ func TestStartChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatID, threadID, _, rErr := api.StartChat(&customer.InitialChat{}, true)
+	chatID, threadID, _, rErr := api.StartChat(&objects.InitialChat{}, true)
 	if rErr != nil {
 		t.Errorf("StartChat failed: %v", rErr)
 	}
@@ -288,7 +289,7 @@ func TestActivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	threadID, _, rErr := api.ActivateChat(&customer.InitialChat{}, true)
+	threadID, _, rErr := api.ActivateChat(&objects.InitialChat{}, true)
 	if rErr != nil {
 		t.Errorf("ActivateChat failed: %v", rErr)
 	}
@@ -688,7 +689,7 @@ func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, rErr := api.StartChat(&customer.InitialChat{}, true)
+	_, _, _, rErr := api.StartChat(&objects.InitialChat{}, true)
 	verifyErrorResponse("StartChat", rErr, t)
 }
 
@@ -712,7 +713,7 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.ActivateChat(&customer.InitialChat{}, true)
+	_, _, rErr := api.ActivateChat(&objects.InitialChat{}, true)
 	verifyErrorResponse("ActivateChat", rErr, t)
 }
 

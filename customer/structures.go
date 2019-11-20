@@ -1,16 +1,5 @@
 package customer
 
-import (
-	"github.com/livechat/lc-sdk-go/objects"
-)
-
-// ThreadSummary represents a short summary of a thread.
-type ThreadSummary struct {
-	ID          string `json:"id"`
-	Order       int32  `json:"order"`
-	TotalEvents uint   `json:"total_events"`
-}
-
 // Form struct describes schema of custom form (e-mail, prechat or postchat survey).
 type Form struct {
 	ID     string `json:"id"`
@@ -40,18 +29,4 @@ type URLDetails struct {
 	ImageURL    string `json:"image_url"`
 	ImageWidth  int    `json:"image_width"`
 	ImageHeight int    `json:"image_height"`
-}
-
-// InitialChat represents initial chat used in StartChat or ActivateChat.
-type InitialChat struct {
-	ID         string             `json:"id"`
-	Access     *objects.Access    `json:"access,omitempty"`
-	Properties objects.Properties `json:"properties,omitempty"`
-	Thread     *InitialThread     `json:"thread,omitempty"`
-}
-
-// InitialThread represents initial chat thread used in StartChat or ActivateChat.
-type InitialThread struct {
-	Events     []interface{}      `json:"events,omitempty"`
-	Properties objects.Properties `json:"properties,omitempty"`
 }

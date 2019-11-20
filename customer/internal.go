@@ -3,8 +3,8 @@ package customer
 import "github.com/livechat/lc-sdk-go/objects"
 
 type startChatRequest struct {
-	Chat       *InitialChat `json:"chat,omitempty"`
-	Continuous bool         `json:"continuous,omitempty"`
+	Chat       *objects.InitialChat `json:"chat,omitempty"`
+	Continuous bool                 `json:"continuous,omitempty"`
 }
 
 type startChatResponse struct {
@@ -23,8 +23,8 @@ type sendEventResponse struct {
 }
 
 type activateChatRequest struct {
-	Chat       *InitialChat `json:"chat"`
-	Continuous bool         `json:"continuous,omitempty"`
+	Chat       *objects.InitialChat `json:"chat"`
+	Continuous bool                 `json:"continuous,omitempty"`
 }
 
 type activateChatResponse struct {
@@ -49,8 +49,8 @@ type getChatThreadsSummaryRequest struct {
 }
 
 type getChatThreadsSummaryResponse struct {
-	ThreadsSummary []ThreadSummary `json:"threads_summary"`
-	TotalThreads   uint            `json:"total_threads"`
+	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
+	TotalThreads   uint                    `json:"total_threads"`
 }
 
 type getChatThreadsRequest struct {
@@ -64,10 +64,6 @@ type getChatThreadsResponse struct {
 
 type closeThreadRequest struct {
 	ChatID string `json:"chat_id"`
-}
-
-type uploadFileResponse struct {
-	URL string `json:"url"`
 }
 
 type sendRichMessagePostbackRequest struct {

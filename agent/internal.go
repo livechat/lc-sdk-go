@@ -12,8 +12,9 @@ type getChatsSummaryRequest struct {
 }
 
 type getChatsSummaryResponse struct {
-	ChatsSummary []ChatSummary `json:"chats_summary"`
-	FoundChats   uint          `json:"found_chats"`
+	ChatsSummary []objects.ChatSummary `json:"chats_summary"`
+	FoundChats   uint                  `json:"found_chats"`
+	*hashedPaginationResponse
 }
 
 type getChatThreadsSummaryRequest struct {
@@ -23,8 +24,8 @@ type getChatThreadsSummaryRequest struct {
 
 type getChatThreadsSummaryResponse struct {
 	*hashedPaginationResponse
-	ThreadsSummary []ThreadSummary `json:"threads_summary`
-	FoundThreads   int             `json:"found_threads"`
+	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
+	FoundThreads   int                     `json:"found_threads"`
 }
 
 type getChatThreadsRequest struct {
@@ -47,8 +48,8 @@ type getArchivesResponse struct {
 }
 
 type startChatRequest struct {
-	Chat       *InitialChat `json:"chat"`
-	Continuous bool         `json:"continuous"`
+	Chat       *objects.InitialChat `json:"chat"`
+	Continuous bool                 `json:"continuous"`
 }
 
 type startChatResponse struct {
@@ -58,8 +59,8 @@ type startChatResponse struct {
 }
 
 type activateChatRequest struct {
-	Chat       *InitialChat `json:"chat"`
-	Continuous bool         `json:"continuous"`
+	Chat       *objects.InitialChat `json:"chat"`
+	Continuous bool                 `json:"continuous"`
 }
 
 type activateChatResponse struct {
@@ -87,9 +88,9 @@ type modifyAccessRequest struct {
 }
 
 type transferChatRequest struct {
-	ChatID string `json:"chat_id"`
-	Target target `json:"target"`
-	Force  bool   `json:"force"`
+	ChatID string         `json:"chat_id"`
+	Target TransferTarget `json:"target"`
+	Force  bool           `json:"force"`
 }
 
 // used to add and remove user from chat
@@ -113,7 +114,7 @@ type sendRichMessagePostbackRequest struct {
 	ChatID   string   `json:"chat_id"`
 	EventID  string   `json:"event_id"`
 	ThreadID string   `json:"thread_id"`
-	Postback postback `json:"postback"`
+	Postback Postback `json:"postback"`
 }
 
 type updateChatPropertiesRequest struct {
@@ -197,7 +198,7 @@ type updateCustomerResponse struct {
 
 type banCustomerRequest struct {
 	CustomerID string `json:"customer_id"`
-	Ban        ban    `json:"ban"`
+	Ban        Ban    `json:"ban"`
 }
 
 type updateAgentRequest struct {
@@ -217,36 +218,12 @@ type sendTypingIndicatorRequest struct {
 }
 
 type multicastRequest struct {
-	Scopes  multicastScopes `json:"scopes"`
+	Scopes  MulticastScopes `json:"scopes"`
 	Content json.RawMessage `json:"content"`
 	Type    string          `json:"type"`
 }
 
 type emptyResponse struct{}
-
-type postback struct {
-	ID      string `json:"id"`
-	Toggled bool   `json:"toggled"`
-}
-
-type ban struct {
-	Days uint64 `json:"days"`
-}
-
-type multicastScopes struct {
-	Agents    *multicastScopesAgents    `json:"agents,omitempty"`
-	Customers *multicastScopesCustomers `json:"customers,omitempty"`
-}
-
-type multicastScopesAgents struct {
-	Groups *[]uint64 `json:"groups,omitempty"`
-	IDs    *[]string `json:"ids,omitempty"`
-	All    *bool     `json:"all,omitempty"`
-}
-
-type multicastScopesCustomers struct {
-	IDs *[]string `json:"ids,omitempty"`
-}
 
 type hashedPaginationRequest struct {
 	PageID string `json:"page_id"`
@@ -267,9 +244,4 @@ type paginationRequest struct {
 type paginationResponse struct {
 	Page  uint64 `json:"page"`
 	Total uint64 `json:"total"`
-}
-
-type target struct {
-	Type string `json:"type"`
-	IDs  []uint `json:"ids"`
 }
