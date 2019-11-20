@@ -25,7 +25,7 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) PropertyFilterTyp
 
 type ArchivesFilters struct {
 	AgentIDs   []string           `json:"agent_ids"`
-	GroupIDs   []int32            `json:"group_ids"`
+	GroupIDs   []uint             `json:"group_ids"`
 	DateFrom   string             `json:"date_from"`
 	DateTo     string             `json:"date_to"`
 	Properties PropertiesFilters  `json:"properties"`
@@ -51,7 +51,7 @@ func (af *ArchivesFilters) ByAgents(agentIDs []string) *ArchivesFilters {
 	return af
 }
 
-func (af *ArchivesFilters) ByGroups(groupIDs []int32) *ArchivesFilters {
+func (af *ArchivesFilters) ByGroups(groupIDs []uint) *ArchivesFilters {
 	af.GroupIDs = groupIDs
 	return af
 }
@@ -135,11 +135,11 @@ func NewStringFilter(values []string, shouldExclude bool) *StringFilter {
 }
 
 type RangeFilter struct {
-	LTE *int64 `json:"lte"`
-	LT  *int64 `json:"lt"`
-	GTE *int64 `json:"gte"`
-	GT  *int64 `json:"gt"`
-	EQ  *int64 `json:"eq"`
+	LTE int `json:"lte"`
+	LT  int `json:"lt"`
+	GTE int `json:"gte"`
+	GT  int `json:"gt"`
+	EQ  int `json:"eq"`
 }
 
 type DateRangeFilter struct {
@@ -207,7 +207,7 @@ func (cf *CustomersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) 
 // Chats Filters
 type ChatsFilters struct {
 	IncludeActive bool              `json:"include_active"`
-	GroupIDs      []int32           `json:"group_ids"`
+	GroupIDs      []uint            `json:"group_ids"`
 	Properties    PropertiesFilters `json:"properties"`
 }
 
@@ -222,7 +222,7 @@ func (cf *ChatsFilters) WithoutActiveChats() *ChatsFilters {
 	return cf
 }
 
-func (cf *ChatsFilters) ByGroups(groupIDs []int32) *ChatsFilters {
+func (cf *ChatsFilters) ByGroups(groupIDs []uint) *ChatsFilters {
 	cf.GroupIDs = groupIDs
 	return cf
 }

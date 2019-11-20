@@ -25,7 +25,7 @@ type getChatThreadsSummaryRequest struct {
 type getChatThreadsSummaryResponse struct {
 	*hashedPaginationResponse
 	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
-	FoundThreads   int                     `json:"found_threads"`
+	FoundThreads   uint                    `json:"found_threads"`
 }
 
 type getChatThreadsRequest struct {
@@ -170,7 +170,7 @@ type getCustomersRequest struct {
 type getCustomersResponse struct {
 	*hashedPaginationResponse
 	Customers      []objects.Customer `json:"customers"`
-	TotalCustomers uint64             `json:"total_customers"`
+	TotalCustomers uint               `json:"total_customers"`
 }
 
 type createCustomerRequest struct {
@@ -227,7 +227,7 @@ type emptyResponse struct{}
 
 type hashedPaginationRequest struct {
 	PageID string `json:"page_id"`
-	Limit  uint64 `json:"limit"`
+	Limit  uint   `json:"limit"`
 	Order  string `json:"order"`
 }
 
@@ -237,11 +237,11 @@ type hashedPaginationResponse struct {
 }
 
 type paginationRequest struct {
-	Page  uint64 `json:"page"`
-	Limit uint64 `json:"limit"`
+	Page  uint `json:"page"`
+	Limit uint `json:"limit"`
 }
 
 type paginationResponse struct {
-	Page  uint64 `json:"page"`
-	Total uint64 `json:"total"`
+	Page  uint `json:"page"`
+	Total uint `json:"total"`
 }

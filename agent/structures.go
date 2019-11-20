@@ -6,7 +6,7 @@ type Postback struct {
 }
 
 type Ban struct {
-	Days uint64 `json:"days"`
+	Days uint `json:"days"`
 }
 
 type MulticastScopes struct {
@@ -15,7 +15,7 @@ type MulticastScopes struct {
 }
 
 type MulticastScopesAgents struct {
-	Groups *[]uint64 `json:"groups,omitempty"`
+	Groups *[]uint   `json:"groups,omitempty"`
 	IDs    *[]string `json:"ids,omitempty"`
 	All    *bool     `json:"all,omitempty"`
 }

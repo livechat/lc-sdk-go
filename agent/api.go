@@ -28,7 +28,7 @@ func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*AgentAPI, e
 	return &AgentAPI{api}, nil
 }
 
-func (a *AgentAPI) GetChatsSummary(filters *ChatsFilters, page, limit uint64) ([]objects.ChatSummary, uint, string, string, error) {
+func (a *AgentAPI) GetChatsSummary(filters *ChatsFilters, page, limit uint) ([]objects.ChatSummary, uint, string, string, error) {
 	var resp getChatsSummaryResponse
 	err := a.Call("get_chats_summary", &getChatsSummaryRequest{
 		Filters: filters,
@@ -41,7 +41,7 @@ func (a *AgentAPI) GetChatsSummary(filters *ChatsFilters, page, limit uint64) ([
 	return resp.ChatsSummary, resp.FoundChats, resp.PreviousPageID, resp.NextPageID, err
 }
 
-func (a *AgentAPI) GetChatThreadsSummary(chatID, order, pageID string, limit uint64) ([]objects.ThreadSummary, int, string, string, error) {
+func (a *AgentAPI) GetChatThreadsSummary(chatID, order, pageID string, limit uint) ([]objects.ThreadSummary, uint, string, string, error) {
 	var resp getChatThreadsSummaryResponse
 	err := a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
@@ -65,7 +65,7 @@ func (a *AgentAPI) GetChatThreads(chatID string, threadIDs ...string) (objects.C
 	return resp.Chat, err
 }
 
-func (a *AgentAPI) GetArchives(filters *ArchivesFilters, page, limit uint64) ([]objects.Chat, uint64, uint64, error) {
+func (a *AgentAPI) GetArchives(filters *ArchivesFilters, page, limit uint) ([]objects.Chat, uint, uint, error) {
 	var resp getArchivesResponse
 	err := a.Call("get_archives", &getArchivesRequest{
 		Filters: filters,
@@ -263,7 +263,7 @@ func (a *AgentAPI) UntagChatThread(chatID, threadID, tag string) error {
 	}, &emptyResponse{})
 }
 
-func (a *AgentAPI) GetCustomers(limit uint, pageID, order string, filters *CustomersFilters) ([]objects.Customer, uint64, string, string, error) {
+func (a *AgentAPI) GetCustomers(limit uint, pageID, order string, filters *CustomersFilters) ([]objects.Customer, uint, string, string, error) {
 	var resp getCustomersResponse
 	err := a.Call("get_customers", &getCustomersRequest{
 		PageID:  pageID,
@@ -300,7 +300,7 @@ func (a *AgentAPI) UpdateCustomer(customerID, name, email, avatar string, fields
 	return resp.Customer, err
 }
 
-func (a *AgentAPI) BanCustomer(customerID string, days uint64) error {
+func (a *AgentAPI) BanCustomer(customerID string, days uint) error {
 	return a.Call("ban_customer", &banCustomerRequest{
 		CustomerID: customerID,
 		Ban: Ban{
