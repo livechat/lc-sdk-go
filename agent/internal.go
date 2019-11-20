@@ -7,8 +7,8 @@ import (
 )
 
 type getChatsSummaryRequest struct {
-	Filters    *ChatsFilters     `json:"filters"`
-	Pagination paginationRequest `json:"pagination"`
+	Filters    *ChatsFilters     `json:"filters,omitempty"`
+	Pagination paginationRequest `json:"pagination,omitempty"`
 }
 
 type getChatsSummaryResponse struct {
@@ -30,7 +30,7 @@ type getChatThreadsSummaryResponse struct {
 
 type getChatThreadsRequest struct {
 	ChatID    string   `json:"chat_id"`
-	ThreadIDs []string `json:"thread_ids"`
+	ThreadIDs []string `json:"thread_ids,omitempty"`
 }
 
 type getChatThreadsResponse struct {
@@ -38,8 +38,8 @@ type getChatThreadsResponse struct {
 }
 
 type getArchivesRequest struct {
-	Filters    *ArchivesFilters  `json:"filters"`
-	Pagination paginationRequest `json:"pagination"`
+	Filters    *ArchivesFilters  `json:"filters,omitempty"`
+	Pagination paginationRequest `json:"pagination,omitempty"`
 }
 
 type getArchivesResponse struct {
@@ -48,8 +48,8 @@ type getArchivesResponse struct {
 }
 
 type startChatRequest struct {
-	Chat       *objects.InitialChat `json:"chat"`
-	Continuous bool                 `json:"continuous"`
+	Chat       *objects.InitialChat `json:"chat,omitempty"`
+	Continuous bool                 `json:"continuous,omitempty"`
 }
 
 type startChatResponse struct {
@@ -60,7 +60,7 @@ type startChatResponse struct {
 
 type activateChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat"`
-	Continuous bool                 `json:"continuous"`
+	Continuous bool                 `json:"continuous,omitempty"`
 }
 
 type activateChatResponse struct {
@@ -89,7 +89,7 @@ type modifyAccessRequest struct {
 
 type transferChatRequest struct {
 	ChatID string         `json:"chat_id"`
-	Target TransferTarget `json:"target"`
+	Target TransferTarget `json:"target,omitempty"`
 	Force  bool           `json:"force"`
 }
 
@@ -103,7 +103,7 @@ type changeChatUsersRequest struct {
 type sendEventRequest struct {
 	ChatID             string        `json:"chat_id"`
 	Event              objects.Event `json:"event"`
-	AttachToLastThread bool          `json:"attach_to_last_thread"`
+	AttachToLastThread bool          `json:"attach_to_last_thread,omitempty"`
 }
 
 type sendEventResponse struct {
@@ -161,10 +161,10 @@ type changeChatThreadTagRequest struct {
 }
 
 type getCustomersRequest struct {
-	PageID  string            `json:"page_id"`
-	Limit   uint              `json:"limit"`
-	Order   string            `json:"order"`
-	Filters *CustomersFilters `json:"filters"`
+	PageID  string            `json:"page_id,omitempty"`
+	Limit   uint              `json:"limit,omitempty"`
+	Order   string            `json:"order,omitempty"`
+	Filters *CustomersFilters `json:"filters,omitempty"`
 }
 
 type getCustomersResponse struct {
@@ -174,10 +174,10 @@ type getCustomersResponse struct {
 }
 
 type createCustomerRequest struct {
-	Name   string            `json:"name"`
-	Email  string            `json:"email"`
-	Avatar string            `json:"avatar"`
-	Fields map[string]string `json:"fields"`
+	Name   string            `json:"name,omitempty"`
+	Email  string            `json:"email,omitempty"`
+	Avatar string            `json:"avatar,omitempty"`
+	Fields map[string]string `json:"fields,omitempty"`
 }
 
 type createCustomerResponse struct {
@@ -186,10 +186,10 @@ type createCustomerResponse struct {
 
 type updateCustomerRequest struct {
 	CustomerID string            `json:"customer_id"`
-	Name       string            `json:"name"`
-	Email      string            `json:"email"`
-	Avatar     string            `json:"avatar"`
-	Fields     map[string]string `json:"fields"`
+	Name       string            `json:"name,omitempty"`
+	Email      string            `json:"email,omitempty"`
+	Avatar     string            `json:"avatar,omitempty"`
+	Fields     map[string]string `json:"fields,omitempty"`
 }
 
 type updateCustomerResponse struct {
@@ -202,8 +202,8 @@ type banCustomerRequest struct {
 }
 
 type updateAgentRequest struct {
-	AgentID       string `json:"agent_id"`
-	RoutingStatus string `json:"routing_status"`
+	AgentID       string `json:"agent_id,omitempty"`
+	RoutingStatus string `json:"routing_status,omitempty"`
 }
 
 type markEventsAsSeenRequest struct {
@@ -213,22 +213,22 @@ type markEventsAsSeenRequest struct {
 
 type sendTypingIndicatorRequest struct {
 	ChatID     string `json:"chat_id"`
-	Recipients string `json:"recipients"`
+	Recipients string `json:"recipients,omitempty"`
 	IsTyping   bool   `json:"is_typing"`
 }
 
 type multicastRequest struct {
 	Scopes  MulticastScopes `json:"scopes"`
 	Content json.RawMessage `json:"content"`
-	Type    string          `json:"type"`
+	Type    string          `json:"type,omitempty"`
 }
 
 type emptyResponse struct{}
 
 type hashedPaginationRequest struct {
-	PageID string `json:"page_id"`
-	Limit  uint   `json:"limit"`
-	Order  string `json:"order"`
+	PageID string `json:"page_id,omitempty"`
+	Limit  uint   `json:"limit,omitempty"`
+	Order  string `json:"order,omitempty"`
 }
 
 type hashedPaginationResponse struct {
@@ -237,11 +237,11 @@ type hashedPaginationResponse struct {
 }
 
 type paginationRequest struct {
-	Page  uint `json:"page"`
-	Limit uint `json:"limit"`
+	Page  uint `json:"page,omitempty"`
+	Limit uint `json:"limit,omitempty"`
 }
 
 type paginationResponse struct {
-	Page  uint `json:"page"`
-	Total uint `json:"total"`
+	Page  uint `json:"page,omitempty"`
+	Total uint `json:"total,omitempty"`
 }

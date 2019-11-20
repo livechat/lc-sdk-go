@@ -24,17 +24,17 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) PropertyFilterTyp
 // Archives filters
 
 type ArchivesFilters struct {
-	AgentIDs   []string           `json:"agent_ids"`
-	GroupIDs   []uint             `json:"group_ids"`
-	DateFrom   string             `json:"date_from"`
-	DateTo     string             `json:"date_to"`
-	Properties PropertiesFilters  `json:"properties"`
-	Tags       PropertyFilterType `json:"tags"`
-	Sales      PropertyFilterType `json:"sales"`
-	Goals      PropertyFilterType `json:"goals"`
-	Surveys    []SurveyFilter     `json:"surveys"`
-	ThreadIDs  []string           `json:"thread_ids"`
-	Query      string             `json:"query"`
+	AgentIDs   []string           `json:"agent_ids,omitempty"`
+	GroupIDs   []uint             `json:"group_ids,omitempty"`
+	DateFrom   string             `json:"date_from,omitempty"`
+	DateTo     string             `json:"date_to,omitempty"`
+	Properties PropertiesFilters  `json:"properties,omitempty"`
+	Tags       PropertyFilterType `json:"tags,omitempty"`
+	Sales      PropertyFilterType `json:"sales,omitempty"`
+	Goals      PropertyFilterType `json:"goals,omitempty"`
+	Surveys    []SurveyFilter     `json:"surveys,omitempty"`
+	ThreadIDs  []string           `json:"thread_ids,omitempty"`
+	Query      string             `json:"query,omitempty"`
 }
 
 type SurveyFilter struct {
@@ -106,16 +106,16 @@ func (af *ArchivesFilters) ByGoals(includes bool, vals ...interface{}) *Archives
 // Customer filters
 
 type CustomersFilters struct {
-	Country                    *StringFilter    `json:"country"`
-	Email                      *StringFilter    `json:"email"`
-	Name                       *StringFilter    `json:"name"`
-	CustomerID                 *StringFilter    `json:"customer_id"`
-	ChatsCount                 *RangeFilter     `json:"chats_count"`
-	ThreadsCount               *RangeFilter     `json:"threads_count"`
-	VisitsCount                *RangeFilter     `json:"visits_count"`
-	CreatedAt                  *DateRangeFilter `json:"created_at"`
-	AgentLastEventCreatedAt    *DateRangeFilter `json:"agent_last_event_created_at"`
-	CustomerLastEventCreatedAt *DateRangeFilter `json:"customer_last_event_created_at"`
+	Country                    *StringFilter    `json:"country,omitempty"`
+	Email                      *StringFilter    `json:"email,omitempty"`
+	Name                       *StringFilter    `json:"name,omitempty"`
+	CustomerID                 *StringFilter    `json:"customer_id,omitempty"`
+	ChatsCount                 *RangeFilter     `json:"chats_count,omitempty"`
+	ThreadsCount               *RangeFilter     `json:"threads_count,omitempty"`
+	VisitsCount                *RangeFilter     `json:"visits_count,omitempty"`
+	CreatedAt                  *DateRangeFilter `json:"created_at,omitempty"`
+	AgentLastEventCreatedAt    *DateRangeFilter `json:"agent_last_event_created_at,omitempty"`
+	CustomerLastEventCreatedAt *DateRangeFilter `json:"customer_last_event_created_at,omitempty"`
 }
 
 type StringFilter struct {
@@ -135,19 +135,19 @@ func NewStringFilter(values []string, shouldExclude bool) *StringFilter {
 }
 
 type RangeFilter struct {
-	LTE int `json:"lte"`
-	LT  int `json:"lt"`
-	GTE int `json:"gte"`
-	GT  int `json:"gt"`
-	EQ  int `json:"eq"`
+	LTE int `json:"lte,omitempty"`
+	LT  int `json:"lt,omitempty"`
+	GTE int `json:"gte,omitempty"`
+	GT  int `json:"gt,omitempty"`
+	EQ  int `json:"eq,omitempty"`
 }
 
 type DateRangeFilter struct {
-	LTE string `json:"lte"`
-	LT  string `json:"lt"`
-	GTE string `json:"gte"`
-	GT  string `json:"gt"`
-	EQ  string `json:"eq"`
+	LTE string `json:"lte,omitempty"`
+	LT  string `json:"lt,omitempty"`
+	GTE string `json:"gte,omitempty"`
+	GT  string `json:"gt,omitempty"`
+	EQ  string `json:"eq,omitempty"`
 }
 
 func NewCustomersFilters() *CustomersFilters {
@@ -206,15 +206,13 @@ func (cf *CustomersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) 
 
 // Chats Filters
 type ChatsFilters struct {
-	IncludeActive bool              `json:"include_active"`
-	GroupIDs      []uint            `json:"group_ids"`
-	Properties    PropertiesFilters `json:"properties"`
+	IncludeActive bool              `json:"include_active,omitempty"`
+	GroupIDs      []uint            `json:"group_ids,omitempty"`
+	Properties    PropertiesFilters `json:"properties,omitempty"`
 }
 
 func NewChatsFilters() *ChatsFilters {
-	return &ChatsFilters{
-		IncludeActive: true,
-	}
+	return &ChatsFilters{}
 }
 
 func (cf *ChatsFilters) WithoutActiveChats() *ChatsFilters {
