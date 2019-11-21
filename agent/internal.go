@@ -7,7 +7,7 @@ import (
 )
 
 type getChatsSummaryRequest struct {
-	Filters    *ChatsFilters     `json:"filters,omitempty"`
+	Filters    *chatsFilters     `json:"filters,omitempty"`
 	Pagination paginationRequest `json:"pagination,omitempty"`
 }
 
@@ -38,7 +38,7 @@ type getChatThreadsResponse struct {
 }
 
 type getArchivesRequest struct {
-	Filters    *ArchivesFilters  `json:"filters,omitempty"`
+	Filters    *archivesFilters  `json:"filters,omitempty"`
 	Pagination paginationRequest `json:"pagination,omitempty"`
 }
 
@@ -89,7 +89,7 @@ type modifyAccessRequest struct {
 
 type transferChatRequest struct {
 	ChatID string         `json:"chat_id"`
-	Target TransferTarget `json:"target,omitempty"`
+	Target transferTarget `json:"target,omitempty"`
 	Force  bool           `json:"force"`
 }
 
@@ -114,7 +114,7 @@ type sendRichMessagePostbackRequest struct {
 	ChatID   string   `json:"chat_id"`
 	EventID  string   `json:"event_id"`
 	ThreadID string   `json:"thread_id"`
-	Postback Postback `json:"postback"`
+	Postback postback `json:"postback"`
 }
 
 type updateChatPropertiesRequest struct {
@@ -164,7 +164,7 @@ type getCustomersRequest struct {
 	PageID  string            `json:"page_id,omitempty"`
 	Limit   uint              `json:"limit,omitempty"`
 	Order   string            `json:"order,omitempty"`
-	Filters *CustomersFilters `json:"filters,omitempty"`
+	Filters *customersFilters `json:"filters,omitempty"`
 }
 
 type getCustomersResponse struct {
@@ -198,7 +198,7 @@ type updateCustomerResponse struct {
 
 type banCustomerRequest struct {
 	CustomerID string `json:"customer_id"`
-	Ban        Ban    `json:"ban"`
+	Ban        ban    `json:"ban"`
 }
 
 type updateAgentRequest struct {

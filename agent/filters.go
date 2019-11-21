@@ -1,15 +1,20 @@
 package agent
 
-type PropertiesFilters map[string]map[string]*PropertyFilterType
+// PropertiesFilters represents set of filters for Chat properties
+type PropertiesFilters map[string]map[string]*propertyFilterType
 
-type PropertyFilterType struct {
+type propertyFilterType struct {
 	Exists        *bool         `json:"exists,omitempty"`
 	Values        []interface{} `json:"values,omitempty"`
 	ExcludeValues []interface{} `json:"exclude_values,omitempty"`
 }
 
-func NewPropertyFilterType(includes bool, vals ...interface{}) PropertyFilterType {
-	pft := PropertyFilterType{}
+// NewPropertyFilterType creates new filter object for Chat properties
+// If only first parameter is passed, filter will check only existence of property
+// Passing additional parameters will check if property values match/exclude given values
+// based on the first parameter
+func NewPropertyFilterType(includes bool, vals ...interface{}) propertyFilterType {
+	pft := propertyFilterType{}
 	switch {
 	case vals == nil:
 		pft.Exists = &includes
@@ -23,93 +28,110 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) PropertyFilterTyp
 
 // Archives filters
 
-type ArchivesFilters struct {
+type archivesFilters struct {
 	AgentIDs   []string           `json:"agent_ids,omitempty"`
 	GroupIDs   []uint             `json:"group_ids,omitempty"`
 	DateFrom   string             `json:"date_from,omitempty"`
 	DateTo     string             `json:"date_to,omitempty"`
 	Properties PropertiesFilters  `json:"properties,omitempty"`
-	Tags       PropertyFilterType `json:"tags,omitempty"`
-	Sales      PropertyFilterType `json:"sales,omitempty"`
-	Goals      PropertyFilterType `json:"goals,omitempty"`
+	Tags       propertyFilterType `json:"tags,omitempty"`
+	Sales      propertyFilterType `json:"sales,omitempty"`
+	Goals      propertyFilterType `json:"goals,omitempty"`
 	Surveys    []SurveyFilter     `json:"surveys,omitempty"`
 	ThreadIDs  []string           `json:"thread_ids,omitempty"`
 	Query      string             `json:"query,omitempty"`
 }
 
+// SurveyFilter represents structure to match surveys when getting Archives
 type SurveyFilter struct {
 	Type     string `json:"type"`
 	AnswerID string `json:"answer_id"`
 }
 
-func NewArchivesFilters() *ArchivesFilters {
-	return &ArchivesFilters{}
+// NewArchivesFilters creates empty structure to aggregate filters for GetArchives method
+func NewArchivesFilters() *archivesFilters {
+	return &archivesFilters{}
 }
 
-func (af *ArchivesFilters) ByAgents(agentIDs []string) *ArchivesFilters {
+// ByAgents extends archives filter with list of agent IDs to match
+func (af *archivesFilters) ByAgents(agentIDs []string) *archivesFilters {
 	af.AgentIDs = agentIDs
 	return af
 }
 
-func (af *ArchivesFilters) ByGroups(groupIDs []uint) *ArchivesFilters {
+// ByGroups extends archives filter with list of group IDs to match
+func (af *archivesFilters) ByGroups(groupIDs []uint) *archivesFilters {
 	af.GroupIDs = groupIDs
 	return af
 }
 
-func (af *ArchivesFilters) ByThreads(threadIDs []string) *ArchivesFilters {
-	*af = ArchivesFilters{
+// ByThreads extends archives filter with list of thread IDs to match
+// This method clears previously set filters as this type of filter cannot be used in combination with others
+func (af *archivesFilters) ByThreads(threadIDs []string) *archivesFilters {
+	*af = archivesFilters{
 		ThreadIDs: threadIDs,
 	}
 	return af
 }
 
-func (af *ArchivesFilters) ByQuery(query string) *ArchivesFilters {
+// ByQuery extends archives filter with query to match
+func (af *archivesFilters) ByQuery(query string) *archivesFilters {
 	af.Query = query
 	return af
 }
 
-func (af *ArchivesFilters) FromDate(date string) *ArchivesFilters {
+// FromDate extends archives filter to exclude entries before given date
+func (af *archivesFilters) FromDate(date string) *archivesFilters {
 	af.DateFrom = date
 	return af
 }
 
-func (af *ArchivesFilters) ToDate(date string) *ArchivesFilters {
+// FromDate extends archives filter to exclude entries after given date
+func (af *archivesFilters) ToDate(date string) *archivesFilters {
 	af.DateTo = date
 	return af
 }
 
-func (af *ArchivesFilters) ByProperties(propsFilters PropertiesFilters) *ArchivesFilters {
+// ByProperties extends archives filter with Chat properties to match
+func (af *archivesFilters) ByProperties(propsFilters PropertiesFilters) *archivesFilters {
 	af.Properties = propsFilters
 	return af
 }
 
-func (af *ArchivesFilters) BySurveys(surveyFilters []SurveyFilter) *ArchivesFilters {
+// BySurveys extends archives filter with surveys to match
+func (af *archivesFilters) BySurveys(surveyFilters []SurveyFilter) *archivesFilters {
 	af.Surveys = surveyFilters
 	return af
 }
 
-func (af *ArchivesFilters) ByTags(includes bool, vals ...interface{}) *ArchivesFilters {
+// ByTags extends archives filter with tags specific property filter
+// See NewPropertyFilterType definition for details of filter creation
+func (af *archivesFilters) ByTags(includes bool, vals ...interface{}) *archivesFilters {
 	af.Tags = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
-func (af *ArchivesFilters) BySales(includes bool, vals ...interface{}) *ArchivesFilters {
+// BySales extends archives filter with sales specific property filter
+// See NewPropertyFilterType definition for details of filter creation
+func (af *archivesFilters) BySales(includes bool, vals ...interface{}) *archivesFilters {
 	af.Sales = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
-func (af *ArchivesFilters) ByGoals(includes bool, vals ...interface{}) *ArchivesFilters {
+// ByGoals extends archives filter with goals specific property filter
+// See NewPropertyFilterType definition for details of filter creation
+func (af *archivesFilters) ByGoals(includes bool, vals ...interface{}) *archivesFilters {
 	af.Goals = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
 // Customer filters
 
-type CustomersFilters struct {
-	Country                    *StringFilter    `json:"country,omitempty"`
-	Email                      *StringFilter    `json:"email,omitempty"`
-	Name                       *StringFilter    `json:"name,omitempty"`
-	CustomerID                 *StringFilter    `json:"customer_id,omitempty"`
+type customersFilters struct {
+	Country                    *stringFilter    `json:"country,omitempty"`
+	Email                      *stringFilter    `json:"email,omitempty"`
+	Name                       *stringFilter    `json:"name,omitempty"`
+	CustomerID                 *stringFilter    `json:"customer_id,omitempty"`
 	ChatsCount                 *RangeFilter     `json:"chats_count,omitempty"`
 	ThreadsCount               *RangeFilter     `json:"threads_count,omitempty"`
 	VisitsCount                *RangeFilter     `json:"visits_count,omitempty"`
@@ -118,13 +140,15 @@ type CustomersFilters struct {
 	CustomerLastEventCreatedAt *DateRangeFilter `json:"customer_last_event_created_at,omitempty"`
 }
 
-type StringFilter struct {
+type stringFilter struct {
 	Values        []string `json:"values,omitempty"`
 	ExcludeValues []string `json:"exclude_values,omitempty"`
 }
 
-func NewStringFilter(values []string, inclusive bool) *StringFilter {
-	sf := &StringFilter{}
+// NewStringFilter creates new filter for string values
+// `inclusive` parameter controls if the filtered values should match or exclude given values
+func NewStringFilter(values []string, inclusive bool) *stringFilter {
+	sf := &stringFilter{}
 	switch {
 	case inclusive:
 		sf.Values = values
@@ -134,6 +158,12 @@ func NewStringFilter(values []string, inclusive bool) *StringFilter {
 	return sf
 }
 
+// RangeFilter represents structure to define a range in which filtered numbers should be matched
+// LTE - less than or equal
+// LT  - less than
+// GTE - greater than or equal
+// GT  - greater than
+// EQ  - equal
 type RangeFilter struct {
 	LTE int `json:"lte,omitempty"`
 	LT  int `json:"lt,omitempty"`
@@ -142,6 +172,13 @@ type RangeFilter struct {
 	EQ  int `json:"eq,omitempty"`
 }
 
+// DateRangeFilter represents structure to define a range in which filtered dates should be matched
+// Dates are represented in ISO 8601 format with microseconds resolution, e.g. 2017-10-12T15:19:21.010200+01:00 in specific timezone or 2017-10-12T14:19:21.010200Z in UTC.
+// LTE - less than or equal
+// LT  - less than
+// GTE - greater than or equal
+// GT  - greater than
+// EQ  - equal
 type DateRangeFilter struct {
 	LTE string `json:"lte,omitempty"`
 	LT  string `json:"lt,omitempty"`
@@ -150,84 +187,110 @@ type DateRangeFilter struct {
 	EQ  string `json:"eq,omitempty"`
 }
 
-func NewCustomersFilters() *CustomersFilters {
-	return &CustomersFilters{}
+// NewCustomersFilters creates empty structure to aggregate filters for customers in GetCustomers method
+func NewCustomersFilters() *customersFilters {
+	return &customersFilters{}
 }
 
-func (cf *CustomersFilters) ByCountry(values []string, inclusive bool) *CustomersFilters {
+// ByCountry extends customers filters with string filter for customer's country
+// See NewStringFilter definition for details of filter creation
+func (cf *customersFilters) ByCountry(values []string, inclusive bool) *customersFilters {
 	cf.Country = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByEmail(values []string, inclusive bool) *CustomersFilters {
+// ByEmail extends customers filters with string filter for customer's email
+// See NewStringFilter definition for details of filter creation
+func (cf *customersFilters) ByEmail(values []string, inclusive bool) *customersFilters {
 	cf.Email = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByName(values []string, inclusive bool) *CustomersFilters {
+// ByName extends customers filters with string filter for customer's name
+// See NewStringFilter definition for details of filter creation
+func (cf *customersFilters) ByName(values []string, inclusive bool) *customersFilters {
 	cf.Name = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByID(values []string, inclusive bool) *CustomersFilters {
+// ByID extends customers filters with string filter for customer's ID
+// See NewStringFilter definition for details of filter creation
+func (cf *customersFilters) ByID(values []string, inclusive bool) *customersFilters {
 	cf.CustomerID = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByChatsCount(ranges *RangeFilter) *CustomersFilters {
+// ByChatsCount extends customers filters with range filter for customer's chats count
+// See RangeFilter definition for details of filter creation
+func (cf *customersFilters) ByChatsCount(ranges *RangeFilter) *customersFilters {
 	cf.ChatsCount = ranges
 	return cf
 }
 
-func (cf *CustomersFilters) ByThreadsCount(ranges *RangeFilter) *CustomersFilters {
+// ByThreadsCount extends customers filters with range filter for customer's threads count
+// See RangeFilter definition for details of filter creation
+func (cf *customersFilters) ByThreadsCount(ranges *RangeFilter) *customersFilters {
 	cf.ThreadsCount = ranges
 	return cf
 }
 
-func (cf *CustomersFilters) ByVisitsCount(ranges *RangeFilter) *CustomersFilters {
+// ByVisitsCount extends customers filters with range filter for customer's visits count
+// See RangeFilter definition for details of filter creation
+func (cf *customersFilters) ByVisitsCount(ranges *RangeFilter) *customersFilters {
 	cf.VisitsCount = ranges
 	return cf
 }
 
-func (cf *CustomersFilters) ByCreationTime(timeRange *DateRangeFilter) *CustomersFilters {
+// ByCreationTime extends customers filters with range filter for customer's creation time
+// See DateRangeFilter definition for details of filter creation
+func (cf *customersFilters) ByCreationTime(timeRange *DateRangeFilter) *customersFilters {
 	cf.CreatedAt = timeRange
 	return cf
 }
 
-func (cf *CustomersFilters) ByAgentsLastActivity(timeRange *DateRangeFilter) *CustomersFilters {
+// ByAgentsLastActivity extends customers filters with range filter for last agent's activity with customer
+// See DateRangeFilter definition for details of filter creation
+func (cf *customersFilters) ByAgentsLastActivity(timeRange *DateRangeFilter) *customersFilters {
 	cf.AgentLastEventCreatedAt = timeRange
 	return cf
 }
 
-func (cf *CustomersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) *CustomersFilters {
+// ByCustomersLastActivity extends customers filters with range filter for customer's last activity
+// See DateRangeFilter definition for details of filter creation
+func (cf *customersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) *customersFilters {
 	cf.CustomerLastEventCreatedAt = timeRange
 	return cf
 }
 
 // Chats Filters
-type ChatsFilters struct {
+type chatsFilters struct {
 	IncludeActive bool              `json:"include_active,omitempty"`
 	GroupIDs      []uint            `json:"group_ids,omitempty"`
 	Properties    PropertiesFilters `json:"properties,omitempty"`
 }
 
-func NewChatsFilters() *ChatsFilters {
-	return &ChatsFilters{
+// NewChatsFilters creates empty structure to aggregate filters for Chats in GetChatsSummary method
+// By default filters include also active chats
+func NewChatsFilters() *chatsFilters {
+	return &chatsFilters{
 		IncludeActive: true,
 	}
 }
 
-func (cf *ChatsFilters) WithoutActiveChats() *ChatsFilters {
+// WithoutActiveChats extends chat filters to not include active chats
+func (cf *chatsFilters) WithoutActiveChats() *chatsFilters {
 	cf.IncludeActive = false
 	return cf
 }
 
-func (cf *ChatsFilters) ByGroups(groupIDs []uint) *ChatsFilters {
+// ByGroups extends chat filters with group IDs to match
+func (cf *chatsFilters) ByGroups(groupIDs []uint) *chatsFilters {
 	cf.GroupIDs = groupIDs
 	return cf
 }
 
-func (cf *ChatsFilters) ByProperties(propsFilters PropertiesFilters) *ChatsFilters {
+// ByProperties extends chat filters with Chat properties to match
+func (cf *chatsFilters) ByProperties(propsFilters PropertiesFilters) *chatsFilters {
 	cf.Properties = propsFilters
 	return cf
 }
