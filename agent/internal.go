@@ -168,7 +168,7 @@ type getCustomersRequest struct {
 }
 
 type getCustomersResponse struct {
-	*hashedPaginationResponse
+	hashedPaginationResponse
 	Customers      []objects.Customer `json:"customers"`
 	TotalCustomers uint               `json:"total_customers"`
 }

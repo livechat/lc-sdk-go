@@ -642,7 +642,7 @@ func TestUntagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testin
 	}
 }
 
-func TesGetCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestGetCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_customers"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")

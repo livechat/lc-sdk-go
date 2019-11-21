@@ -3,7 +3,7 @@ package agent
 type PropertiesFilters map[string]map[string]*PropertyFilterType
 
 type PropertyFilterType struct {
-	Exists        bool          `json:"exists,omitempty"`
+	Exists        *bool         `json:"exists,omitempty"`
 	Values        []interface{} `json:"values,omitempty"`
 	ExcludeValues []interface{} `json:"exclude_values,omitempty"`
 }
@@ -12,7 +12,7 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) PropertyFilterTyp
 	pft := PropertyFilterType{}
 	switch {
 	case vals == nil:
-		pft.Exists = includes
+		pft.Exists = &includes
 	case includes:
 		pft.Values = vals
 	case !includes:
@@ -57,7 +57,7 @@ func (af *ArchivesFilters) ByGroups(groupIDs []uint) *ArchivesFilters {
 }
 
 func (af *ArchivesFilters) ByThreads(threadIDs []string) *ArchivesFilters {
-	af = &ArchivesFilters{
+	*af = ArchivesFilters{
 		ThreadIDs: threadIDs,
 	}
 	return af
@@ -89,17 +89,17 @@ func (af *ArchivesFilters) BySurveys(surveyFilters []SurveyFilter) *ArchivesFilt
 }
 
 func (af *ArchivesFilters) ByTags(includes bool, vals ...interface{}) *ArchivesFilters {
-	af.Tags = NewPropertyFilterType(includes, vals)
+	af.Tags = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
 func (af *ArchivesFilters) BySales(includes bool, vals ...interface{}) *ArchivesFilters {
-	af.Sales = NewPropertyFilterType(includes, vals)
+	af.Sales = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
 func (af *ArchivesFilters) ByGoals(includes bool, vals ...interface{}) *ArchivesFilters {
-	af.Goals = NewPropertyFilterType(includes, vals)
+	af.Goals = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
@@ -123,13 +123,13 @@ type StringFilter struct {
 	ExcludeValues []string `json:"exclude_values,omitempty"`
 }
 
-func NewStringFilter(values []string, shouldExclude bool) *StringFilter {
+func NewStringFilter(values []string, inclusive bool) *StringFilter {
 	sf := &StringFilter{}
 	switch {
-	case shouldExclude:
-		sf.ExcludeValues = values
-	default:
+	case inclusive:
 		sf.Values = values
+	default:
+		sf.ExcludeValues = values
 	}
 	return sf
 }
@@ -154,23 +154,23 @@ func NewCustomersFilters() *CustomersFilters {
 	return &CustomersFilters{}
 }
 
-func (cf *CustomersFilters) ByCountry(values []string, shouldExclude bool) *CustomersFilters {
-	cf.Country = NewStringFilter(values, shouldExclude)
+func (cf *CustomersFilters) ByCountry(values []string, inclusive bool) *CustomersFilters {
+	cf.Country = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByEmail(values []string, shouldExclude bool) *CustomersFilters {
-	cf.Email = NewStringFilter(values, shouldExclude)
+func (cf *CustomersFilters) ByEmail(values []string, inclusive bool) *CustomersFilters {
+	cf.Email = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByName(values []string, shouldExclude bool) *CustomersFilters {
-	cf.Name = NewStringFilter(values, shouldExclude)
+func (cf *CustomersFilters) ByName(values []string, inclusive bool) *CustomersFilters {
+	cf.Name = NewStringFilter(values, inclusive)
 	return cf
 }
 
-func (cf *CustomersFilters) ByID(values []string, shouldExclude bool) *CustomersFilters {
-	cf.CustomerID = NewStringFilter(values, shouldExclude)
+func (cf *CustomersFilters) ByID(values []string, inclusive bool) *CustomersFilters {
+	cf.CustomerID = NewStringFilter(values, inclusive)
 	return cf
 }
 
@@ -212,7 +212,9 @@ type ChatsFilters struct {
 }
 
 func NewChatsFilters() *ChatsFilters {
-	return &ChatsFilters{}
+	return &ChatsFilters{
+		IncludeActive: true,
+	}
 }
 
 func (cf *ChatsFilters) WithoutActiveChats() *ChatsFilters {
