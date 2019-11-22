@@ -77,12 +77,10 @@ type SystemMessage struct {
 
 type File struct {
 	Event
-	ContentType    string `json:"content_type"`
-	URL            string `json:"url"`
-	Width          int    `json:"width,omitempty"`
-	Height         int    `json:"height,omitempty"`
-	ThumbnailURL   string `json:"thumbnail_url,omitempty"`
-	Thumbnail2xURL string `json:"thumbnail2x_url,omitempty"`
+	ContentType string `json:"content_type"`
+	URL         string `json:"url"`
+	Width       int    `json:"width,omitempty"`
+	Height      int    `json:"height,omitempty"`
 }
 
 func (e *Event) File() *File {
@@ -101,12 +99,6 @@ func (e *Event) File() *File {
 		return nil
 	}
 	if err := json.Unmarshal(e.Height, &f.Height); err != nil {
-		return nil
-	}
-	if err := json.Unmarshal(e.ThumbnailURL, &f.ThumbnailURL); err != nil {
-		return nil
-	}
-	if err := json.Unmarshal(e.Thumbnail2xURL, &f.Thumbnail2xURL); err != nil {
 		return nil
 	}
 
