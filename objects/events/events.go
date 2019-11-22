@@ -8,14 +8,13 @@ import (
 type Properties map[string]map[string]interface{}
 
 type eventSpecific struct {
-	Text           json.RawMessage `json:"text"`
-	Fields         json.RawMessage `json:"fields"`
-	ContentType    json.RawMessage `json:"content_type"`
-	URL            json.RawMessage `json:"url"`
-	Width          json.RawMessage `json:"width,omitempty"`
-	Height         json.RawMessage `json:"height,omitempty"`
-	ThumbnailURL   json.RawMessage `json:"thumbnail_url,omitempty"`
-	Thumbnail2xURL json.RawMessage `json:"thumbnail2x_url,omitempty"`
+	Text        json.RawMessage `json:"text"`
+	Fields      json.RawMessage `json:"fields"`
+	ContentType json.RawMessage `json:"content_type"`
+	URL         json.RawMessage `json:"url"`
+	Width       json.RawMessage `json:"width"`
+	Height      json.RawMessage `json:"height"`
+	Name        json.RawMessage `json:"name"`
 }
 
 type Event struct {
@@ -81,6 +80,7 @@ type File struct {
 	URL         string `json:"url"`
 	Width       int    `json:"width,omitempty"`
 	Height      int    `json:"height,omitempty"`
+	Name        string `json:"name"`
 }
 
 func (e *Event) File() *File {
@@ -99,6 +99,9 @@ func (e *Event) File() *File {
 		return nil
 	}
 	if err := json.Unmarshal(e.Height, &f.Height); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.Name, &f.Name); err != nil {
 		return nil
 	}
 
