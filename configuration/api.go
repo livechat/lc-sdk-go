@@ -7,10 +7,15 @@ import (
 	i "github.com/livechat/lc-sdk-go/internal"
 )
 
+// ConfigurationAPI provides the API operation methods for making requests to Livechat Configuration API via Web API.
+// See this package's package overview docs for details on the service.
 type ConfigurationAPI struct {
 	*i.API
 }
 
+// NewAPI returns ready to use Configuration API.
+//
+// If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*ConfigurationAPI, error) {
 	api, err := i.NewAPI(t, client, clientID, "configuration")
 	if err != nil {
@@ -19,6 +24,7 @@ func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*Configurati
 	return &ConfigurationAPI{api}, nil
 }
 
+// RegisterWebhook allows to register specified webhook
 func (a *ConfigurationAPI) RegisterWebhook(webhook *Webhook) (string, error) {
 	var resp registerWebhookResponse
 	err := a.Call("register_webhook", webhook, &resp)
@@ -26,6 +32,7 @@ func (a *ConfigurationAPI) RegisterWebhook(webhook *Webhook) (string, error) {
 	return resp.ID, err
 }
 
+// GetWebhooksConfig returns configurations of all registered webhooks
 func (a *ConfigurationAPI) GetWebhooksConfig() ([]RegisteredWebhook, error) {
 	var resp getWebhookConfigResponse
 	err := a.Call("get_webhooks_config", nil, &resp)
@@ -33,12 +40,14 @@ func (a *ConfigurationAPI) GetWebhooksConfig() ([]RegisteredWebhook, error) {
 	return resp, err
 }
 
+// UnregisterWebhook removes webhook with given id from registered webhooks
 func (a *ConfigurationAPI) UnregisterWebhook(id string) error {
 	return a.Call("unregister_webhook", unregisterWebhookRequest{
 		ID: id,
 	}, &emptyResponse{})
 }
 
+// CreateBotAgent allows to create bot agent and returns its ID
 func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
 	var resp createBotAgentResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
@@ -57,6 +66,7 @@ func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus,
 	return resp.BotID, err
 }
 
+// UpdateBotAgent allows to update bot agent's properties
 func (a *ConfigurationAPI) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
@@ -75,12 +85,14 @@ func (a *ConfigurationAPI) UpdateBotAgent(id, name, avatar string, status BotSta
 	}, &emptyResponse{})
 }
 
+// RemoveBotAgent removes bot with given ID
 func (a *ConfigurationAPI) RemoveBotAgent(id string) error {
 	return a.Call("remove_bot_agent", &removeBotAgentRequest{
 		BotID: id,
 	}, &emptyResponse{})
 }
 
+// GetBotAgents returns list of bot agents (all or caller's only, depending on getAll parameter)
 func (a *ConfigurationAPI) GetBotAgents(getAll bool) ([]*BotAgent, error) {
 	var resp getBotAgentsResponse
 	err := a.Call("get_bot_agents", &getBotAgentsRequest{
@@ -90,6 +102,7 @@ func (a *ConfigurationAPI) GetBotAgents(getAll bool) ([]*BotAgent, error) {
 	return resp.BotAgents, err
 }
 
+// GetBotAgentDetails returns detailed properties of bot agent
 func (a *ConfigurationAPI) GetBotAgentDetails(id string) (*BotAgentDetails, error) {
 	var resp getBotAgentDetailsResponse
 	err := a.Call("get_bot_agent_details", &getBotAgentDetailsRequest{
@@ -99,10 +112,12 @@ func (a *ConfigurationAPI) GetBotAgentDetails(id string) (*BotAgentDetails, erro
 	return resp.BotAgent, err
 }
 
+// CreateProperties allows to create properties
 func (a *ConfigurationAPI) CreateProperties(properties *map[string]*PropertyConfig) error {
 	return a.Call("create_properties", properties, &emptyResponse{})
 }
 
+// GetPropertyConfigs return list of properties along with their configuration
 func (a *ConfigurationAPI) GetPropertyConfigs(getAll bool) (map[string]*PropertyConfig, error) {
 	var resp getPropertyConfigsResponse
 	err := a.Call("get_property_configs", &getPropertyConfigsRequest{
@@ -112,6 +127,7 @@ func (a *ConfigurationAPI) GetPropertyConfigs(getAll bool) (map[string]*Property
 	return resp, err
 }
 
+// SetAPIURL should have comment or be unexported because linter complains xD
 func (a *ConfigurationAPI) SetAPIURL(url string) {
 	a.APIURL = url
 }
