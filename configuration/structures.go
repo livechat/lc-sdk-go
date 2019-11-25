@@ -1,7 +1,7 @@
 package configuration
 
 type Webhook struct {
-	Action         WebhookAction   `json:"action"`
+	Action         *WebhookAction  `json:"action"`
 	SecretKey      string          `json:"secret_key"`
 	URL            string          `json:"url"`
 	AdditionalData []string        `json:"additional_data,omitempty"`
@@ -44,15 +44,15 @@ type BotAgentDetails struct {
 	Application          struct {
 		ClientID string `json:"client_id"`
 	} `json:"application"`
-	MaxChatsCount uint             `json:"max_chats_count"`
-	Groups        []BotGroupConfig `json:"groups"`
-	Webhooks      BotWebhooks      `json:"webhooks"`
+	MaxChatsCount uint              `json:"max_chats_count"`
+	Groups        []*BotGroupConfig `json:"groups"`
+	Webhooks      *BotWebhooks      `json:"webhooks"`
 }
 
 type BotWebhooks struct {
-	URL       string             `json:"url"`
-	SecretKey string             `json:"secret_key"`
-	Actions   []BotWebhookAction `json:"actions"`
+	URL       string              `json:"url"`
+	SecretKey string              `json:"secret_key"`
+	Actions   []*BotWebhookAction `json:"actions"`
 }
 
 type BotGroupConfig struct {
@@ -61,16 +61,16 @@ type BotGroupConfig struct {
 }
 
 type BotWebhookAction struct {
-	Name           WebhookAction  `json:"name"`
-	Filters        WebhookFilters `json:"filters"`
-	AdditionalData []string       `json:"additional_data"`
+	Name           *WebhookAction  `json:"name"`
+	Filters        *WebhookFilters `json:"filters"`
+	AdditionalData []string        `json:"additional_data"`
 }
 
 type PropertyConfig struct {
-	Type        string              `json:"type"`
-	Locations   map[string]Location `json:"locations"`
-	Description string              `json:"description"`
-	Domain      []interface{}       `json:"domain"`
+	Type        string               `json:"type"`
+	Locations   map[string]*Location `json:"locations"`
+	Description string               `json:"description"`
+	Domain      []interface{}        `json:"domain"`
 	Range       struct {
 		From int `json:"from"`
 		To   int `json:"to"`
@@ -78,7 +78,7 @@ type PropertyConfig struct {
 }
 
 type Location struct {
-	Access map[string]PropertyAccess `json:"access"`
+	Access map[string]*PropertyAccess `json:"access"`
 }
 
 type PropertyAccess struct {

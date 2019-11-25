@@ -11,13 +11,13 @@ type unregisterWebhookRequest struct {
 type getWebhookConfigResponse []RegisteredWebhook
 
 type createBotAgentRequest struct {
-	Name                 string           `json:"name"`
-	Status               BotStatus        `json:"status"`
-	Avatar               string           `json:"string"`
-	DefaultGroupPriority GroupPriority    `json:"default_group_priority"`
-	MaxChatsCount        uint             `json:"max_chats_count"`
-	Groups               []BotGroupConfig `json:"groups"`
-	Webhooks             BotWebhooks      `json:"webhooks"`
+	Name                 string            `json:"name"`
+	Status               BotStatus         `json:"status"`
+	Avatar               string            `json:"string,omitempty"`
+	DefaultGroupPriority GroupPriority     `json:"default_group_priority,omitempty"`
+	MaxChatsCount        *uint             `json:"max_chats_count,omitempty"`
+	Groups               []*BotGroupConfig `json:"groups,omitempty"`
+	Webhooks             *BotWebhooks      `json:"webhooks,omitempty"`
 }
 
 type createBotAgentResponse struct {
@@ -27,8 +27,6 @@ type createBotAgentResponse struct {
 type removeBotAgentRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
-
-type emptyResponse struct{}
 
 type updateBotAgentRequest struct {
 	BotID string `json:"id"`
@@ -40,7 +38,7 @@ type getBotAgentsRequest struct {
 }
 
 type getBotAgentsResponse struct {
-	BotAgents []BotAgent `json:"bot_agents"`
+	BotAgents []*BotAgent `json:"bot_agents"`
 }
 
 type getBotAgentDetailsRequest struct {
@@ -48,13 +46,15 @@ type getBotAgentDetailsRequest struct {
 }
 
 type getBotAgentDetailsResponse struct {
-	BotAgent BotAgentDetails `json:"bot_agent"`
+	BotAgent *BotAgentDetails `json:"bot_agent"`
 }
 
-type createPropertiesRequest map[string]PropertyConfig
+type createPropertiesRequest map[string]*PropertyConfig
 
 type getPropertyConfigsRequest struct {
 	All bool `json:"all"`
 }
 
-type getPropertyConfigsResponse map[string]PropertyConfig
+type getPropertyConfigsResponse map[string]*PropertyConfig
+
+type emptyResponse struct{}

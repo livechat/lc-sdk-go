@@ -39,7 +39,7 @@ func (a *ConfigurationAPI) UnregisterWebhook(id string) error {
 	}, &emptyResponse{})
 }
 
-func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []BotGroupConfig, webhooks BotWebhooks) (string, error) {
+func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
 	var resp createBotAgentResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
@@ -48,7 +48,7 @@ func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus,
 		Name:                 name,
 		Avatar:               avatar,
 		Status:               status,
-		MaxChatsCount:        maxChats,
+		MaxChatsCount:        &maxChats,
 		DefaultGroupPriority: defaultPriority,
 		Groups:               groups,
 		Webhooks:             webhooks,
@@ -57,7 +57,7 @@ func (a *ConfigurationAPI) CreateBotAgent(name, avatar string, status BotStatus,
 	return resp.BotID, err
 }
 
-func (a *ConfigurationAPI) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []BotGroupConfig, webhooks BotWebhooks) error {
+func (a *ConfigurationAPI) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (a *ConfigurationAPI) UpdateBotAgent(id, name, avatar string, status BotSta
 			Name:                 name,
 			Avatar:               avatar,
 			Status:               status,
-			MaxChatsCount:        maxChats,
+			MaxChatsCount:        &maxChats,
 			DefaultGroupPriority: defaultPriority,
 			Groups:               groups,
 			Webhooks:             webhooks,
@@ -81,7 +81,7 @@ func (a *ConfigurationAPI) RemoveBotAgent(id string) error {
 	}, &emptyResponse{})
 }
 
-func (a *ConfigurationAPI) GetBotAgents(getAll bool) ([]BotAgent, error) {
+func (a *ConfigurationAPI) GetBotAgents(getAll bool) ([]*BotAgent, error) {
 	var resp getBotAgentsResponse
 	err := a.Call("get_bot_agents", &getBotAgentsRequest{
 		All: getAll,
@@ -90,7 +90,7 @@ func (a *ConfigurationAPI) GetBotAgents(getAll bool) ([]BotAgent, error) {
 	return resp.BotAgents, err
 }
 
-func (a *ConfigurationAPI) GetBotAgentDetails(id string) (BotAgentDetails, error) {
+func (a *ConfigurationAPI) GetBotAgentDetails(id string) (*BotAgentDetails, error) {
 	var resp getBotAgentDetailsResponse
 	err := a.Call("get_bot_agent_details", &getBotAgentDetailsRequest{
 		BotID: id,
@@ -99,11 +99,11 @@ func (a *ConfigurationAPI) GetBotAgentDetails(id string) (BotAgentDetails, error
 	return resp.BotAgent, err
 }
 
-func (a *ConfigurationAPI) CreateProperties(properties *map[string]PropertyConfig) error {
+func (a *ConfigurationAPI) CreateProperties(properties *map[string]*PropertyConfig) error {
 	return a.Call("create_properties", properties, &emptyResponse{})
 }
 
-func (a *ConfigurationAPI) GetPropertyConfigs(getAll bool) (map[string]PropertyConfig, error) {
+func (a *ConfigurationAPI) GetPropertyConfigs(getAll bool) (map[string]*PropertyConfig, error) {
 	var resp getPropertyConfigsResponse
 	err := a.Call("get_property_configs", &getPropertyConfigsRequest{
 		All: getAll,
@@ -116,10 +116,10 @@ func (a *ConfigurationAPI) SetAPIURL(url string) {
 	a.APIURL = url
 }
 
-func validateBotGroupsAssignment(groups []BotGroupConfig) error {
+func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
 	for _, group := range groups {
 		if group.Priority == DoNotAssign {
-			return fmt.Errorf("DoNotAssing priority is allowed only as default group priority")
+			return fmt.Errorf("DoNotAssign priority is allowed only as default group priority")
 		}
 	}
 
