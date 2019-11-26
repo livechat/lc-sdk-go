@@ -37,6 +37,8 @@ const (
 	AccessRevoked               WebhookAction = "access_revoked"
 	AccessSet                   WebhookAction = "access_set"
 	CustomerCreated             WebhookAction = "customer_created"
+	EventPropertiesUpdated      WebhookAction = "event_properties_updated"
+	EventPropertiesDeleted      WebhookAction = "event_properties_deleted"
 )
 
 // GroupPriority represents priority of assigning chats in group
