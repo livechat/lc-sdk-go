@@ -150,7 +150,7 @@ var mockedResponses = map[string]string{
 	"multicast":             `{}`,
 }
 
-func createMockedResponder(t *testing.T, method string) func(req *http.Request) *http.Response {
+func createMockedResponder(t *testing.T, method string) roundTripFunc {
 	return func(req *http.Request) *http.Response {
 		createServerError := func(message string) *http.Response {
 			responseError := `{
