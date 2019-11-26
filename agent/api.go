@@ -87,8 +87,8 @@ func (a *AgentAPI) GetArchives(filters *archivesFilters, page, limit uint) ([]ob
 func (a *AgentAPI) StartChat(initialChat *objects.InitialChat, continuous bool) (string, string, []string, error) {
 	var resp startChatResponse
 
-	if e := a.validateInitialChat(initialChat); e != nil {
-		return "", "", nil, e
+	if err := a.validateInitialChat(initialChat); err != nil {
+		return "", "", nil, err
 	}
 
 	err := a.Call("start_chat", &startChatRequest{
@@ -104,8 +104,8 @@ func (a *AgentAPI) StartChat(initialChat *objects.InitialChat, continuous bool) 
 func (a *AgentAPI) ActivateChat(initialChat *objects.InitialChat, continuous bool) (string, []string, error) {
 	var resp activateChatResponse
 
-	if e := a.validateInitialChat(initialChat); e != nil {
-		return "", nil, e
+	if err := a.validateInitialChat(initialChat); err != nil {
+		return "", nil, err
 	}
 
 	err := a.Call("activate_chat", &activateChatRequest{
