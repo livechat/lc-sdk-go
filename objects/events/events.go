@@ -15,6 +15,8 @@ type eventSpecific struct {
 	Width       json.RawMessage `json:"width"`
 	Height      json.RawMessage `json:"height"`
 	Name        json.RawMessage `json:"name"`
+	TemplateID  json.RawMessage `json:"template_id"`
+	Elements    json.RawMessage `json:"elements"`
 }
 
 type Event struct {
@@ -106,4 +108,44 @@ func (e *Event) File() *File {
 	}
 
 	return &f
+}
+
+type RichMessage struct {
+	Event
+	TemplateID string               `json:"template_id"`
+	Elements   []RichMessageElement `json:"elements"`
+}
+
+type RichMessageElement struct {
+	Buttons  []RichMessageButton `json:"buttons"`
+	Title    string              `json:"title"`
+	Subtitle string              `json:"subtitle"`
+	Image    string              `json:"image"`
+}
+
+type RichMessageButton struct {
+	Text    string   `json:"text"`
+	Type    string   `json:"type"`
+	UserIds []string `json:"user_ids"`
+	Value   string   `json:"value"`
+	// Allowed values: compact, full, tall
+	WebviewHeight string `json:"webview_height"`
+}
+
+func (e *Event) RichMessage() *RichMessage {
+	if e.Type != "rich_message" {
+		return nil
+	}
+	var rm RichMessage
+
+	rm.Event = *e
+	if err := json.Unmarshal(e.TemplateID, &rm.TemplateID); err != nil {
+		return nil
+	}
+
+	if err := json.Unmarshal(e.Elements, &rm.Elements); err != nil {
+		return nil
+	}
+
+	return &rm
 }
