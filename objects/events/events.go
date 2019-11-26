@@ -120,7 +120,7 @@ type RichMessageElement struct {
 	Buttons  []RichMessageButton `json:"buttons"`
 	Title    string              `json:"title"`
 	Subtitle string              `json:"subtitle"`
-	Image    string              `json:"image"`
+	Image    RichMessageImage    `json:"image"`
 }
 
 type RichMessageButton struct {
@@ -130,6 +130,15 @@ type RichMessageButton struct {
 	Value   string   `json:"value"`
 	// Allowed values: compact, full, tall
 	WebviewHeight string `json:"webview_height"`
+}
+
+type RichMessageImage struct {
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	ContentType string `json:"content_type"`
+	Size        int    `json:"size"`
+	Width       int    `json:"width,omitempty"`
+	Height      int    `json:"height,omitempty"`
 }
 
 func (e *Event) RichMessage() *RichMessage {
