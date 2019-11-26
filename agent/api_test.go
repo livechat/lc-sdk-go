@@ -148,6 +148,7 @@ var mockedResponses = map[string]string{
 	"update_agent":          `{}`,
 	"send_typing_indicator": `{}`,
 	"multicast":             `{}`,
+	"transfer_chat":         `{}`,
 }
 
 func createMockedResponder(t *testing.T, method string) func(req *http.Request) *http.Response {
@@ -770,6 +771,22 @@ func TestMulticastShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
+func TestTransferChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "transfer_chat"))
+
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	ids := make([]interface{}, 1)
+	ids[0] = "1"
+	rErr := api.TransferChat("stubChatID", "agents", ids, true)
+	if rErr != nil {
+		t.Errorf("TransferChat failed: %v", rErr)
+	}
+}
+
 // TESTS Error Cases
 
 func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1167,4 +1184,17 @@ func TestMulticastShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	rErr := api.Multicast(agent.MulticastScopes{}, []byte("{}"), "type")
 	verifyErrorResponse("Multicast", rErr, t)
+}
+
+func TestTransferChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "transfer_chat"))
+
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+	ids := make([]interface{}, 1)
+	ids[0] = 1
+	rErr := api.TransferChat("stubChatID", "group", ids, false)
+	verifyErrorResponse("SendTypingIndicator", rErr, t)
 }
