@@ -7,6 +7,7 @@ import (
 	"time"
 
 	i "github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 	"github.com/livechat/lc-sdk-go/objects/events"
 
 	"github.com/livechat/lc-sdk-go/objects"
@@ -21,7 +22,7 @@ type AgentAPI struct {
 // NewAPI returns ready to use Agent API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*AgentAPI, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*AgentAPI, error) {
 	api, err := i.NewAPI(t, client, clientID, "agent")
 	if err != nil {
 		return nil, err

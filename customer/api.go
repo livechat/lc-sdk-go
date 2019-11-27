@@ -7,6 +7,7 @@ import (
 
 	i "github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
@@ -19,7 +20,7 @@ type CustomerAPI struct {
 // NewAPI returns ready to use Customer API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*CustomerAPI, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*CustomerAPI, error) {
 	api, err := i.NewAPI(t, client, clientID, "customer")
 	if err != nil {
 		return nil, err

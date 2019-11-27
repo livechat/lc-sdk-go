@@ -1,4 +1,4 @@
-package internal
+package authorization
 
 // Token represents SSO token from Chat API's perspective.
 type Token struct {

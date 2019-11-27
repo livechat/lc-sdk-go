@@ -19,6 +19,9 @@ type eventSpecific struct {
 	Elements    json.RawMessage `json:"elements"`
 }
 
+// Event represents base of all LiveChat chat events.
+//
+// To get speficic event type's structure, call appropriate function based on Event's Type.
 type Event struct {
 	ID         string     `json:"id,omitempty"`
 	CustomID   string     `json:"custom_id,omitempty"`
@@ -30,6 +33,7 @@ type Event struct {
 	eventSpecific
 }
 
+// FilledForm represents LiveChat filled form event.
 type FilledForm struct {
 	Fields []struct {
 		Label string `json:"label"`
@@ -39,6 +43,8 @@ type FilledForm struct {
 	*Event
 }
 
+// FilledForm function converts Event object to FilledForm object if Event's Type is "filled_form".
+// If Type is different or Event is malformed, then it returns nil.
 func (e *Event) FilledForm() *FilledForm {
 	if e.Type != "filled_form" {
 		return nil
@@ -52,11 +58,14 @@ func (e *Event) FilledForm() *FilledForm {
 	return &f
 }
 
+// Message represents LiveChat message event.
 type Message struct {
 	*Event
 	Text string `json:"text,omitempty"`
 }
 
+// Message function converts Event object to Message object if Event's Type is "message".
+// If Type is different or Event is malformed, then it returns nil.
 func (e *Event) Message() *Message {
 	if e.Type != "message" {
 		return nil
@@ -70,6 +79,7 @@ func (e *Event) Message() *Message {
 	return &m
 }
 
+// SystemMessage represents LiveChat system message event.
 type SystemMessage struct {
 	Event
 	Type string `json:"system_message_type,omitempty"`

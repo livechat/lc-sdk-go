@@ -11,6 +11,7 @@ import (
 	"time"
 
 	api_errors "github.com/livechat/lc-sdk-go/errors"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 )
 
 const apiVersion = "3.1"
@@ -23,14 +24,14 @@ type API struct {
 	clientID    string
 	version     string
 	name        string
-	tokenGetter func() *Token
+	tokenGetter func() *authorization.Token
 }
 
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t TokenGetter, client *http.Client, clientID, name string) (*API, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID, name string) (*API, error) {
 	if t == nil {
 		return nil, errors.New("cannot initialize api without TokenGetter")
 	}

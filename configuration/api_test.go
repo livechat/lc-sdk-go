@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/livechat/lc-sdk-go/configuration"
-	"github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 )
 
 type roundTripFunc func(req *http.Request) *http.Response
@@ -22,8 +22,8 @@ func NewTestClient(fn roundTripFunc) *http.Client {
 	}
 }
 
-func stubTokenGetter() *internal.Token {
-	return &internal.Token{
+func stubTokenGetter() *authorization.Token {
+	return &authorization.Token{
 		LicenseID:   12345,
 		AccessToken: "access_token",
 		Region:      "region",

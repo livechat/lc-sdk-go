@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/agent"
-	"github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
@@ -27,8 +27,8 @@ func NewTestClient(fn roundTripFunc) *http.Client {
 	}
 }
 
-func stubTokenGetter() *internal.Token {
-	return &internal.Token{
+func stubTokenGetter() *authorization.Token {
+	return &authorization.Token{
 		LicenseID:   12345,
 		AccessToken: "access_token",
 		Region:      "region",

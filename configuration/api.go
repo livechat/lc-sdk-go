@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	i "github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects/authorization"
 )
 
 // ConfigurationAPI provides the API operation methods for making requests to Livechat Configuration API via Web API.
@@ -16,7 +17,7 @@ type ConfigurationAPI struct {
 // NewAPI returns ready to use Configuration API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t i.TokenGetter, client *http.Client, clientID string) (*ConfigurationAPI, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*ConfigurationAPI, error) {
 	api, err := i.NewAPI(t, client, clientID, "configuration")
 	if err != nil {
 		return nil, err
