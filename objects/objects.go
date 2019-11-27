@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"time"
+
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.
@@ -180,15 +182,15 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 
 // Thread represents LiveChat chat thread
 type Thread struct {
-	ID               string     `json:"id"`
-	Timestamp        Time       `json:"timestamp"`
-	Active           bool       `json:"active"`
-	UserIDs          []string   `json:"user_ids"`
-	RestrictedAccess bool       `json:"restricted_access"`
-	Order            int        `json:"order"`
-	Properties       Properties `json:"properties"`
-	Access           Access     `json:"access"`
-	Events           []*Event   `json:"events"`
+	ID               string          `json:"id"`
+	Timestamp        Time            `json:"timestamp"`
+	Active           bool            `json:"active"`
+	UserIDs          []string        `json:"user_ids"`
+	RestrictedAccess bool            `json:"restricted_access"`
+	Order            int             `json:"order"`
+	Properties       Properties      `json:"properties"`
+	Access           Access          `json:"access"`
+	Events           []*events.Event `json:"events"`
 }
 
 // Access represents LiveChat chat and thread access
@@ -218,78 +220,6 @@ type Customer struct {
 	CustomerLastEventCreatedAt time.Time         `json:"customer_last_event_created_at"`
 	CreatedAt                  time.Time         `json:"created_at"`
 	Fields                     map[string]string `json:"fields"`
-}
-
-type eventSpecific struct {
-	Text   json.RawMessage `json:"text"`
-	Fields json.RawMessage `json:"fields"`
-}
-
-// Event represents base of all LiveChat chat events.
-//
-// To get speficic event type's structure, call appropriate function based on Event's Type.
-type Event struct {
-	ID         string     `json:"id,omitempty"`
-	CustomID   string     `json:"custom_id,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	AuthorID   string     `json:"author_id"`
-	Properties Properties `json:"properties,omitempty"`
-	Recipients string     `json:"recipients,omitempty"`
-	Type       string     `json:"type,omitempty"`
-	eventSpecific
-}
-
-// FilledForm represents LiveChat filled form event.
-type FilledForm struct {
-	Fields []struct {
-		Label string `json:"label"`
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	} `json:"fields"`
-	*Event
-}
-
-// FilledForm function converts Event object to FilledForm object if Event's Type is "filled_form".
-// If Type is different or Event is malformed, then it returns nil.
-func (e *Event) FilledForm() *FilledForm {
-	if e.Type != "filled_form" {
-		return nil
-	}
-	var f FilledForm
-
-	f.Event = e
-	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
-		return nil
-	}
-	return &f
-}
-
-// Message represents LiveChat message event.
-type Message struct {
-	*Event
-	Text string `json:"text,omitempty"`
-}
-
-// Message function converts Event object to Message object if Event's Type is "message".
-// If Type is different or Event is malformed, then it returns nil.
-func (e *Event) Message() *Message {
-	if e.Type != "message" {
-		return nil
-	}
-	var m Message
-
-	m.Event = e
-	if err := json.Unmarshal(e.Text, &m.Text); err != nil {
-		return nil
-	}
-	return &m
-}
-
-// SystemMessage represents LiveChat system message event.
-type SystemMessage struct {
-	Event
-	Type string `json:"system_message_type,omitempty"`
-	Text string `json:"text,omitempty"`
 }
 
 // ThreadSummary represents a short summary of a thread.

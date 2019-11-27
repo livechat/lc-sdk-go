@@ -10,6 +10,7 @@ import (
 	"github.com/livechat/lc-sdk-go/customer"
 	"github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 // TEST HELPERS
@@ -271,7 +272,7 @@ func TestSendEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	eventID, rErr := api.SendEvent("stubChatID", &objects.Event{})
+	eventID, rErr := api.SendEvent("stubChatID", &events.Event{})
 	if rErr != nil {
 		t.Errorf("SendEvent failed: %v", rErr)
 	}
@@ -701,7 +702,7 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.SendEvent("stubChatID", &objects.Event{})
+	_, rErr := api.SendEvent("stubChatID", &events.Event{})
 	verifyErrorResponse("SendEvent", rErr, t)
 }
 

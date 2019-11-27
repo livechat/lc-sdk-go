@@ -7,6 +7,7 @@ import (
 
 	i "github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 // CustomerAPI provides the API operation methods for making requests to Customer Chat API via Web API.
@@ -41,8 +42,8 @@ func (a *CustomerAPI) StartChat(initialChat *objects.InitialChat, continuous boo
 // SendMessage sends event of type message to given chat.
 // It returns event ID.
 func (a *CustomerAPI) SendMessage(chatID, text string, recipients Recipients) (string, error) {
-	e := objects.Message{
-		Event: &objects.Event{
+	e := events.Message{
+		Event: &events.Event{
 			Type:       "message",
 			Recipients: string(recipients),
 		},
@@ -55,8 +56,8 @@ func (a *CustomerAPI) SendMessage(chatID, text string, recipients Recipients) (s
 // SendSystemMessage sends event of type system_message to given chat.
 // It returns event ID.
 func (a *CustomerAPI) SendSystemMessage(chatID, text, messageType string) (string, error) {
-	e := objects.SystemMessage{
-		Event: objects.Event{
+	e := events.SystemMessage{
+		Event: events.Event{
 			Type: "system_message",
 		},
 		Text: text,
@@ -72,9 +73,9 @@ func (a *CustomerAPI) SendSystemMessage(chatID, text, messageType string) (strin
 // Supported event types are: event, message and system_message.
 func (a *CustomerAPI) SendEvent(chatID string, e interface{}) (string, error) {
 	switch v := e.(type) {
-	case *objects.Event:
-	case *objects.Message:
-	case *objects.SystemMessage:
+	case *events.Event:
+	case *events.Message:
+	case *events.SystemMessage:
 	default:
 		return "", fmt.Errorf("event type %T not supported", v)
 	}
@@ -97,9 +98,9 @@ func (a *CustomerAPI) ActivateChat(initialChat *objects.InitialChat, continuous 
 	if initialChat.Thread != nil {
 		for _, e := range initialChat.Thread.Events {
 			switch v := e.(type) {
-			case *objects.Event:
-			case *objects.Message:
-			case *objects.SystemMessage:
+			case *events.Event:
+			case *events.Message:
+			case *events.SystemMessage:
 			default:
 				return "", nil, fmt.Errorf("event type %T not supported", v)
 			}

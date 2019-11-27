@@ -7,6 +7,7 @@ import (
 	"time"
 
 	i "github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects/events"
 
 	"github.com/livechat/lc-sdk-go/objects"
 )
@@ -200,7 +201,7 @@ func (a *AgentAPI) RemoveUserFromChat(chatID, userID, userType string) error {
 // It returns event ID.
 //
 // Supported event types are: event, message and system_message.
-func (a *AgentAPI) SendEvent(chatID string, event objects.Event, attachToLastThread bool) (string, error) {
+func (a *AgentAPI) SendEvent(chatID string, event events.Event, attachToLastThread bool) (string, error) {
 	var resp sendEventResponse
 	err := a.Call("send_event", &sendEventRequest{
 		ChatID:             chatID,
@@ -384,9 +385,9 @@ func (a *AgentAPI) validateInitialChat(chat *objects.InitialChat) error {
 	if chat.Thread != nil {
 		for _, e := range chat.Thread.Events {
 			switch v := e.(type) {
-			case *objects.Event:
-			case *objects.Message:
-			case *objects.SystemMessage:
+			case *events.Event:
+			case *events.Message:
+			case *events.SystemMessage:
 			default:
 				return fmt.Errorf("event type %T not supported", v)
 			}
