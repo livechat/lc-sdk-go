@@ -123,12 +123,6 @@ func (a *API) UploadFile(filename string, file []byte) (string, error) {
 	return resp.URL, err
 }
 
-// SetVersion allows to set API version to use
-func (a *API) SetVersion(version string) *API {
-	a.version = version
-	return a
-}
-
 func (a *API) send(req *http.Request, respPayload interface{}) error {
 	resp, err := a.httpClient.Do(req)
 	if err != nil {

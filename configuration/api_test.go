@@ -409,7 +409,7 @@ func TestCreatePropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CreateProperties(&map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
+	rErr := api.CreateProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
 	if rErr != nil {
 		t.Errorf("CreateProperties failed: %v", rErr)
 	}

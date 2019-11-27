@@ -2,7 +2,7 @@ package configuration
 
 // Webhook represents webhook to be registered
 type Webhook struct {
-	Action         *WebhookAction  `json:"action"`
+	Action         WebhookAction   `json:"action"`
 	SecretKey      string          `json:"secret_key"`
 	URL            string          `json:"url"`
 	AdditionalData []string        `json:"additional_data,omitempty"`
@@ -82,7 +82,7 @@ type BotGroupConfig struct {
 
 // BotWebhookAction represents action that should trigger bot's webhook
 type BotWebhookAction struct {
-	Name           *WebhookAction  `json:"name"`
+	Name           WebhookAction   `json:"name"`
 	Filters        *WebhookFilters `json:"filters"`
 	AdditionalData []string        `json:"additional_data"`
 }

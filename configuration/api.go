@@ -114,7 +114,7 @@ func (a *ConfigurationAPI) GetBotAgentDetails(id string) (*BotAgentDetails, erro
 }
 
 // CreateProperties allows to create properties
-func (a *ConfigurationAPI) CreateProperties(properties *map[string]*PropertyConfig) error {
+func (a *ConfigurationAPI) CreateProperties(properties map[string]*PropertyConfig) error {
 	return a.Call("create_properties", properties, &emptyResponse{})
 }
 
@@ -126,11 +126,6 @@ func (a *ConfigurationAPI) GetPropertyConfigs(getAll bool) (map[string]*Property
 	}, &resp)
 
 	return resp, err
-}
-
-// SetAPIURL should have comment or be unexported because linter complains xD
-func (a *ConfigurationAPI) SetAPIURL(url string) {
-	a.APIURL = url
 }
 
 func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
