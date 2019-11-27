@@ -77,6 +77,7 @@ func (a *CustomerAPI) SendEvent(chatID string, e interface{}) (string, error) {
 	case *events.Event:
 	case *events.Message:
 	case *events.SystemMessage:
+	case *events.File:
 	default:
 		return "", fmt.Errorf("event type %T not supported", v)
 	}
