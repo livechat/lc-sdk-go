@@ -2,9 +2,10 @@
 	"webhook_id": "dummy_id",
 	"secret_key": "dummy_key",
 	"action": "follow_up_requested",
+	"license_id": 21377312,
 	"payload": {
-		"chat_id": "XXXX",
-		"thread_id": "YYYY",
-		"customer_id": "AAA-BBB-CCC"
+		"chat_id": "PS0X0L086G",
+		"thread_id": "PZ070E0W1B",
+		"customer_id": "baf3cf72-4768-42e4-6140-26dd36c962cc"
 	}
 }

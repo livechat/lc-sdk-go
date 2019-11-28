@@ -2,6 +2,7 @@
     "webhook_id": "a383574a6104d4e3df7eb9523fcb2f7d",
     "secret_key": "dummy_key",
     "action": "customer_created",
+    "license_id": 21377312,
     "payload": {
         "id": "baf3cf72-4768-42e4-6140-26dd36c962cc",
         "created_at": "2019-11-14T14:27:24.410018Z",

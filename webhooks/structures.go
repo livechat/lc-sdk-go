@@ -15,6 +15,7 @@ type Webhook struct {
 	WebhookID      string          `json:"webhook_id"`
 	SecretKey      string          `json:"secret_key"`
 	Action         string          `json:"action"`
+	LicenseID      int             `json:"license_id"`
 	AdditionalData json.RawMessage `json:"additional_data"`
 	RawPayload     json.RawMessage `json:"payload"`
 	Payload        interface{}
@@ -170,6 +171,13 @@ type EventsMarkedAsSeen struct {
 	UserID   string `json:"user_id"`
 	ChatID   string `json:"chat_id"`
 	SeenUpTo string `json:"seen_up_to"`
+}
+
+// FollowUpRequested represents payload of follow_up_requested webhook.
+type FollowUpRequested struct {
+	ChatID     string `json:"chat_id"`
+	ThreadID   string `json:"thread_id"`
+	CustomerID string `json:"customer_id"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChatThread.

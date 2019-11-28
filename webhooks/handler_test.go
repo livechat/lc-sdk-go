@@ -34,6 +34,7 @@ var verifiers = map[string]webhooks.Handler{
 	"agent_deleted":                  agentDeleted,
 	"customer_created":               customerCreated,
 	"events_marked_as_seen":          eventsMarkedAsSeen,
+	"follow_up_requested":            followUpRequested,
 }
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
@@ -117,8 +118,18 @@ func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 }
 
 func TestPayloadParsingOK(t *testing.T) {
+	withLicenseCheck := func(verifier webhooks.Handler) webhooks.Handler {
+		return func(licenseID int, payload interface{}) error {
+			var errors string
+			propEq("LicenseID", licenseID, 21377312, &errors)
+			if errors != "" {
+				return fmt.Errorf(errors)
+			}
+			return verifier(licenseID, payload)
+		}
+	}
 	testAction := func(action string, verifier webhooks.Handler) error {
-		cfg := webhooks.NewConfiguration().WithAction(action, verifier, "dummy_key")
+		cfg := webhooks.NewConfiguration().WithAction(action, withLicenseCheck(verifier), "dummy_key")
 		h := webhooks.NewWebhookHandler(cfg)
 		payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
 		if err != nil {

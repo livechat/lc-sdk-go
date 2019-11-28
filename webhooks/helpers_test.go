@@ -537,3 +537,20 @@ func threadClosed(wh *webhooks.Webhook) error {
 	}
 	return nil
 }
+
+func followUpRequested(licenseID int, payload interface{}) error {
+	wh, ok := payload.(*webhooks.FollowUpRequested)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", payload)
+	}
+
+	var errors string
+	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
+	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
+	propEq("CustomerID", wh.CustomerID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}

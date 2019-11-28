@@ -134,6 +134,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &CustomerCreated{}
 		case "events_marked_as_seen":
 			payload = &EventsMarkedAsSeen{}
+		case "follow_up_requested":
+			payload = &FollowUpRequested{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return
