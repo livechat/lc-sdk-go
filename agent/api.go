@@ -29,9 +29,9 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 }
 
 // GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) ([]objects.ChatSummary, uint, string, string, error) {
+func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
 	var resp getChatsSummaryResponse
-	err := a.Call("get_chats_summary", &getChatsSummaryRequest{
+	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
 		Filters: filters,
 		Pagination: &paginationRequest{
 			Page:  page,
@@ -43,9 +43,9 @@ func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) ([]object
 }
 
 // GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID, order, pageID string, limit uint) ([]objects.ThreadSummary, uint, string, string, error) {
+func (a *API) GetChatThreadsSummary(chatID, order, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
 	var resp getChatThreadsSummaryResponse
-	err := a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
+	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
 		hashedPaginationRequest: &hashedPaginationRequest{
 			Order:  order,
@@ -69,9 +69,9 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, 
 }
 
 // GetArchives returns archived chats.
-func (a *API) GetArchives(filters *archivesFilters, page, limit uint) ([]objects.Chat, uint, uint, error) {
+func (a *API) GetArchives(filters *archivesFilters, page, limit uint) (chats []objects.Chat, currentPage, totalPages uint, err error) {
 	var resp getArchivesResponse
-	err := a.Call("get_archives", &getArchivesRequest{
+	err = a.Call("get_archives", &getArchivesRequest{
 		Filters: filters,
 		Pagination: &paginationRequest{
 			Page:  page,
@@ -84,14 +84,14 @@ func (a *API) GetArchives(filters *archivesFilters, page, limit uint) ([]objects
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (string, string, []string, error) {
+func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
 	var resp startChatResponse
 
 	if err := a.validateInitialChat(initialChat); err != nil {
 		return "", "", nil, err
 	}
 
-	err := a.Call("start_chat", &startChatRequest{
+	err = a.Call("start_chat", &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
 	}, &resp)
@@ -101,14 +101,14 @@ func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (stri
 // ActivateChat activates chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (string, []string, error) {
+func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
 	var resp activateChatResponse
 
 	if err := a.validateInitialChat(initialChat); err != nil {
 		return "", nil, err
 	}
 
-	err := a.Call("activate_chat", &activateChatRequest{
+	err = a.Call("activate_chat", &activateChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
 	}, &resp)
@@ -297,9 +297,9 @@ func (a *API) UntagChatThread(chatID, threadID, tag string) error {
 }
 
 // GetCustomers returns the list of Customers.
-func (a *API) GetCustomers(limit uint, pageID, order string, filters *customersFilters) ([]objects.Customer, uint, string, string, error) {
+func (a *API) GetCustomers(limit uint, pageID, order string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
 	var resp getCustomersResponse
-	err := a.Call("get_customers", &getCustomersRequest{
+	err = a.Call("get_customers", &getCustomersRequest{
 		PageID:  pageID,
 		Limit:   limit,
 		Order:   order,
@@ -384,6 +384,7 @@ func (a *API) validateInitialChat(chat *objects.InitialChat) error {
 	if chat.Thread != nil {
 		for _, e := range chat.Thread.Events {
 			switch v := e.(type) {
+			case *objects.File:
 			case *objects.Event:
 			case *objects.Message:
 			case *objects.SystemMessage:

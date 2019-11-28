@@ -29,13 +29,13 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (string, string, []string, error) {
+func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
 	req := &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
 	}
 	var resp startChatResponse
-	err := a.Call("start_chat", req, &resp)
+	err = a.Call("start_chat", req, &resp)
 	return resp.ChatID, resp.ThreadID, resp.EventIDs, err
 }
 
@@ -93,12 +93,13 @@ func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
 // ActivateChat activates chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (string, []string, error) {
+func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
 	var resp activateChatResponse
 
 	if initialChat.Thread != nil {
 		for _, e := range initialChat.Thread.Events {
 			switch v := e.(type) {
+			case *objects.File:
 			case *objects.Event:
 			case *objects.Message:
 			case *objects.SystemMessage:
@@ -108,7 +109,7 @@ func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (s
 		}
 	}
 
-	err := a.Call("activate_chat", &activateChatRequest{
+	err = a.Call("activate_chat", &activateChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
 	}, &resp)
@@ -117,9 +118,9 @@ func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (s
 }
 
 // GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(offset, limit uint) ([]objects.Chat, uint, error) {
+func (a *API) GetChatsSummary(offset, limit uint) (chats []objects.Chat, total uint, err error) {
 	var resp getChatsSummaryResponse
-	err := a.Call("get_chats_summary", &getChatsSummaryRequest{
+	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
 		Limit:  limit,
 		Offset: offset,
 	}, &resp)
@@ -128,9 +129,9 @@ func (a *API) GetChatsSummary(offset, limit uint) ([]objects.Chat, uint, error) 
 }
 
 // GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) ([]objects.ThreadSummary, uint, error) {
+func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) (threads []objects.ThreadSummary, totak uint, err error) {
 	var resp getChatThreadsSummaryResponse
-	err := a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
+	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
 		Limit:  limit,
 		Offset: offset,
@@ -288,9 +289,9 @@ func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]
 
 // GetForm returns an empty prechat, postchat or ticket form and indication whether
 // the form is enabled on the license.
-func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
+func (a *API) GetForm(groupID int, formType FormType) (form *Form, enabled bool, err error) {
 	var resp getFormResponse
-	err := a.Call("get_form", &getFormRequest{
+	err = a.Call("get_form", &getFormRequest{
 		GroupID: groupID,
 		Type:    string(formType),
 	}, &resp)
