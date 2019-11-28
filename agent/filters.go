@@ -13,8 +13,8 @@ type propertyFilterType struct {
 // If only first parameter is passed, filter will check only existence of property
 // Passing additional parameters will check if property values match/exclude given values
 // based on the first parameter
-func NewPropertyFilterType(includes bool, vals ...interface{}) propertyFilterType {
-	pft := propertyFilterType{}
+func NewPropertyFilterType(includes bool, vals ...interface{}) *propertyFilterType {
+	pft := &propertyFilterType{}
 	switch {
 	case vals == nil:
 		pft.Exists = &includes
@@ -29,17 +29,17 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) propertyFilterTyp
 // Archives filters
 
 type archivesFilters struct {
-	AgentIDs   []string           `json:"agent_ids,omitempty"`
-	GroupIDs   []uint             `json:"group_ids,omitempty"`
-	DateFrom   string             `json:"date_from,omitempty"`
-	DateTo     string             `json:"date_to,omitempty"`
-	Properties PropertiesFilters  `json:"properties,omitempty"`
-	Tags       propertyFilterType `json:"tags,omitempty"`
-	Sales      propertyFilterType `json:"sales,omitempty"`
-	Goals      propertyFilterType `json:"goals,omitempty"`
-	Surveys    []SurveyFilter     `json:"surveys,omitempty"`
-	ThreadIDs  []string           `json:"thread_ids,omitempty"`
-	Query      string             `json:"query,omitempty"`
+	AgentIDs   []string            `json:"agent_ids,omitempty"`
+	GroupIDs   []uint              `json:"group_ids,omitempty"`
+	DateFrom   string              `json:"date_from,omitempty"`
+	DateTo     string              `json:"date_to,omitempty"`
+	Properties PropertiesFilters   `json:"properties,omitempty"`
+	Tags       *propertyFilterType `json:"tags,omitempty"`
+	Sales      *propertyFilterType `json:"sales,omitempty"`
+	Goals      *propertyFilterType `json:"goals,omitempty"`
+	Surveys    []SurveyFilter      `json:"surveys,omitempty"`
+	ThreadIDs  []string            `json:"thread_ids,omitempty"`
+	Query      string              `json:"query,omitempty"`
 }
 
 // SurveyFilter represents structure to match surveys when getting Archives

@@ -91,12 +91,12 @@ type BotWebhookAction struct {
 type PropertyConfig struct {
 	Type        string               `json:"type"`
 	Locations   map[string]*Location `json:"locations"`
-	Description string               `json:"description"`
-	Domain      []interface{}        `json:"domain"`
+	Description string               `json:"description,omitempty"`
+	Domain      []interface{}        `json:"domain,omitempty"`
 	Range       struct {
 		From int `json:"from"`
 		To   int `json:"to"`
-	} `json:"range"`
+	} `json:"range,omitempty"`
 }
 
 // Location represents property location

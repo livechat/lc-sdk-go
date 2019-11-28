@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	i "github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/authorization"
-
+	i "github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
