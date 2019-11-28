@@ -17,14 +17,14 @@ type MulticastScopes struct {
 
 // MulticastScopesAgents represents scopes for multicast to agents
 type MulticastScopesAgents struct {
-	Groups *[]uint   `json:"groups,omitempty"`
-	IDs    *[]string `json:"ids,omitempty"`
-	All    *bool     `json:"all,omitempty"`
+	Groups []uint   `json:"groups,omitempty"`
+	IDs    []string `json:"ids,omitempty"`
+	All    *bool    `json:"all,omitempty"`
 }
 
 // MulticastScopesCustomers represents scopes for multicast to customers
 type MulticastScopesCustomers struct {
-	IDs *[]string `json:"ids,omitempty"`
+	IDs []string `json:"ids,omitempty"`
 }
 
 type transferTarget struct {
