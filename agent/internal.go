@@ -7,8 +7,8 @@ import (
 )
 
 type getChatsSummaryRequest struct {
-	Filters    *chatsFilters     `json:"filters,omitempty"`
-	Pagination paginationRequest `json:"pagination,omitempty"`
+	Filters    *chatsFilters      `json:"filters,omitempty"`
+	Pagination *paginationRequest `json:"pagination,omitempty"`
 }
 
 type getChatsSummaryResponse struct {
@@ -38,8 +38,8 @@ type getChatThreadsResponse struct {
 }
 
 type getArchivesRequest struct {
-	Filters    *archivesFilters  `json:"filters,omitempty"`
-	Pagination paginationRequest `json:"pagination,omitempty"`
+	Filters    *archivesFilters   `json:"filters,omitempty"`
+	Pagination *paginationRequest `json:"pagination,omitempty"`
 }
 
 type getArchivesResponse struct {
@@ -88,9 +88,9 @@ type modifyAccessRequest struct {
 }
 
 type transferChatRequest struct {
-	ChatID string         `json:"chat_id"`
-	Target transferTarget `json:"target,omitempty"`
-	Force  bool           `json:"force"`
+	ChatID string          `json:"chat_id"`
+	Target *transferTarget `json:"target,omitempty"`
+	Force  bool            `json:"force"`
 }
 
 // used to add and remove user from chat
@@ -103,7 +103,7 @@ type changeChatUsersRequest struct {
 type sendEventRequest struct {
 	ChatID             string        `json:"chat_id"`
 	Event              objects.Event `json:"event"`
-	AttachToLastThread bool          `json:"attach_to_last_thread,omitempty"`
+	AttachToLastThread *bool         `json:"attach_to_last_thread,omitempty"`
 }
 
 type sendEventResponse struct {

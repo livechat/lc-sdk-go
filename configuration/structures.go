@@ -93,7 +93,7 @@ type PropertyConfig struct {
 	Locations   map[string]*Location `json:"locations"`
 	Description string               `json:"description,omitempty"`
 	Domain      []interface{}        `json:"domain,omitempty"`
-	Range       struct {
+	Range       *struct {
 		From int `json:"from"`
 		To   int `json:"to"`
 	} `json:"range,omitempty"`

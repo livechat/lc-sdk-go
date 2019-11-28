@@ -33,7 +33,7 @@ func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) ([]object
 	var resp getChatsSummaryResponse
 	err := a.Call("get_chats_summary", &getChatsSummaryRequest{
 		Filters: filters,
-		Pagination: paginationRequest{
+		Pagination: &paginationRequest{
 			Page:  page,
 			Limit: limit,
 		},
@@ -73,7 +73,7 @@ func (a *API) GetArchives(filters *archivesFilters, page, limit uint) ([]objects
 	var resp getArchivesResponse
 	err := a.Call("get_archives", &getArchivesRequest{
 		Filters: filters,
-		Pagination: paginationRequest{
+		Pagination: &paginationRequest{
 			Page:  page,
 			Limit: limit,
 		},
@@ -169,7 +169,7 @@ func (a *API) SetAccess(resource, id string, access objects.Access) error {
 func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force bool) error {
 	return a.Call("transfer_chat", &transferChatRequest{
 		ChatID: chatID,
-		Target: transferTarget{
+		Target: &transferTarget{
 			Type: targetType,
 			IDs:  ids,
 		},
@@ -205,7 +205,7 @@ func (a *API) SendEvent(chatID string, event objects.Event, attachToLastThread b
 	err := a.Call("send_event", &sendEventRequest{
 		ChatID:             chatID,
 		Event:              event,
-		AttachToLastThread: attachToLastThread,
+		AttachToLastThread: &attachToLastThread,
 	}, &resp)
 
 	return resp.EventID, err
