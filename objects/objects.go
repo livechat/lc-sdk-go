@@ -364,6 +364,7 @@ type SystemMessage struct {
 	Text string `json:"text,omitempty"`
 }
 
+// File represents LiveChat file event
 type File struct {
 	Event
 	ContentType string `json:"content_type"`
@@ -373,6 +374,8 @@ type File struct {
 	Name        string `json:"name"`
 }
 
+// File function converts Event object to File object if Event's Type is "file".
+// If Type is different or Event is malformed, then it returns nil.
 func (e *Event) File() *File {
 	if e.Type != "file" {
 		return nil
@@ -398,12 +401,14 @@ func (e *Event) File() *File {
 	return &f
 }
 
+// RichMessage represents LiveChat rich message event
 type RichMessage struct {
 	Event
 	TemplateID string               `json:"template_id"`
 	Elements   []RichMessageElement `json:"elements"`
 }
 
+// RichMessageElement represents element of LiveChat rich message
 type RichMessageElement struct {
 	Buttons  []RichMessageButton `json:"buttons"`
 	Title    string              `json:"title"`
@@ -411,6 +416,7 @@ type RichMessageElement struct {
 	Image    RichMessageImage    `json:"image"`
 }
 
+// RichMessageButton represents button in LiveChat rich message
 type RichMessageButton struct {
 	Text    string   `json:"text"`
 	Type    string   `json:"type"`
@@ -420,6 +426,7 @@ type RichMessageButton struct {
 	WebviewHeight string `json:"webview_height"`
 }
 
+// RichMessageImage represents image in LiveChat rich message
 type RichMessageImage struct {
 	Name        string `json:"name"`
 	URL         string `json:"url"`
@@ -429,6 +436,8 @@ type RichMessageImage struct {
 	Height      int    `json:"height,omitempty"`
 }
 
+// RichMessage function converts Event object to RichMessage object if Event's Type is "rich_message".
+// If Type is different or Event is malformed, then it returns nil.
 func (e *Event) RichMessage() *RichMessage {
 	if e.Type != "rich_message" {
 		return nil
