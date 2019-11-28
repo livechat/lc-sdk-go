@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/configuration"
 	"github.com/livechat/lc-sdk-go/authorization"
+	"github.com/livechat/lc-sdk-go/configuration"
 )
 
 type roundTripFunc func(req *http.Request) *http.Response
@@ -207,7 +207,7 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.1/configuration/action/"+method+"?license_id=12345" {
+		if req.URL.String() != "https://api.livechatinc.com/v3.2/configuration/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
