@@ -13,7 +13,7 @@ func propEq(propertyName string, actual, expected interface{}, validationAccumul
 	}
 }
 
-func accessGranted(payload interface{}) error {
+func accessGranted(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.AccessGranted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -31,7 +31,7 @@ func accessGranted(payload interface{}) error {
 	return nil
 }
 
-func accessRevoked(payload interface{}) error {
+func accessRevoked(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.AccessRevoked)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -50,7 +50,7 @@ func accessRevoked(payload interface{}) error {
 	return nil
 }
 
-func accessSet(payload interface{}) error {
+func accessSet(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.AccessSet)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -68,7 +68,7 @@ func accessSet(payload interface{}) error {
 	return nil
 }
 
-func agentDeleted(payload interface{}) error {
+func agentDeleted(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.AgentDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -83,7 +83,7 @@ func agentDeleted(payload interface{}) error {
 	return nil
 }
 
-func agentStatusChanged(payload interface{}) error {
+func agentStatusChanged(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.AgentStatusChanged)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -99,7 +99,7 @@ func agentStatusChanged(payload interface{}) error {
 	return nil
 }
 
-func chatPropertiesDeleted(payload interface{}) error {
+func chatPropertiesDeleted(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -117,7 +117,7 @@ func chatPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func chatPropertiesUpdated(payload interface{}) error {
+func chatPropertiesUpdated(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -135,7 +135,7 @@ func chatPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func chatThreadPropertiesDeleted(payload interface{}) error {
+func chatThreadPropertiesDeleted(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatThreadPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -154,7 +154,7 @@ func chatThreadPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func chatThreadPropertiesUpdated(payload interface{}) error {
+func chatThreadPropertiesUpdated(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatThreadPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -173,7 +173,7 @@ func chatThreadPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func chatThreadTagged(payload interface{}) error {
+func chatThreadTagged(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatThreadTagged)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -190,7 +190,7 @@ func chatThreadTagged(payload interface{}) error {
 	return nil
 }
 
-func chatThreadUntagged(payload interface{}) error {
+func chatThreadUntagged(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatThreadUntagged)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -207,7 +207,7 @@ func chatThreadUntagged(payload interface{}) error {
 	return nil
 }
 
-func chatUserAdded(payload interface{}) error {
+func chatUserAdded(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatUserAdded)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -261,7 +261,7 @@ func chatUserAdded(payload interface{}) error {
 	return nil
 }
 
-func chatUserRemoved(payload interface{}) error {
+func chatUserRemoved(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ChatUserRemoved)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -278,7 +278,7 @@ func chatUserRemoved(payload interface{}) error {
 	return nil
 }
 
-func customerCreated(payload interface{}) error {
+func customerCreated(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.CustomerCreated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -305,7 +305,7 @@ func customerCreated(payload interface{}) error {
 	return nil
 }
 
-func eventPropertiesDeleted(payload interface{}) error {
+func eventPropertiesDeleted(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.EventPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -325,7 +325,7 @@ func eventPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func eventPropertiesUpdated(payload interface{}) error {
+func eventPropertiesUpdated(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.EventPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -345,7 +345,7 @@ func eventPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func eventUpdated(payload interface{}) error {
+func eventUpdated(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.EventUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -370,7 +370,7 @@ func eventUpdated(payload interface{}) error {
 	return nil
 }
 
-func eventsMarkedAsSeen(payload interface{}) error {
+func eventsMarkedAsSeen(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.EventsMarkedAsSeen)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -387,7 +387,7 @@ func eventsMarkedAsSeen(payload interface{}) error {
 	return nil
 }
 
-func incomingChatThread(payload interface{}) error {
+func incomingChatThread(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.IncomingChatThread)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -476,7 +476,7 @@ func incomingChatThread(payload interface{}) error {
 	return nil
 }
 
-func incomingEvent(payload interface{}) error {
+func incomingEvent(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.IncomingEvent)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -501,7 +501,7 @@ func incomingEvent(payload interface{}) error {
 	return nil
 }
 
-func incomingRichMessagePostback(payload interface{}) error {
+func incomingRichMessagePostback(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.IncomingRichMessagePostback)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -521,7 +521,7 @@ func incomingRichMessagePostback(payload interface{}) error {
 	return nil
 }
 
-func threadClosed(payload interface{}) error {
+func threadClosed(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.ThreadClosed)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)
@@ -531,6 +531,23 @@ func threadClosed(payload interface{}) error {
 	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
 	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
 	propEq("UserID", wh.UserID, "l.wojciechowski@livechatinc.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func followUpRequested(licenseID int, payload interface{}) error {
+	wh, ok := payload.(*webhooks.FollowUpRequested)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", payload)
+	}
+
+	var errors string
+	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
+	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
+	propEq("CustomerID", wh.CustomerID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)

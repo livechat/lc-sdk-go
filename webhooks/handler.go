@@ -28,7 +28,7 @@ type actionConfiguration struct {
 //
 // It can be used with WebhookHandler, in which case WebhookHandler will
 // pass decoded webhook payload (ie. one of webhooks structures).
-type Handler func(webhookPayload interface{}) error
+type Handler func(licenseID int, webhookPayload interface{}) error
 
 // NewConfiguration creates basic WebhookHandler configuration that
 // processes no webhooks and uses http.Error to handle webhook processing
@@ -134,6 +134,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &CustomerCreated{}
 		case "events_marked_as_seen":
 			payload = &EventsMarkedAsSeen{}
+		case "follow_up_requested":
+			payload = &FollowUpRequested{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return
@@ -144,7 +146,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			return
 		}
 
-		if err = acfg.handle(payload); err != nil {
+		if err = acfg.handle(wh.LicenseID, payload); err != nil {
 			cfg.handleError(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}

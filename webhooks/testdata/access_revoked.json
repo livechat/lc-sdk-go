@@ -2,6 +2,7 @@
 	"webhook_id": "37901609f767dea5bc3a8acf5458bd11",
 	"secret_key": "dummy_key",
 	"action": "access_revoked",
+	"license_id": 21377312,
 	"payload": {
 		"resource": "chat",
 		"id": "PJ0MRSHTDV",
