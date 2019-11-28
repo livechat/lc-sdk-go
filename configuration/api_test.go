@@ -208,7 +208,7 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.1/configuration/action/"+method+"?license_id=12345" {
+		if req.URL.String() != "https://api.livechatinc.com/v3.2/configuration/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Configuration API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
