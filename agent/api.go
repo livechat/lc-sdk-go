@@ -2,7 +2,6 @@ package agent
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -87,7 +86,7 @@ func (a *API) GetArchives(filters *archivesFilters, page, limit uint) (chats []o
 func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
 	var resp startChatResponse
 
-	if err := a.validateInitialChat(initialChat); err != nil {
+	if err := initialChat.Validate(); err != nil {
 		return "", "", nil, err
 	}
 
@@ -104,7 +103,7 @@ func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chat
 func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
 	var resp activateChatResponse
 
-	if err := a.validateInitialChat(initialChat); err != nil {
+	if err := initialChat.Validate(); err != nil {
 		return "", nil, err
 	}
 
@@ -199,8 +198,12 @@ func (a *API) RemoveUserFromChat(chatID, userID, userType string) error {
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
-// Supported event types are: event, message and system_message.
-func (a *API) SendEvent(chatID string, event objects.Event, attachToLastThread bool) (string, error) {
+// Supported event types are: event, message, system_message and file.
+func (a *API) SendEvent(chatID string, event interface{}, attachToLastThread bool) (string, error) {
+	if err := objects.ValidateEvent(event); err != nil {
+		return "", err
+	}
+
 	var resp sendEventResponse
 	err := a.Call("send_event", &sendEventRequest{
 		ChatID:             chatID,
@@ -378,20 +381,4 @@ func (a *API) Multicast(scopes MulticastScopes, content json.RawMessage, multica
 		Content: content,
 		Type:    multicastType,
 	}, &emptyResponse{})
-}
-
-func (a *API) validateInitialChat(chat *objects.InitialChat) error {
-	if chat.Thread != nil {
-		for _, e := range chat.Thread.Events {
-			switch v := e.(type) {
-			case *objects.File:
-			case *objects.Event:
-			case *objects.Message:
-			case *objects.SystemMessage:
-			default:
-				return fmt.Errorf("event type %T not supported", v)
-			}
-		}
-	}
-	return nil
 }

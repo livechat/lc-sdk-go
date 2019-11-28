@@ -101,9 +101,9 @@ type changeChatUsersRequest struct {
 }
 
 type sendEventRequest struct {
-	ChatID             string        `json:"chat_id"`
-	Event              objects.Event `json:"event"`
-	AttachToLastThread *bool         `json:"attach_to_last_thread,omitempty"`
+	ChatID             string      `json:"chat_id"`
+	Event              interface{} `json:"event"`
+	AttachToLastThread *bool       `json:"attach_to_last_thread,omitempty"`
 }
 
 type sendEventResponse struct {

@@ -6,6 +6,7 @@ package objects
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -246,6 +247,36 @@ type InitialChat struct {
 	Properties Properties     `json:"properties,omitempty"`
 	Users      []*User        `json:"users,omitempty"`
 	Thread     *InitialThread `json:"thread,omitempty"`
+}
+
+// Validate checks if there are no unsupported event types in InitialChat Thread
+func (chat *InitialChat) Validate() error {
+	if chat.Thread != nil {
+		for _, e := range chat.Thread.Events {
+			if err := ValidateEvent(e); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// ValidateEvent checks if given interface resolves into supported event type
+func ValidateEvent(e interface{}) error {
+	switch v := e.(type) {
+	case *File:
+	case *Event:
+	case *Message:
+	case *SystemMessage:
+	case File:
+	case Event:
+	case Message:
+	case SystemMessage:
+	default:
+		return fmt.Errorf("event type %T not supported", v)
+	}
+
+	return nil
 }
 
 // InitialThread represents initial chat thread used in StartChat or ActivateChat.

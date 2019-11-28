@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/agent"
-	"github.com/livechat/lc-sdk-go/objects"
 	"github.com/livechat/lc-sdk-go/authorization"
+	"github.com/livechat/lc-sdk-go/objects"
 )
 
 // TEST HELPERS
@@ -809,7 +809,7 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.SendEvent("stubChatID", objects.Event{}, false)
+	_, rErr := api.SendEvent("stubChatID", &objects.Event{}, false)
 	verifyErrorResponse("SendEvent", rErr, t)
 }
 

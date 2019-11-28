@@ -1,7 +1,6 @@
 package customer
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -33,6 +32,10 @@ func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chat
 	req := &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
+	}
+
+	if err := initialChat.Validate(); err != nil {
+		return "", "", nil, err
 	}
 	var resp startChatResponse
 	err = a.Call("start_chat", req, &resp)
@@ -70,15 +73,10 @@ func (a *API) SendSystemMessage(chatID, text, messageType string) (string, error
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
-// Supported event types are: event, message and system_message.
+// Supported event types are: event, message, system_message and file.
 func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
-	switch v := e.(type) {
-	case *objects.Event:
-	case *objects.Message:
-	case *objects.SystemMessage:
-	case *objects.File:
-	default:
-		return "", fmt.Errorf("event type %T not supported", v)
+	if err := objects.ValidateEvent(e); err != nil {
+		return "", err
 	}
 
 	var resp sendEventResponse
@@ -96,17 +94,8 @@ func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
 func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
 	var resp activateChatResponse
 
-	if initialChat.Thread != nil {
-		for _, e := range initialChat.Thread.Events {
-			switch v := e.(type) {
-			case *objects.File:
-			case *objects.Event:
-			case *objects.Message:
-			case *objects.SystemMessage:
-			default:
-				return "", nil, fmt.Errorf("event type %T not supported", v)
-			}
-		}
+	if err := initialChat.Validate(); err != nil {
+		return "", nil, err
 	}
 
 	err = a.Call("activate_chat", &activateChatRequest{
