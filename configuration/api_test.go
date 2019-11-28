@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/livechat/lc-sdk-go/configuration"
-	"github.com/livechat/lc-sdk-go/objects/authorization"
+	"github.com/livechat/lc-sdk-go/authorization"
 )
 
 type roundTripFunc func(req *http.Request) *http.Response

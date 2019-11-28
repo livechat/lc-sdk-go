@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 
 	"github.com/livechat/lc-sdk-go/objects"
-	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 // WebhookBase represents general webhook format.
@@ -71,16 +70,16 @@ type ChatUserRemoved struct {
 
 // IncomingEvent represents payload of incoming_event webhook.
 type IncomingEvent struct {
-	ChatID   string       `json:"chat_id"`
-	ThreadID string       `json:"thread_id"`
-	Event    events.Event `json:"event"`
+	ChatID   string        `json:"chat_id"`
+	ThreadID string        `json:"thread_id"`
+	Event    objects.Event `json:"event"`
 }
 
 // EventUpdated represents payload of event_updated webhook.
 type EventUpdated struct {
-	ChatID   string       `json:"chat_id"`
-	ThreadID string       `json:"thread_id"`
-	Event    events.Event `json:"event"`
+	ChatID   string        `json:"chat_id"`
+	ThreadID string        `json:"thread_id"`
+	Event    objects.Event `json:"event"`
 }
 
 // IncomingRichMessagePostback represents payload of incoming_rich_message_postback webhook.

@@ -9,8 +9,7 @@ import (
 
 	"github.com/livechat/lc-sdk-go/agent"
 	"github.com/livechat/lc-sdk-go/objects"
-	"github.com/livechat/lc-sdk-go/objects/authorization"
-	"github.com/livechat/lc-sdk-go/objects/events"
+	"github.com/livechat/lc-sdk-go/authorization"
 )
 
 // TEST HELPERS
@@ -260,7 +259,7 @@ func TestSendEventShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	eventID, rErr := api.SendEvent("stubChatID", events.Event{}, false)
+	eventID, rErr := api.SendEvent("stubChatID", objects.Event{}, false)
 	if rErr != nil {
 		t.Errorf("SendEvent failed: %v", rErr)
 	}
@@ -810,7 +809,7 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.SendEvent("stubChatID", events.Event{}, false)
+	_, rErr := api.SendEvent("stubChatID", objects.Event{}, false)
 	verifyErrorResponse("SendEvent", rErr, t)
 }
 

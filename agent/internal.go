@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/livechat/lc-sdk-go/objects"
-	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
 type getChatsSummaryRequest struct {
@@ -102,9 +101,9 @@ type changeChatUsersRequest struct {
 }
 
 type sendEventRequest struct {
-	ChatID             string       `json:"chat_id"`
-	Event              events.Event `json:"event"`
-	AttachToLastThread bool         `json:"attach_to_last_thread,omitempty"`
+	ChatID             string        `json:"chat_id"`
+	Event              objects.Event `json:"event"`
+	AttachToLastThread bool          `json:"attach_to_last_thread,omitempty"`
 }
 
 type sendEventResponse struct {

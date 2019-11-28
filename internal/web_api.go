@@ -11,7 +11,7 @@ import (
 	"time"
 
 	api_errors "github.com/livechat/lc-sdk-go/errors"
-	"github.com/livechat/lc-sdk-go/objects/authorization"
+	"github.com/livechat/lc-sdk-go/authorization"
 )
 
 const apiVersion = "3.1"

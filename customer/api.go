@@ -5,32 +5,31 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/livechat/lc-sdk-go/authorization"
 	i "github.com/livechat/lc-sdk-go/internal"
 	"github.com/livechat/lc-sdk-go/objects"
-	"github.com/livechat/lc-sdk-go/objects/authorization"
-	"github.com/livechat/lc-sdk-go/objects/events"
 )
 
-// CustomerAPI provides the API operation methods for making requests to Customer Chat API via Web API.
+// API provides the API operation methods for making requests to Customer Chat API via Web API.
 // See this package's package overview docs for details on the service.
-type CustomerAPI struct {
+type API struct {
 	*i.API
 }
 
 // NewAPI returns ready to use Customer API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*CustomerAPI, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
 	api, err := i.NewAPI(t, client, clientID, "customer")
 	if err != nil {
 		return nil, err
 	}
-	return &CustomerAPI{api}, nil
+	return &API{api}, nil
 }
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *CustomerAPI) StartChat(initialChat *objects.InitialChat, continuous bool) (string, string, []string, error) {
+func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (string, string, []string, error) {
 	req := &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
@@ -42,9 +41,9 @@ func (a *CustomerAPI) StartChat(initialChat *objects.InitialChat, continuous boo
 
 // SendMessage sends event of type message to given chat.
 // It returns event ID.
-func (a *CustomerAPI) SendMessage(chatID, text string, recipients Recipients) (string, error) {
-	e := events.Message{
-		Event: &events.Event{
+func (a *API) SendMessage(chatID, text string, recipients Recipients) (string, error) {
+	e := objects.Message{
+		Event: objects.Event{
 			Type:       "message",
 			Recipients: string(recipients),
 		},
@@ -56,9 +55,9 @@ func (a *CustomerAPI) SendMessage(chatID, text string, recipients Recipients) (s
 
 // SendSystemMessage sends event of type system_message to given chat.
 // It returns event ID.
-func (a *CustomerAPI) SendSystemMessage(chatID, text, messageType string) (string, error) {
-	e := events.SystemMessage{
-		Event: events.Event{
+func (a *API) SendSystemMessage(chatID, text, messageType string) (string, error) {
+	e := objects.SystemMessage{
+		Event: objects.Event{
 			Type: "system_message",
 		},
 		Text: text,
@@ -72,12 +71,12 @@ func (a *CustomerAPI) SendSystemMessage(chatID, text, messageType string) (strin
 // It returns event ID.
 //
 // Supported event types are: event, message and system_message.
-func (a *CustomerAPI) SendEvent(chatID string, e interface{}) (string, error) {
+func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
 	switch v := e.(type) {
-	case *events.Event:
-	case *events.Message:
-	case *events.SystemMessage:
-	case *events.File:
+	case *objects.Event:
+	case *objects.Message:
+	case *objects.SystemMessage:
+	case *objects.File:
 	default:
 		return "", fmt.Errorf("event type %T not supported", v)
 	}
@@ -94,15 +93,15 @@ func (a *CustomerAPI) SendEvent(chatID string, e interface{}) (string, error) {
 // ActivateChat activates chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *CustomerAPI) ActivateChat(initialChat *objects.InitialChat, continuous bool) (string, []string, error) {
+func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (string, []string, error) {
 	var resp activateChatResponse
 
 	if initialChat.Thread != nil {
 		for _, e := range initialChat.Thread.Events {
 			switch v := e.(type) {
-			case *events.Event:
-			case *events.Message:
-			case *events.SystemMessage:
+			case *objects.Event:
+			case *objects.Message:
+			case *objects.SystemMessage:
 			default:
 				return "", nil, fmt.Errorf("event type %T not supported", v)
 			}
@@ -118,7 +117,7 @@ func (a *CustomerAPI) ActivateChat(initialChat *objects.InitialChat, continuous 
 }
 
 // GetChatsSummary returns chats summary.
-func (a *CustomerAPI) GetChatsSummary(offset, limit uint) ([]objects.Chat, uint, error) {
+func (a *API) GetChatsSummary(offset, limit uint) ([]objects.Chat, uint, error) {
 	var resp getChatsSummaryResponse
 	err := a.Call("get_chats_summary", &getChatsSummaryRequest{
 		Limit:  limit,
@@ -129,7 +128,7 @@ func (a *CustomerAPI) GetChatsSummary(offset, limit uint) ([]objects.Chat, uint,
 }
 
 // GetChatThreadsSummary returns threads summary for given chat.
-func (a *CustomerAPI) GetChatThreadsSummary(chatID string, offset, limit uint) ([]objects.ThreadSummary, uint, error) {
+func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) ([]objects.ThreadSummary, uint, error) {
 	var resp getChatThreadsSummaryResponse
 	err := a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
@@ -141,7 +140,7 @@ func (a *CustomerAPI) GetChatThreadsSummary(chatID string, offset, limit uint) (
 }
 
 // GetChatThreads returns given threads, or all if no threads are provided, for given chat.
-func (a *CustomerAPI) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, error) {
+func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, error) {
 	var resp getChatThreadsResponse
 	err := a.Call("get_chat_threads", &getChatThreadsRequest{
 		ChatID:    chatID,
@@ -153,14 +152,14 @@ func (a *CustomerAPI) GetChatThreads(chatID string, threadIDs ...string) (object
 
 // CloseThread closes active thread for given chat. If no thread is active, then this
 // method is a no-op.
-func (a *CustomerAPI) CloseThread(chatID string) error {
+func (a *API) CloseThread(chatID string) error {
 	return a.Call("close_thread", &closeThreadRequest{
 		ChatID: chatID,
 	}, &emptyResponse{})
 }
 
 // SendRichMessagePostback sends postback for given rich message event.
-func (a *CustomerAPI) SendRichMessagePostback(chatID, threadID, eventID, postbackID string, toggled bool) error {
+func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID string, toggled bool) error {
 	return a.Call("send_rich_message_postback", &sendRichMessagePostbackRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
@@ -173,7 +172,7 @@ func (a *CustomerAPI) SendRichMessagePostback(chatID, threadID, eventID, postbac
 }
 
 // SendSneakPeek sends sneak peek of message for given chat.
-func (a *CustomerAPI) SendSneakPeek(chatID, text string) error {
+func (a *API) SendSneakPeek(chatID, text string) error {
 	return a.Call("send_sneak_peek", &sendSneakPeekRequest{
 		ChatID:        chatID,
 		SneakPeekText: text,
@@ -181,7 +180,7 @@ func (a *CustomerAPI) SendSneakPeek(chatID, text string) error {
 }
 
 // UpdateChatProperties updates given chat's properties.
-func (a *CustomerAPI) UpdateChatProperties(chatID string, properties objects.Properties) error {
+func (a *API) UpdateChatProperties(chatID string, properties objects.Properties) error {
 	return a.Call("update_chat_properties", &updateChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
@@ -189,7 +188,7 @@ func (a *CustomerAPI) UpdateChatProperties(chatID string, properties objects.Pro
 }
 
 // DeleteChatProperties deletes given chat's properties.
-func (a *CustomerAPI) DeleteChatProperties(chatID string, properties map[string][]string) error {
+func (a *API) DeleteChatProperties(chatID string, properties map[string][]string) error {
 	return a.Call("delete_chat_properties", &deleteChatPropertiesRequest{
 		ChatID:     chatID,
 		Properties: properties,
@@ -197,7 +196,7 @@ func (a *CustomerAPI) DeleteChatProperties(chatID string, properties map[string]
 }
 
 // UpdateChatThreadProperties updates given chat thread's properties.
-func (a *CustomerAPI) UpdateChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
+func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
 	return a.Call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
@@ -206,7 +205,7 @@ func (a *CustomerAPI) UpdateChatThreadProperties(chatID, threadID string, proper
 }
 
 // DeleteChatThreadProperties deletes given chat thread's properties.
-func (a *CustomerAPI) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
+func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
 	return a.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
@@ -215,7 +214,7 @@ func (a *CustomerAPI) DeleteChatThreadProperties(chatID, threadID string, proper
 }
 
 // UpdateEventProperties updates given event's properties.
-func (a *CustomerAPI) UpdateEventProperties(chatID, threadID, eventID string, properties objects.Properties) error {
+func (a *API) UpdateEventProperties(chatID, threadID, eventID string, properties objects.Properties) error {
 	return a.Call("update_event_properties", &updateEventPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
@@ -225,7 +224,7 @@ func (a *CustomerAPI) UpdateEventProperties(chatID, threadID, eventID string, pr
 }
 
 // DeleteEventProperties deletes given event's properties.
-func (a *CustomerAPI) DeleteEventProperties(chatID, threadID, eventID string, properties map[string][]string) error {
+func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties map[string][]string) error {
 	return a.Call("delete_event_properties", &deleteEventPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
@@ -235,7 +234,7 @@ func (a *CustomerAPI) DeleteEventProperties(chatID, threadID, eventID string, pr
 }
 
 // UpdateCustomer updates current customer's info.
-func (a *CustomerAPI) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
+func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{
 		Name:   name,
 		Email:  email,
@@ -245,7 +244,7 @@ func (a *CustomerAPI) UpdateCustomer(name, email, avatarURL string, fields map[s
 }
 
 // SetCustomerFields sets current customer's fields.
-func (a *CustomerAPI) SetCustomerFields(fields map[string]string) error {
+func (a *API) SetCustomerFields(fields map[string]string) error {
 	return a.Call("set_customer_fields", &setCustomerFieldsRequest{
 		Fields: fields,
 	}, &emptyResponse{})
@@ -255,7 +254,7 @@ func (a *CustomerAPI) SetCustomerFields(fields map[string]string) error {
 //
 // Possible values are: GroupStatusOnline, GroupStatusOffline and GroupStatusOnlineForQueue.
 // GroupStatusUnknown should never be returned.
-func (a *CustomerAPI) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
+func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
 	req := &getGroupsStatusRequest{}
 	if len(groups) == 0 {
 		req.All = true
@@ -279,7 +278,7 @@ func (a *CustomerAPI) GetGroupsStatus(groups []int) (map[int]GroupStatus, error)
 // CheckGoals triggers checking if goals were achieved. Then, Agents receive the information.
 // You should call this method to provide goals parameters for the server when the customers limit is reached.
 // Works only for offline Customers.
-func (a *CustomerAPI) CheckGoals(pageURL string, groupID int, customerFields map[string]string) error {
+func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]string) error {
 	return a.Call("check_goals", &checkGoalsRequest{
 		PageURL:        pageURL,
 		GroupID:        groupID,
@@ -289,7 +288,7 @@ func (a *CustomerAPI) CheckGoals(pageURL string, groupID int, customerFields map
 
 // GetForm returns an empty prechat, postchat or ticket form and indication whether
 // the form is enabled on the license.
-func (a *CustomerAPI) GetForm(groupID int, formType FormType) (*Form, bool, error) {
+func (a *API) GetForm(groupID int, formType FormType) (*Form, bool, error) {
 	var resp getFormResponse
 	err := a.Call("get_form", &getFormRequest{
 		GroupID: groupID,
@@ -302,14 +301,14 @@ func (a *CustomerAPI) GetForm(groupID int, formType FormType) (*Form, bool, erro
 // GetPredictedAgent returns the predicted Agent - the one the Customer will chat with
 // when the chat starts. To use this method, the Customer needs to be logged in,
 // which can be done via Customer Chat RTM Api's login method.
-func (a *CustomerAPI) GetPredictedAgent() (*PredictedAgent, error) {
+func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
 	var resp PredictedAgent
 	err := a.Call("get_predicted_agent", nil, &resp)
 	return &resp, err
 }
 
 // GetURLDetails returns info on a given URL.
-func (a *CustomerAPI) GetURLDetails(url string) (*URLDetails, error) {
+func (a *API) GetURLDetails(url string) (*URLDetails, error) {
 	var resp URLDetails
 	err := a.Call("get_url_details", &getURLDetailsRequest{
 		URL: url,
@@ -318,7 +317,7 @@ func (a *CustomerAPI) GetURLDetails(url string) (*URLDetails, error) {
 }
 
 // MarkEventsAsSeen marks all events up to given date in given chat as seen for current customer.
-func (a *CustomerAPI) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
+func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 	return a.Call("mark_events_as_seen", &markEventsAsSeenRequest{
 		ChatID:   chatID,
 		SeenUpTo: seenUpTo.Format(time.RFC3339Nano),
@@ -326,7 +325,7 @@ func (a *CustomerAPI) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error 
 }
 
 // GetCustomer returns current Customer.
-func (a *CustomerAPI) GetCustomer() (*objects.Customer, error) {
+func (a *API) GetCustomer() (*objects.Customer, error) {
 	var resp objects.Customer
 	err := a.Call("get_customer", nil, &resp)
 	return &resp, err
