@@ -418,10 +418,11 @@ type RichMessageElement struct {
 
 // RichMessageButton represents button in LiveChat rich message
 type RichMessageButton struct {
-	Text    string   `json:"text"`
-	Type    string   `json:"type"`
-	UserIds []string `json:"user_ids"`
-	Value   string   `json:"value"`
+	Text       string   `json:"text"`
+	Type       string   `json:"type"`
+	UserIds    []string `json:"user_ids"`
+	Value      string   `json:"value"`
+	PostbackID string   `json:"postback_id"`
 	// Allowed values: compact, full, tall
 	WebviewHeight string `json:"webview_height"`
 }
