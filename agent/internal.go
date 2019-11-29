@@ -48,8 +48,8 @@ type getArchivesResponse struct {
 }
 
 type startChatRequest struct {
-	Chat       *objects.InitialChat `json:"chat,omitempty"`
-	Continuous bool                 `json:"continuous,omitempty"`
+	Chat       *InitialChat `json:"chat,omitempty"`
+	Continuous bool         `json:"continuous,omitempty"`
 }
 
 type startChatResponse struct {
@@ -59,8 +59,8 @@ type startChatResponse struct {
 }
 
 type activateChatRequest struct {
-	Chat       *objects.InitialChat `json:"chat"`
-	Continuous bool                 `json:"continuous,omitempty"`
+	Chat       *InitialChat `json:"chat"`
+	Continuous bool         `json:"continuous,omitempty"`
 }
 
 type activateChatResponse struct {

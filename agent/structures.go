@@ -1,5 +1,7 @@
 package agent
 
+import "github.com/livechat/lc-sdk-go/objects"
+
 type postback struct {
 	ID      string `json:"id"`
 	Toggled bool   `json:"toggled"`
@@ -7,6 +9,11 @@ type postback struct {
 
 type ban struct {
 	Days uint `json:"days"`
+}
+
+type InitialChat struct {
+	objects.InitialChat
+	Users []*objects.User `json:"users,omitempty"`
 }
 
 // MulticastScopes aggregates Agent and Customer Scopes that multicast should be sent to

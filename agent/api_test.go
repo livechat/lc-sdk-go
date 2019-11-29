@@ -238,7 +238,7 @@ func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatID, threadID, _, rErr := api.StartChat(&objects.InitialChat{}, true)
+	chatID, threadID, _, rErr := api.StartChat(&agent.InitialChat{}, true)
 	if rErr != nil {
 		t.Errorf("StartChat failed: %v", rErr)
 	}
@@ -277,7 +277,7 @@ func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	threadID, _, rErr := api.ActivateChat(&objects.InitialChat{}, true)
+	threadID, _, rErr := api.ActivateChat(&agent.InitialChat{}, true)
 	if rErr != nil {
 		t.Errorf("ActivateChat failed: %v", rErr)
 	}
@@ -797,7 +797,7 @@ func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, rErr := api.StartChat(&objects.InitialChat{}, true)
+	_, _, _, rErr := api.StartChat(&agent.InitialChat{}, true)
 	verifyErrorResponse("StartChat", rErr, t)
 }
 
@@ -821,7 +821,7 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.ActivateChat(&objects.InitialChat{}, true)
+	_, _, rErr := api.ActivateChat(&agent.InitialChat{}, true)
 	verifyErrorResponse("ActivateChat", rErr, t)
 }
 

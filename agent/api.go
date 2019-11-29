@@ -83,7 +83,7 @@ func (a *API) GetArchives(filters *archivesFilters, page, limit uint) (chats []o
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
+func (a *API) StartChat(initialChat *InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
 	var resp startChatResponse
 
 	if err := initialChat.Validate(); err != nil {
@@ -100,7 +100,7 @@ func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chat
 // ActivateChat activates chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
+func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
 	var resp activateChatResponse
 
 	if err := initialChat.Validate(); err != nil {

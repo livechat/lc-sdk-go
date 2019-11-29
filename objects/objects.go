@@ -245,7 +245,6 @@ type InitialChat struct {
 	ID         string         `json:"id"`
 	Access     *Access        `json:"access,omitempty"`
 	Properties Properties     `json:"properties,omitempty"`
-	Users      []*User        `json:"users,omitempty"`
 	Thread     *InitialThread `json:"thread,omitempty"`
 }
 
