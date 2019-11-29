@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/livechat/lc-sdk-go/authorization"
 	"github.com/livechat/lc-sdk-go/customer"
 	"github.com/livechat/lc-sdk-go/objects"
-	"github.com/livechat/lc-sdk-go/authorization"
 )
 
 // TEST HELPERS
@@ -274,6 +274,24 @@ func TestSendEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	eventID, rErr := api.SendEvent("stubChatID", &objects.Event{})
 	if rErr != nil {
 		t.Errorf("SendEvent failed: %v", rErr)
+	}
+
+	if eventID != "K600PKZON8" {
+		t.Errorf("Invalid eventID: %v", eventID)
+	}
+}
+
+func TestSendSystemMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "send_event"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	eventID, rErr := api.SendSystemMessage("stubChatID", "text", "messagetype", "all")
+	if rErr != nil {
+		t.Errorf("SendSystemMessage failed: %v", rErr)
 	}
 
 	if eventID != "K600PKZON8" {
