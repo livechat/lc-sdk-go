@@ -4,7 +4,7 @@ This Software Development Kit written in [Go](https://go.dev/) helps developers 
 
 ### Technical docs
 
-For technical documentation ([godoc](https://godoc.org/) format), please go to [LiveChat SDK Docs](https://godoc.org/).
+For technical documentation ([godoc](https://godoc.org/) format), please go to [LiveChat SDK Docs](https://godoc.org/github.com/livechat/lc-sdk-go).
 
 ### API protocol docs
 
