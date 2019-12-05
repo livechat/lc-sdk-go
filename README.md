@@ -13,9 +13,18 @@ For technical documentation ([godoc](https://godoc.org/) format), please go to [
 
 For protocol documentation of LiveChat APIs, please go to [Livechat Platform Docs](https://developers.livechatinc.com/docs/).
 
+### Go modules vs API version
+
+LiveChat SDK in Go supports Go modules. Please note that minor LiveChat API versions can be incompatible. Here is the relation:
+* lc-sdk-go 1.x.x -> LiveChat API 3.1
+* lc-sdk-go 2.x.x -> LiveChat API 3.2
+* ...
+
+All versions of LiveChat API are available as git tags in lc-sdk-go. However, a developer-preview version (not completed yet, may introduce breaking changes in future) is avaiable in lc-sdk-go as a git branch.
+
 ### Feedback
 
-​If you find some bugs or have troubles implementing the code on your own, please create an issue or contact us [LiveChat for Developers](https://developers.livechatinc.com/)
+​If you find any bugs or have trouble implementing the code on your own, please create an issue or contact us [LiveChat for Developers](https://developers.livechatinc.com/)
 
 ### About LiveChat
 
