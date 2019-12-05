@@ -290,7 +290,11 @@ func TestSendSystemMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 		t.Errorf("API creation failed")
 	}
 
-	eventID, rErr := api.SendSystemMessage("stubChatID", "text", "messagetype", "all")
+	textVars := map[string]string{
+		"var1": "val1",
+		"var2": "val2",
+	}
+	eventID, rErr := api.SendSystemMessage("stubChatID", "text", "messagetype", textVars, "all")
 	if rErr != nil {
 		t.Errorf("SendSystemMessage failed: %v", rErr)
 	}

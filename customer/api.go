@@ -58,14 +58,15 @@ func (a *API) SendMessage(chatID, text string, recipients Recipients) (string, e
 
 // SendSystemMessage sends event of type system_message to given chat.
 // It returns event ID.
-func (a *API) SendSystemMessage(chatID, text, messageType string, recipients Recipients) (string, error) {
+func (a *API) SendSystemMessage(chatID, text, messageType string, textVars map[string]string, recipients Recipients) (string, error) {
 	e := objects.SystemMessage{
 		Event: objects.Event{
 			Type:       "system_message",
 			Recipients: string(recipients),
 		},
-		Text: text,
-		Type: messageType,
+		Text:     text,
+		Type:     messageType,
+		TextVars: textVars,
 	}
 
 	return a.SendEvent(chatID, &e)
