@@ -53,12 +53,12 @@ func (a *API) SendMessage(chatID, text string, recipients Recipients) (string, e
 		Text: text,
 	}
 
-	return a.SendEvent(chatID, &e)
+	return a.SendEvent(chatID, &e, false)
 }
 
 // SendSystemMessage sends event of type system_message to given chat.
 // It returns event ID.
-func (a *API) SendSystemMessage(chatID, text, messageType string, textVars map[string]string, recipients Recipients) (string, error) {
+func (a *API) SendSystemMessage(chatID, text, messageType string, textVars map[string]string, recipients Recipients, attachToLastThread bool) (string, error) {
 	e := objects.SystemMessage{
 		Event: objects.Event{
 			Type:       "system_message",
@@ -69,22 +69,23 @@ func (a *API) SendSystemMessage(chatID, text, messageType string, textVars map[s
 		TextVars: textVars,
 	}
 
-	return a.SendEvent(chatID, &e)
+	return a.SendEvent(chatID, &e, attachToLastThread)
 }
 
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
 // Supported event types are: event, message, system_message and file.
-func (a *API) SendEvent(chatID string, e interface{}) (string, error) {
+func (a *API) SendEvent(chatID string, e interface{}, attachToLastThread bool) (string, error) {
 	if err := objects.ValidateEvent(e); err != nil {
 		return "", err
 	}
 
 	var resp sendEventResponse
 	err := a.Call("send_event", &sendEventRequest{
-		ChatID: chatID,
-		Event:  e,
+		ChatID:             chatID,
+		Event:              e,
+		AttachToLastThread: &attachToLastThread,
 	}, &resp)
 
 	return resp.EventID, err
