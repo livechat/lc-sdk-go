@@ -359,8 +359,9 @@ func (e *Event) Message() *Message {
 // SystemMessage represents LiveChat system message event.
 type SystemMessage struct {
 	Event
-	Type string `json:"system_message_type,omitempty"`
-	Text string `json:"text,omitempty"`
+	Type     string            `json:"system_message_type,omitempty"`
+	Text     string            `json:"text,omitempty"`
+	TextVars map[string]string `json:"text_vars,omitempty"`
 }
 
 // File represents LiveChat file event
