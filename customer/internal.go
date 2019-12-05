@@ -14,8 +14,9 @@ type startChatResponse struct {
 }
 
 type sendEventRequest struct {
-	ChatID string      `json:"chat_id"`
-	Event  interface{} `json:"event"`
+	ChatID             string      `json:"chat_id"`
+	Event              interface{} `json:"event"`
+	AttachToLastThread *bool       `json:"attach_to_last_thread,omitempty"`
 }
 
 type sendEventResponse struct {
