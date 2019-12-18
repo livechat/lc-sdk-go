@@ -267,10 +267,12 @@ func ValidateEvent(e interface{}) error {
 	case *Event:
 	case *Message:
 	case *SystemMessage:
+	case *RichMessage:
 	case File:
 	case Event:
 	case Message:
 	case SystemMessage:
+	case RichMessage:
 	default:
 		return fmt.Errorf("event type %T not supported", v)
 	}
