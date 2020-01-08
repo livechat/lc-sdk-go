@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"time"
 
-	api_errors "github.com/livechat/lc-sdk-go/errors"
 	"github.com/livechat/lc-sdk-go/authorization"
+	api_errors "github.com/livechat/lc-sdk-go/errors"
 )
 
 const apiVersion = "3.1"
@@ -63,7 +63,10 @@ func (a *API) Call(action string, reqPayload interface{}, respPayload interface{
 		return fmt.Errorf("couldn't get token")
 	}
 
-	url := fmt.Sprintf("%s/v%s/%s/action/%s?license_id=%v", a.APIURL, a.version, a.name, action, token.LicenseID)
+	url := fmt.Sprintf("%s/v%s/%s/action/%s", a.APIURL, a.version, a.name, action)
+	if token.LicenseID != nil {
+		url = fmt.Sprintf("%s?license_id=%v", url, *token.LicenseID)
+	}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
 	if err != nil {
 		return err
@@ -105,7 +108,10 @@ func (a *API) UploadFile(filename string, file []byte) (string, error) {
 	if token == nil {
 		return "", fmt.Errorf("couldn't get token")
 	}
-	url := fmt.Sprintf("%s/v%s/%s/action/upload_file?license_id=%v", a.APIURL, a.version, a.name, token.LicenseID)
+	url := fmt.Sprintf("%s/v%s/%s/action/upload_file", a.APIURL, a.version, a.name)
+	if token.LicenseID != nil {
+		url = fmt.Sprintf("%s?license_id=%v", url, *token.LicenseID)
+	}
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return "", fmt.Errorf("couldn't create new POST request to '%v': %v", url, err)
