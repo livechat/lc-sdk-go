@@ -10,6 +10,7 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
+// Webhook represents general webhook format.
 type Webhook struct {
 	WebhookID      string          `json:"webhook_id"`
 	SecretKey      string          `json:"secret_key"`
