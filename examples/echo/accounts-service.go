@@ -65,7 +65,7 @@ func (s *AccountsService) ExchangeCode(code string) (*Token, error) {
 
 	parts := strings.Split(t.AccessToken, ":")
 	if len(parts) != 2 {
-		return nil, errors.New(("invalid_region"))
+		return nil, errors.New("invalid_region")
 	}
 	t.Region = parts[0]
 	t.ExpirationDate = time.Now().Add(time.Duration(t.ExpiresIn) * time.Second)
