@@ -13,17 +13,17 @@ func propEq(propertyName string, actual, expected interface{}, validationAccumul
 	}
 }
 
-func accessGranted(payload interface{}) error {
-	wh, ok := payload.(*webhooks.AccessGranted)
+func accessGranted(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AccessGranted)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ID", wh.ID, "PJ0MRSHTDX", &errors)
-	propEq("Resource", wh.Resource, "thread", &errors)
-	propEq("Access.GroupIDs.length", len(wh.Access.GroupIDs), 1, &errors)
-	propEq("Access.GroupIDs[0]", wh.Access.GroupIDs[0], 2, &errors)
+	propEq("ID", payload.ID, "PJ0MRSHTDX", &errors)
+	propEq("Resource", payload.Resource, "thread", &errors)
+	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &errors)
+	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 2, &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -31,18 +31,18 @@ func accessGranted(payload interface{}) error {
 	return nil
 }
 
-func accessRevoked(payload interface{}) error {
-	wh, ok := payload.(*webhooks.AccessRevoked)
+func accessRevoked(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AccessRevoked)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ID", wh.ID, "PJ0MRSHTDV", &errors)
-	propEq("Resource", wh.Resource, "chat", &errors)
-	propEq("Access.GroupIDs.length", len(wh.Access.GroupIDs), 2, &errors)
-	propEq("Access.GroupIDs[0]", wh.Access.GroupIDs[0], 3, &errors)
-	propEq("Access.GroupIDs[1]", wh.Access.GroupIDs[1], 4, &errors)
+	propEq("ID", payload.ID, "PJ0MRSHTDV", &errors)
+	propEq("Resource", payload.Resource, "chat", &errors)
+	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 2, &errors)
+	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 3, &errors)
+	propEq("Access.GroupIDs[1]", payload.Access.GroupIDs[1], 4, &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -50,17 +50,17 @@ func accessRevoked(payload interface{}) error {
 	return nil
 }
 
-func accessSet(payload interface{}) error {
-	wh, ok := payload.(*webhooks.AccessSet)
+func accessSet(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AccessSet)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ID", wh.ID, "PJ0MRSHTDG", &errors)
-	propEq("Resource", wh.Resource, "chat", &errors)
-	propEq("Access.GroupIDs.length", len(wh.Access.GroupIDs), 1, &errors)
-	propEq("Access.GroupIDs[0]", wh.Access.GroupIDs[0], 1, &errors)
+	propEq("ID", payload.ID, "PJ0MRSHTDG", &errors)
+	propEq("Resource", payload.Resource, "chat", &errors)
+	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &errors)
+	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 1, &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -68,14 +68,14 @@ func accessSet(payload interface{}) error {
 	return nil
 }
 
-func agentDeleted(payload interface{}) error {
-	wh, ok := payload.(*webhooks.AgentDeleted)
+func agentDeleted(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentDeleted)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("AgentID", wh.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("AgentID", payload.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -83,15 +83,15 @@ func agentDeleted(payload interface{}) error {
 	return nil
 }
 
-func agentStatusChanged(payload interface{}) error {
-	wh, ok := payload.(*webhooks.AgentStatusChanged)
+func agentStatusChanged(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentStatusChanged)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("AgentID", wh.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
-	propEq("Status", wh.Status, "accepting chats", &errors)
+	propEq("AgentID", payload.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Status", payload.Status, "accepting chats", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -99,17 +99,17 @@ func agentStatusChanged(payload interface{}) error {
 	return nil
 }
 
-func chatPropertiesDeleted(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatPropertiesDeleted)
+func chatPropertiesDeleted(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatPropertiesDeleted)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
 
-	propEq("Properties.Rating[0]", wh.Properties["rating"][0], "score", &errors)
-	propEq("Properties.Rating[1]", wh.Properties["rating"][1], "comment", &errors)
+	propEq("Properties.Rating[0]", payload.Properties["rating"][0], "score", &errors)
+	propEq("Properties.Rating[1]", payload.Properties["rating"][1], "comment", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -117,17 +117,17 @@ func chatPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func chatPropertiesUpdated(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatPropertiesUpdated)
+func chatPropertiesUpdated(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatPropertiesUpdated)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
 
-	propEq("Properties.Rating.Score.Value", wh.Properties["rating"]["score"], float64(1), &errors)
-	propEq("Properties.Rating.Comment.Value", wh.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
+	propEq("Properties.Rating.Score.Value", payload.Properties["rating"]["score"], float64(1), &errors)
+	propEq("Properties.Rating.Comment.Value", payload.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -135,18 +135,18 @@ func chatPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func chatThreadPropertiesDeleted(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatThreadPropertiesDeleted)
+func chatThreadPropertiesDeleted(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatThreadPropertiesDeleted)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
 
-	propEq("Properties.Rating[0]", wh.Properties["rating"][0], "score", &errors)
-	propEq("Properties.Rating[1]", wh.Properties["rating"][1], "comment", &errors)
+	propEq("Properties.Rating[0]", payload.Properties["rating"][0], "score", &errors)
+	propEq("Properties.Rating[1]", payload.Properties["rating"][1], "comment", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -154,18 +154,18 @@ func chatThreadPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func chatThreadPropertiesUpdated(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatThreadPropertiesUpdated)
+func chatThreadPropertiesUpdated(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatThreadPropertiesUpdated)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
 
-	propEq("Properties.Rating.Score.Value", wh.Properties["rating"]["score"], float64(1), &errors)
-	propEq("Properties.Rating.Comment.Value", wh.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
+	propEq("Properties.Rating.Score.Value", payload.Properties["rating"]["score"], float64(1), &errors)
+	propEq("Properties.Rating.Comment.Value", payload.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -173,16 +173,16 @@ func chatThreadPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func chatThreadTagged(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatThreadTagged)
+func chatThreadTagged(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatThreadTagged)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
-	propEq("Tag", wh.Tag, "bug_report", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("Tag", payload.Tag, "bug_report", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -190,16 +190,16 @@ func chatThreadTagged(payload interface{}) error {
 	return nil
 }
 
-func chatThreadUntagged(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatThreadUntagged)
+func chatThreadUntagged(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatThreadUntagged)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
-	propEq("Tag", wh.Tag, "bug_report", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("Tag", payload.Tag, "bug_report", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -207,17 +207,17 @@ func chatThreadUntagged(payload interface{}) error {
 	return nil
 }
 
-func chatUserAdded(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatUserAdded)
+func chatUserAdded(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatUserAdded)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("UserType", wh.UserType, "customer", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("UserType", payload.UserType, "customer", &errors)
 
-	customer := wh.User.Customer()
+	customer := payload.User.Customer()
 	propEq("Customer.ID", customer.ID, "345f8235-d60d-433e-63c5-7f813a6ffe25", &errors)
 	propEq("Customer.Type", customer.Type, "customer", &errors)
 	propEq("Customer.Name", customer.Name, "test", &errors)
@@ -261,16 +261,16 @@ func chatUserAdded(payload interface{}) error {
 	return nil
 }
 
-func chatUserRemoved(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ChatUserRemoved)
+func chatUserRemoved(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatUserRemoved)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
-	propEq("UserType", wh.UserType, "agent", &errors)
-	propEq("UserID", wh.UserID, "agent@livechatinc.com", &errors)
+	propEq("ChatID", payload.ChatID, "PS0X0L086G", &errors)
+	propEq("UserType", payload.UserType, "agent", &errors)
+	propEq("UserID", payload.UserID, "agent@livechatinc.com", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -278,26 +278,26 @@ func chatUserRemoved(payload interface{}) error {
 	return nil
 }
 
-func customerCreated(payload interface{}) error {
-	wh, ok := payload.(*webhooks.CustomerCreated)
+func customerCreated(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.CustomerCreated)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 	var errors string
-	if wh.User == nil {
+	if payload.User == nil {
 		return fmt.Errorf("`Customer.User` is nil")
 	}
-	propEq("User.ID", wh.User.ID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &errors)
+	propEq("User.ID", payload.User.ID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &errors)
 	t, err := time.Parse(time.RFC3339Nano, "2019-11-14T14:27:24.410018Z")
 	if err != nil {
 		return fmt.Errorf("Couldn't parse time: %v", err)
 	}
-	propEq("CreatedAt", wh.CreatedAt, t, &errors)
-	propEq("Email", wh.Email, "customer1@example.com", &errors)
-	propEq("Avatar", wh.Avatar, "https://example.com/avatars/1.jpg", &errors)
-	propEq("Fields", len(wh.Fields), 2, &errors)
-	propEq("Fields[some_key]", wh.Fields["some_key"], "some_value", &errors)
-	propEq("Fields[some_other_key]", wh.Fields["some_other_key"], "some_other_value", &errors)
+	propEq("CreatedAt", payload.CreatedAt, t, &errors)
+	propEq("Email", payload.Email, "customer1@example.com", &errors)
+	propEq("Avatar", payload.Avatar, "https://example.com/avatars/1.jpg", &errors)
+	propEq("Fields", len(payload.Fields), 2, &errors)
+	propEq("Fields[some_key]", payload.Fields["some_key"], "some_value", &errors)
+	propEq("Fields[some_other_key]", payload.Fields["some_other_key"], "some_other_value", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -305,19 +305,19 @@ func customerCreated(payload interface{}) error {
 	return nil
 }
 
-func eventPropertiesDeleted(payload interface{}) error {
-	wh, ok := payload.(*webhooks.EventPropertiesDeleted)
+func eventPropertiesDeleted(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.EventPropertiesDeleted)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
-	propEq("EventID", wh.EventID, "2_E2WDHA8A", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("EventID", payload.EventID, "2_E2WDHA8A", &errors)
 
-	propEq("Properties.Rating[0]", wh.Properties["rating"][0], "score", &errors)
-	propEq("Properties.Rating[1]", wh.Properties["rating"][1], "comment", &errors)
+	propEq("Properties.Rating[0]", payload.Properties["rating"][0], "score", &errors)
+	propEq("Properties.Rating[1]", payload.Properties["rating"][1], "comment", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -325,19 +325,19 @@ func eventPropertiesDeleted(payload interface{}) error {
 	return nil
 }
 
-func eventPropertiesUpdated(payload interface{}) error {
-	wh, ok := payload.(*webhooks.EventPropertiesUpdated)
+func eventPropertiesUpdated(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.EventPropertiesUpdated)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
-	propEq("EventID", wh.EventID, "2_E2WDHA8A", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("EventID", payload.EventID, "2_E2WDHA8A", &errors)
 
-	propEq("Properties.Rating.Score.Value", wh.Properties["rating"]["score"], float64(1), &errors)
-	propEq("Properties.Rating.Comment.Value", wh.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
+	propEq("Properties.Rating.Score.Value", payload.Properties["rating"]["score"], float64(1), &errors)
+	propEq("Properties.Rating.Comment.Value", payload.Properties["rating"]["comment"], "Very good, veeeery good", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -345,17 +345,17 @@ func eventPropertiesUpdated(payload interface{}) error {
 	return nil
 }
 
-func eventUpdated(payload interface{}) error {
-	wh, ok := payload.(*webhooks.EventUpdated)
+func eventUpdated(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.EventUpdated)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "123-123-123-123", &errors)
-	propEq("ThreadID", wh.ThreadID, "E2WDHA8A", &errors)
+	propEq("ChatID", payload.ChatID, "123-123-123-123", &errors)
+	propEq("ThreadID", payload.ThreadID, "E2WDHA8A", &errors)
 
-	e := wh.Event.Message()
+	e := payload.Event.Message()
 	propEq("Event.ID", e.ID, "PZ070E0W1B_3", &errors)
 	propEq("Event.Type", e.Type, "message", &errors)
 	propEq("Event.Text", e.Text, "14", &errors)
@@ -370,16 +370,16 @@ func eventUpdated(payload interface{}) error {
 	return nil
 }
 
-func eventsMarkedAsSeen(payload interface{}) error {
-	wh, ok := payload.(*webhooks.EventsMarkedAsSeen)
+func eventsMarkedAsSeen(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.EventsMarkedAsSeen)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("UserID", wh.UserID, "b7eff798-f8df-4364-8059-649c35c9ed0c", &errors)
-	propEq("SeenUpTo", wh.SeenUpTo, "2017-10-12T15:19:21.010200Z", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("UserID", payload.UserID, "b7eff798-f8df-4364-8059-649c35c9ed0c", &errors)
+	propEq("SeenUpTo", payload.SeenUpTo, "2017-10-12T15:19:21.010200Z", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -387,13 +387,13 @@ func eventsMarkedAsSeen(payload interface{}) error {
 	return nil
 }
 
-func incomingChatThread(payload interface{}) error {
-	wh, ok := payload.(*webhooks.IncomingChatThread)
+func incomingChatThread(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.IncomingChatThread)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
-	chat := wh.Chat
+	chat := payload.Chat
 
 	var errors string
 	propEq("Chat.ID", chat.ID, "PS0X0L086G", &errors)
@@ -476,17 +476,17 @@ func incomingChatThread(payload interface{}) error {
 	return nil
 }
 
-func incomingEvent(payload interface{}) error {
-	wh, ok := payload.(*webhooks.IncomingEvent)
+func incomingEvent(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.IncomingEvent)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
-	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
+	propEq("ChatID", payload.ChatID, "PS0X0L086G", &errors)
+	propEq("ThreadID", payload.ThreadID, "PZ070E0W1B", &errors)
 
-	e := wh.Event.Message()
+	e := payload.Event.Message()
 	propEq("Event.ID", e.ID, "PZ070E0W1B_3", &errors)
 	propEq("Event.Type", e.Type, "message", &errors)
 	propEq("Event.Text", e.Text, "14", &errors)
@@ -501,19 +501,19 @@ func incomingEvent(payload interface{}) error {
 	return nil
 }
 
-func incomingRichMessagePostback(payload interface{}) error {
-	wh, ok := payload.(*webhooks.IncomingRichMessagePostback)
+func incomingRichMessagePostback(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.IncomingRichMessagePostback)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PJ0MRSHTDG", &errors)
-	propEq("ThreadID", wh.ThreadID, "K600PKZON8", &errors)
-	propEq("UserID", wh.UserID, "b7eff798-f8df-4364-8059-649c35c9ed0c", &errors)
-	propEq("EventID", wh.EventID, "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7", &errors)
-	propEq("Postback.ID", wh.Postback.ID, "action_yes", &errors)
-	propEq("Postback.Toggled", wh.Postback.Toggled, true, &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("UserID", payload.UserID, "b7eff798-f8df-4364-8059-649c35c9ed0c", &errors)
+	propEq("EventID", payload.EventID, "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7", &errors)
+	propEq("Postback.ID", payload.Postback.ID, "action_yes", &errors)
+	propEq("Postback.Toggled", payload.Postback.Toggled, true, &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -521,16 +521,16 @@ func incomingRichMessagePostback(payload interface{}) error {
 	return nil
 }
 
-func threadClosed(payload interface{}) error {
-	wh, ok := payload.(*webhooks.ThreadClosed)
+func threadClosed(wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ThreadClosed)
 	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
-	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
-	propEq("UserID", wh.UserID, "l.wojciechowski@livechatinc.com", &errors)
+	propEq("ChatID", payload.ChatID, "PS0X0L086G", &errors)
+	propEq("ThreadID", payload.ThreadID, "PZ070E0W1B", &errors)
+	propEq("UserID", payload.UserID, "l.wojciechowski@livechatinc.com", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)

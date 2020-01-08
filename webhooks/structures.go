@@ -10,13 +10,13 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
-// WebhookBase represents general webhook format.
-type WebhookBase struct {
+type Webhook struct {
 	WebhookID      string          `json:"webhook_id"`
 	SecretKey      string          `json:"secret_key"`
 	Action         string          `json:"action"`
-	Payload        json.RawMessage `json:"payload"`
 	AdditionalData json.RawMessage `json:"additional_data"`
+	PayloadRaw     json.RawMessage `json:"payload"`
+	Payload        interface{}
 }
 
 // IncomingChatThread represents payload of incoming_chat_thread webhook.
