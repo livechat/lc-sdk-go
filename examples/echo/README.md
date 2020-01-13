@@ -42,7 +42,8 @@ Having troubles? Visit docs dedicated page for [createing LiveChat apps](https:/
 - Create a config file from the example
 
     ```bash
-    mv config.example.json config.json
+    cp config.example.json config.json # for Unix and Unix-like operating systems
+    copy config.example.json config.json # for Windows
     ```
 
     Use values saved when [creating a LiveChat app](#creating-a-livechat-apps) to fill `config.json`.
