@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 type Token struct {
 	AccessToken    string `json:"access_token"`
@@ -20,16 +23,23 @@ type tokensRepository interface {
 
 type TokensRepository struct {
 	storage map[string]*Token
+	mu      *sync.RWMutex
 }
 
 func NewTokenRepository() *TokensRepository {
-	return &TokensRepository{make(map[string]*Token)}
+	return &TokensRepository{make(map[string]*Token), &sync.RWMutex{}}
 }
 
 func (r *TokensRepository) Set(key string, t *Token) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	r.storage[key] = t
 }
 
 func (r *TokensRepository) Get(key string) *Token {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	return r.storage[key]
 }
