@@ -8,7 +8,7 @@
     ./ngrok http 8080
     ```
 
-Attention! Ngrok tunneling should not be used for production applications and was used here only for demonstration ease of use.
+**Attention!** Ngrok tunneling should not be used for production applications and was used here only for demonstration ease of use.
 
 ## Creating a LiveChat app
 
@@ -22,7 +22,7 @@ Attention! Ngrok tunneling should not be used for production applications and wa
 	4.4 Add `webhooks--all:rw` and `chats--all:rw` to requested scopes list.
 	4.5 Use `$NGROK_PUBLIC_URL/oauth` as a direct installation URL in the Marketplace authorization flow settings section.
 
-Attention! For production applications, you can skip point 4.5.
+**Attention!** For production applications, you can skip point 4.5.
 Having troubles? Visit docs dedicated page for [createing LiveChat apps](https://developers.livechatinc.com/docs/getting-started/guides/#creating-livechat-apps).
 
 ## Running this example
@@ -67,11 +67,11 @@ Having troubles? Visit docs dedicated page for [createing LiveChat apps](https:/
     go run .
     ```
 
-### Install LiveChat app privatly
+### Install LiveChat app privately
 
 1. Sign in to [Developer Console](https://developers.livechatinc.com/console/).
 2. Go to the [Apps](https://developers.livechatinc.com/console/apps/) section.
 3. Select the app created in one of the previous sections.
 4. Move to the Private installation section and hit the install button.
 
-Attention! For production applications, you want to publish the app.
+**Attention!** For production applications, you want to publish the app.
