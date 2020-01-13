@@ -16,7 +16,7 @@ type Webhook struct {
 	SecretKey      string          `json:"secret_key"`
 	Action         string          `json:"action"`
 	AdditionalData json.RawMessage `json:"additional_data"`
-	PayloadRaw     json.RawMessage `json:"payload"`
+	RawPayload     json.RawMessage `json:"payload"`
 	Payload        interface{}
 }
 

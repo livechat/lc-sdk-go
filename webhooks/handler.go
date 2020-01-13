@@ -27,7 +27,7 @@ type actionConfiguration struct {
 // The Handler type is used to define webhook processors.
 //
 // It can be used with WebhookHandler, in which case WebhookHandler will
-// pass decoded webhook payload (ie. one of webhooks structures).
+// pass a webhook body with a payload field decoded (ie. one of webhooks structures).
 type Handler func(*Webhook) error
 
 // NewConfiguration creates basic WebhookHandler configuration that
@@ -139,7 +139,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			return
 		}
 
-		if err := json.Unmarshal(wh.PayloadRaw, payload); err != nil {
+		if err := json.Unmarshal(wh.RawPayload, payload); err != nil {
 			cfg.handleError(w, fmt.Sprintf("couldn't unmarshal webhook payload: %v", err), http.StatusInternalServerError)
 			return
 		}
