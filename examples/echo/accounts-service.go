@@ -42,12 +42,11 @@ func (s *AccountsService) ExchangeCode(code string) (*Token, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid_request")
 	}
-
-	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

@@ -15,14 +15,12 @@ func fillConfig(cfg *Configuration) {
 	f, err := os.Open("config.json")
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(1)
 	}
 	defer f.Close()
 
 	config, err := ioutil.ReadAll(f)
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(1)
 	}
 	json.Unmarshal(config, cfg)
 }

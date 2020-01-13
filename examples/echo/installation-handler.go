@@ -28,8 +28,8 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	t, err := h.as.ExchangeCode(code[0])
 	if err != nil {
-		fmt.Printf("Error when handling installation: code exchange failed\n")
-		w.WriteHeader(http.StatusOK)
+		fmt.Println("Error when handling installation: code exchange failed")
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -42,8 +42,8 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	api, err := configuration.NewAPI(tg, nil, t.ClientID)
 	if err != nil {
-		fmt.Printf("Error when handling installation: configuration-api initilization failed\n")
-		w.WriteHeader(http.StatusOK)
+		fmt.Println("Error when handling installation: configuration-api initilization failed")
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	api.APIURL = h.cfg.APIURL
@@ -58,8 +58,8 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	whID, err := api.RegisterWebhook(wh)
 	if err != nil {
-		fmt.Printf("Error when handling installation: webhook registration failed\n")
-		w.WriteHeader(http.StatusOK)
+		fmt.Println("Error when handling installation: webhook registration failed")
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
