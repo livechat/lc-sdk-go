@@ -414,7 +414,7 @@ type RichMessageElement struct {
 	Buttons  []RichMessageButton `json:"buttons"`
 	Title    string              `json:"title"`
 	Subtitle string              `json:"subtitle"`
-	Image    RichMessageImage    `json:"image"`
+	Image    *RichMessageImage   `json:"image,omitempty"`
 }
 
 // RichMessageButton represents button in LiveChat rich message
