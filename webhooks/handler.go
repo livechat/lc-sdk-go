@@ -27,8 +27,8 @@ type actionConfiguration struct {
 // The Handler type is used to define webhook processors.
 //
 // It can be used with WebhookHandler, in which case WebhookHandler will
-// pass decoded webhook payload (ie. one of webhooks structures).
-type Handler func(webhookPayload interface{}) error
+// pass a webhook body with a payload field decoded (ie. one of webhooks structures).
+type Handler func(*Webhook) error
 
 // NewConfiguration creates basic WebhookHandler configuration that
 // processes no webhooks and uses http.Error to handle webhook processing
@@ -73,7 +73,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			return
 		}
 
-		var wh WebhookBase
+		var wh Webhook
 		if err := json.Unmarshal(body, &wh); err != nil {
 			cfg.handleError(w, fmt.Sprintf("couldn't unmarshal webhook base: %v", err), http.StatusInternalServerError)
 			return
@@ -139,12 +139,13 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			return
 		}
 
-		if err := json.Unmarshal(wh.Payload, payload); err != nil {
+		if err := json.Unmarshal(wh.RawPayload, payload); err != nil {
 			cfg.handleError(w, fmt.Sprintf("couldn't unmarshal webhook payload: %v", err), http.StatusInternalServerError)
 			return
 		}
+		wh.Payload = payload
 
-		if err = acfg.handle(payload); err != nil {
+		if err = acfg.handle(&wh); err != nil {
 			cfg.handleError(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}

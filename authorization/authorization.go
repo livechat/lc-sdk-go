@@ -3,7 +3,7 @@ package authorization
 // Token represents SSO token from Chat API's perspective.
 type Token struct {
 	// LicenseID specifies ID of license which owns the token.
-	LicenseID int
+	LicenseID *int
 	// AccessToken is a customer access token returned by LiveChat OAuth Server.
 	AccessToken string
 	// Region is a datacenter for LicenseID (`dal` or `fra`).

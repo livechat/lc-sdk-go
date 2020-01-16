@@ -98,7 +98,7 @@ func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
 }
 
 func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
-	verifier := func(interface{}) error { return nil }
+	verifier := func(*webhooks.Webhook) error { return nil }
 	action := "incoming_chat_thread"
 	cfg := webhooks.NewConfiguration().WithAction(action, verifier, "other_dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
