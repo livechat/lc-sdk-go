@@ -22,9 +22,9 @@ LiveChat Go SDK supports Go modules. Please note that minor LiveChat API version
 
 All versions of LiveChat API are available as git tags in lc-sdk-go. However, a developer-preview version (not completed yet, may introduce breaking changes in future) is avaiable in lc-sdk-go as a git branch.
 
-### Usage guide
+### Usage guide and examples
 
-We’re currently working on a usage guide with examples. For now, refer to unit tests to see how to use the methods.
+* [Echo](examples/echo/README.md)
 
 ### Feedback
 
