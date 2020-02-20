@@ -14,16 +14,16 @@
 
 1. Sign in to [Developer Console](https://developers.livechatinc.com/console/).
 2. Go to the [Apps](https://developers.livechatinc.com/console/apps/) section.
-3. Create a new app! You may use a blank template and add Authorization block yourself or use the webhooks template.
-4. Configure Authorization block. 
-	4.1 Choose the server-side as a client type. 
-	4.2 Add `$NGROK_PUBLIC_URL/oauth` to a redirect URI whitelist.
-	4.3 Copy client id, client secret, redirect URI. You will need them when creating a configuration file for the app.
-	4.4 Add `webhooks--all:rw` and `chats--all:rw` to requested scopes list.
-	4.5 Use `$NGROK_PUBLIC_URL/oauth` as a direct installation URL in the Marketplace authorization flow settings section.
+3. Create a new app. You can use the Blank template and add the Authorization building block manually or use the Server-side webhook app template.
+4. Configure the Authorization building block.
+	1. Choose server-side as the Client type.
+	2. Add `$NGROK_PUBLIC_URL/oauth` to the Redirect URI whitelist.
+	3. Copy Client Id, Client Secret, and Redirect URI. You will need them when creating a configuration file for the app.
+	4. Add `webhooks--all:rw` and `chats--all:rw` to the list of requested scopes.
+	5. Use `$NGROK_PUBLIC_URL/oauth` as the Direct installation URL in the Marketplace authorization flow settings section.
 
 **Attention!** For production applications, you can skip point 4.5.
-Having troubles? Visit docs dedicated page for [createing LiveChat apps](https://developers.livechatinc.com/docs/getting-started/guides/#creating-livechat-apps).
+Having troubles? Visit docs dedicated page for [creating LiveChat apps](https://developers.livechatinc.com/docs/getting-started/guides/#creating-livechat-apps).
 
 ## Running this example
 
@@ -48,7 +48,7 @@ Having troubles? Visit docs dedicated page for [createing LiveChat apps](https:/
 
     Use values saved when [creating a LiveChat app](#creating-a-livechat-apps) to fill `config.json`.
     Assuming that `$NGROK_PUBLIC_URL` is equal to `https://3c6129e3.ngrok.io`, sample config file looks like:
-    
+
     ```js
     {
       "client_id": "27f41c8da685c81a890f9e5f8ce48387",
@@ -75,3 +75,6 @@ Having troubles? Visit docs dedicated page for [createing LiveChat apps](https:/
 4. Move to the Private installation section and hit the install button.
 
 **Attention!** For production applications, you want to publish the app.
+
+### Post-install
+Go to `https://direct.lc.chat/$YOUR_LICENSE_ID`, start a chat, say hi and wait for Echo to respond.
