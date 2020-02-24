@@ -23,10 +23,11 @@ type PredictedAgent struct {
 
 // URLDetails contains some OpenGraph details of the URL.
 type URLDetails struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	URL         string `json:"url"`
-	ImageURL    string `json:"image_url"`
-	ImageWidth  int    `json:"image_width"`
-	ImageHeight int    `json:"image_height"`
+	Title            string `json:"title"`
+	Description      string `json:"description"`
+	URL              string `json:"url"`
+	ImageURL         string `json:"image_url"`
+	ImageOriginalURL string `json:"image_original_url"`
+	ImageWidth       int    `json:"image_width"`
+	ImageHeight      int    `json:"image_height"`
 }
