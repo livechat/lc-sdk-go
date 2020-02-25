@@ -14,7 +14,7 @@ import (
 	api_errors "github.com/livechat/lc-sdk-go/errors"
 )
 
-const apiVersion = "3.1"
+const apiVersion = "3.2"
 
 // API provides the base client for making requests to Livechat Web APIs.
 type API struct {
