@@ -272,7 +272,7 @@ func TestSendEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	eventID, rErr := api.SendEvent("stubChatID", &objects.Event{})
+	eventID, rErr := api.SendEvent("stubChatID", &objects.Event{}, false)
 	if rErr != nil {
 		t.Errorf("SendEvent failed: %v", rErr)
 	}
@@ -294,7 +294,7 @@ func TestSendSystemMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 		"var1": "val1",
 		"var2": "val2",
 	}
-	eventID, rErr := api.SendSystemMessage("stubChatID", "text", "messagetype", textVars, "all")
+	eventID, rErr := api.SendSystemMessage("stubChatID", "text", "messagetype", textVars, customer.All, false)
 	if rErr != nil {
 		t.Errorf("SendSystemMessage failed: %v", rErr)
 	}
@@ -724,7 +724,7 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.SendEvent("stubChatID", &objects.Event{})
+	_, rErr := api.SendEvent("stubChatID", &objects.Event{}, false)
 	verifyErrorResponse("SendEvent", rErr, t)
 }
 
