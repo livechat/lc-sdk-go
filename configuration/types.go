@@ -22,6 +22,7 @@ const (
 	IncomingRichMessagePostback WebhookAction = "incoming_rich_message_postback"
 	LastSeenTimestampUpdated    WebhookAction = "last_seen_timestamp_updated"
 	ThreadClosed                WebhookAction = "thread_closed"
+	ChatDeactivated             WebhookAction = "chat_deactivated"
 	ChatPropertiesUpdated       WebhookAction = "chat_properties_updated"
 	ChatPropertiesDeleted       WebhookAction = "chat_properties_deleted"
 	ChatThreadPropertiesUpdated WebhookAction = "chat_thread_properties_updated"

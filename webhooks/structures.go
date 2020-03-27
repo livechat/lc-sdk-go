@@ -33,6 +33,13 @@ type ThreadClosed struct {
 	UserID   string `json:"user_id"`
 }
 
+// ChatDeactivated represents payload of chat_deactivated webhook.
+type ChatDeactivated struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+	UserID   string `json:"user_id"`
+}
+
 // AccessGranted represents payload of access_granted webhook.
 type AccessGranted struct {
 	Resource string         `json:"resource"`

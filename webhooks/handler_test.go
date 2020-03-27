@@ -14,6 +14,7 @@ import (
 var verifiers = map[string]webhooks.Handler{
 	"incoming_chat_thread":           incomingChatThread,
 	"thread_closed":                  threadClosed,
+	"chat_deactivated":               chatDeactivated,
 	"access_granted":                 accessGranted,
 	"access_revoked":                 accessRevoked,
 	"access_set":                     accessSet,
