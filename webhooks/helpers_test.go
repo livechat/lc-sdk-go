@@ -538,6 +538,23 @@ func threadClosed(licenseID int, payload interface{}) error {
 	return nil
 }
 
+func chatDeactivated(licenseID int, payload interface{}) error {
+	wh, ok := payload.(*webhooks.ChatDeactivated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", payload)
+	}
+
+	var errors string
+	propEq("ChatID", wh.ChatID, "PS0X0L086G", &errors)
+	propEq("ThreadID", wh.ThreadID, "PZ070E0W1B", &errors)
+	propEq("UserID", wh.UserID, "l.wojciechowski@livechatinc.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
 func followUpRequested(licenseID int, payload interface{}) error {
 	wh, ok := payload.(*webhooks.FollowUpRequested)
 	if !ok {

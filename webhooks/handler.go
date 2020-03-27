@@ -94,6 +94,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &IncomingChatThread{}
 		case "thread_closed":
 			payload = &ThreadClosed{}
+		case "chat_deactivated":
+			payload = &ChatDeactivated{}
 		case "access_granted":
 			payload = &AccessGranted{}
 		case "access_revoked":
