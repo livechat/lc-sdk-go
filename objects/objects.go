@@ -18,13 +18,13 @@ type Properties map[string]map[string]interface{}
 //
 // To get speficic user type's structure, call Agent() or Customer() (based on Type value).
 type User struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"`
-	Name     string `json:"name"`
-	Avatar   string `json:"avatar"`
-	Email    string `json:"email"`
-	Present  bool   `json:"present"`
-	LastSeen Time   `json:"last_seen_timestamp"`
+	ID             string    `json:"id"`
+	Type           string    `json:"type"`
+	Name           string    `json:"name"`
+	Avatar         string    `json:"avatar"`
+	Email          string    `json:"email"`
+	Present        bool      `json:"present"`
+	EventsSeenUpTo time.Time `json:"events_seen_up_to"`
 	userSpecific
 }
 
