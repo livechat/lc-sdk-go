@@ -33,10 +33,10 @@ func (a *API) RegisterWebhook(webhook *Webhook) (string, error) {
 	return resp.ID, err
 }
 
-// GetWebhooksConfig returns configurations of all registered webhooks
-func (a *API) GetWebhooksConfig() ([]RegisteredWebhook, error) {
-	var resp getWebhookConfigResponse
-	err := a.Call("get_webhooks_config", nil, &resp)
+// ListRegisteredWebhooks returns configurations of all registered webhooks
+func (a *API) ListRegisteredWebhooks() ([]RegisteredWebhook, error) {
+	var resp listRegisteredWebhooksResponse
+	err := a.Call("list_registered_webhooks", nil, &resp)
 
 	return resp, err
 }

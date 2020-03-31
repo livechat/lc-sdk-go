@@ -257,7 +257,7 @@ func TestRegisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	}
 }
 
-func TestGetWebhooksConfigShouldReturnDataReceivedFromConfApi(t *testing.T) {
+func TestListRegisteredWebhooksShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_webhooks_config"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -265,9 +265,9 @@ func TestGetWebhooksConfigShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetWebhooksConfig()
+	resp, rErr := api.ListRegisteredWebhooks()
 	if rErr != nil {
-		t.Errorf("GetWebhooksConfig failed: %v", rErr)
+		t.Errorf("ListRegisteredWebhooks failed: %v", rErr)
 	}
 
 	if len(resp) != 1 || resp[0].ID != "pqi8oasdjahuakndw9nsad9na" {
