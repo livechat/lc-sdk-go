@@ -8,7 +8,7 @@ type unregisterWebhookRequest struct {
 	ID string `json:"webhook_id"`
 }
 
-type getWebhookConfigResponse []RegisteredWebhook
+type listRegisteredWebhooksResponse []RegisteredWebhook
 
 type createBotAgentRequest struct {
 	Name                 string            `json:"name"`
