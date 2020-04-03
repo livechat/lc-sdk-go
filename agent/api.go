@@ -392,3 +392,12 @@ func (a *API) Multicast(recipients MulticastRecipients, content json.RawMessage,
 		Type:       multicastType,
 	}, &emptyResponse{})
 }
+
+// ListAgentsForTransfer returns the Agents you can transfer a given chat to.
+func (a *API) ListAgentsForTransfer(chatID string) (AgentsForTransfer, error) {
+	var resp AgentsForTransfer
+	err := a.Call("list_agents_for_transfer", &listAgentsForTransferRequest{
+		ChatID: chatID,
+	}, &resp)
+	return resp, err
+}

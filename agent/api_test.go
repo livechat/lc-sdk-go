@@ -204,6 +204,16 @@ var mockedResponses = map[string]string{
 	"send_typing_indicator": `{}`,
 	"multicast":             `{}`,
 	"transfer_chat":         `{}`,
+	"list_agents_for_transfer": `[
+		{
+			"agent_id": "agent1@example.com",
+			"total_active_chats": 2
+		},
+		{
+			"agent_id": "agent2@example.com",
+			"total_active_chats": 5
+		}
+	]`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -1290,4 +1300,22 @@ func TestTransferChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	ids[0] = 1
 	rErr := api.TransferChat("stubChatID", "group", ids, false)
 	verifyErrorResponse("SendTypingIndicator", rErr, t)
+}
+
+func TestListAgentsForTransferShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_agents_for_transfer"))
+
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListAgentsForTransfer("PJ0MRSHTDG")
+	if rErr != nil {
+		t.Errorf("ListAgentsForTransfer failed: %v", rErr)
+	}
+
+	if len(resp) != 2 {
+		t.Errorf("Invalid ListAgentsForTransfer response: %v", resp)
+	}
 }

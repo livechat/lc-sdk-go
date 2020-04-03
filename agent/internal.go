@@ -252,3 +252,7 @@ type paginationResponse struct {
 	Page  uint `json:"page,omitempty"`
 	Total uint `json:"total,omitempty"`
 }
+
+type listAgentsForTransferRequest struct {
+	ChatID string `json:"chat_id"`
+}

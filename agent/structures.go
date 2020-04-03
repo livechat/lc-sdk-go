@@ -38,3 +38,8 @@ type transferTarget struct {
 	Type string        `json:"type"`
 	IDs  []interface{} `json:"ids"`
 }
+
+type AgentsForTransfer []struct {
+	AgentID          string `json:"agent_id"`
+	TotalActiveChats uint   `json:"total_active_chats"`
+}
