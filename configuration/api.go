@@ -103,10 +103,10 @@ func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
 	return resp.BotAgents, err
 }
 
-// GetBotAgentDetails returns detailed properties of bot agent
-func (a *API) GetBotAgentDetails(id string) (*BotAgentDetails, error) {
-	var resp getBotAgentDetailsResponse
-	err := a.Call("get_bot_agent_details", &getBotAgentDetailsRequest{
+// GetBot returns bot
+func (a *API) GetBot(id string) (*BotAgentDetails, error) {
+	var resp getBotResponse
+	err := a.Call("get_bot", &getBotRequest{
 		BotID: id,
 	}, &resp)
 

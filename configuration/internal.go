@@ -41,11 +41,11 @@ type listBotsResponse struct {
 	BotAgents []*BotAgent `json:"bot_agents"`
 }
 
-type getBotAgentDetailsRequest struct {
+type getBotRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type getBotAgentDetailsResponse struct {
+type getBotResponse struct {
 	BotAgent *BotAgentDetails `json:"bot_agent"`
 }
 
