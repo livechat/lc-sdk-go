@@ -63,7 +63,7 @@ type getChatThreadsResponse struct {
 	Chat objects.Chat `json:"chat"`
 }
 
-type closeThreadRequest struct {
+type deactivateChatRequest struct {
 	ChatID string `json:"chat_id"`
 }
 

@@ -68,7 +68,7 @@ type activateChatResponse struct {
 	EventIDs []string `json:"event_ids"`
 }
 
-type closeThreadRequest struct {
+type deactivateChatRequest struct {
 	ChatID string `json:"chat_id"`
 }
 

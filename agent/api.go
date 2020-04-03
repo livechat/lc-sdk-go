@@ -115,10 +115,10 @@ func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (threadID 
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// CloseThread closes active thread for given chat. If no thread is active, then this
+// DeactivateChat deactivates active thread for given chat. If no thread is active, then this
 // method is a no-op.
-func (a *API) CloseThread(chatID string) error {
-	return a.Call("close_thread", &closeThreadRequest{
+func (a *API) DeactivateChat(chatID string) error {
+	return a.Call("deactivate_chat", &deactivateChatRequest{
 		ChatID: chatID,
 	}, &emptyResponse{})
 }

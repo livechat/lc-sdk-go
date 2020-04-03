@@ -95,7 +95,7 @@ var mockedResponses = map[string]string{
 			"threads": []
 		}
 	}`,
-	"close_thread": `{}`,
+	"deactivate_chat": `{}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
@@ -387,16 +387,16 @@ func TestGetChatThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 }
 
 func TestCloseThreadShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "close_thread"))
+	client := NewTestClient(createMockedResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CloseThread("stubChatID")
+	rErr := api.DeactivateChat("stubChatID")
 	if rErr != nil {
-		t.Errorf("CloseThread failed: %v", rErr)
+		t.Errorf("DeactivateChat failed: %v", rErr)
 	}
 }
 
@@ -777,15 +777,15 @@ func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "close_thread"))
+	client := NewTestClient(createMockedErrorResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CloseThread("stubChatID")
-	verifyErrorResponse("CloseThread", rErr, t)
+	rErr := api.DeactivateChat("stubChatID")
+	verifyErrorResponse("DeactivateChat", rErr, t)
 }
 
 func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
