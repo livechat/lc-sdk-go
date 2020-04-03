@@ -127,7 +127,7 @@ type deleteChatPropertiesRequest struct {
 	Properties map[string][]string `json:"properties"`
 }
 
-type updateChatThreadPropertiesRequest struct {
+type updateThreadPropertiesRequest struct {
 	ChatID     string             `json:"chat_id"`
 	ThreadID   string             `json:"thread_id"`
 	Properties objects.Properties `json:"properties"`

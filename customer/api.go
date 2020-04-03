@@ -188,9 +188,9 @@ func (a *API) DeleteChatProperties(chatID string, properties map[string][]string
 	}, &emptyResponse{})
 }
 
-// UpdateChatThreadProperties updates given chat thread's properties.
-func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
-	return a.Call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
+// UpdateThreadProperties updates given thread's properties.
+func (a *API) UpdateThreadProperties(chatID, threadID string, properties objects.Properties) error {
+	return a.Call("update_thread_properties", &updateThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,

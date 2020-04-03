@@ -103,7 +103,7 @@ var mockedResponses = map[string]string{
 	"send_sneak_peek":               `{}`,
 	"update_chat_properties":        `{}`,
 	"delete_chat_properties":        `{}`,
-	"update_chat_thread_properties": `{}`,
+	"update_thread_properties":      `{}`,
 	"delete_chat_thread_properties": `{}`,
 	"update_event_properties":       `{}`,
 	"delete_event_properties":       `{}`,
@@ -485,16 +485,16 @@ func TestDeleteChatPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.
 }
 
 func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_chat_thread_properties"))
+	client := NewTestClient(createMockedResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateChatThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
+	rErr := api.UpdateThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
 	if rErr != nil {
-		t.Errorf("UpdateChatThreadProperties failed: %v", rErr)
+		t.Errorf("UpdateThreadProperties failed: %v", rErr)
 	}
 }
 
@@ -859,15 +859,15 @@ func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "update_chat_thread_properties"))
+	client := NewTestClient(createMockedErrorResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateChatThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
-	verifyErrorResponse("UpdateChatThreadProperties", rErr, t)
+	rErr := api.UpdateThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
+	verifyErrorResponse("UpdateThreadProperties", rErr, t)
 }
 
 func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
