@@ -196,6 +196,15 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			return createServerError("Invalid URL")
 		}
 
+		expectedMethod := "POST"
+		if method == "list_license_properties" || method == "list_group_properties" {
+			expectedMethod = "GET"
+		}
+		if expectedMethod != req.Method {
+			t.Errorf("Invalid method: %s for Customer API action: %s", req.Method, method)
+			return createServerError("Invalid URL")
+		}
+
 		if authHeader := req.Header.Get("Authorization"); authHeader != "Bearer access_token" {
 			t.Errorf("Invalid Authorization header: %s", authHeader)
 			return createServerError("Invalid Authorization")

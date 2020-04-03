@@ -238,6 +238,11 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			return createServerError("Invalid URL")
 		}
 
+		if req.Method != "POST" {
+			t.Errorf("Invalid method: %s for Agent API action: %s", req.Method, method)
+			return createServerError("Invalid URL")
+		}
+
 		if authHeader := req.Header.Get("Authorization"); authHeader != "Bearer access_token" {
 			t.Errorf("Invalid Authorization header: %s", authHeader)
 			return createServerError("Invalid Authorization")

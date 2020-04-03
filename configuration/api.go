@@ -6,6 +6,7 @@ import (
 
 	"github.com/livechat/lc-sdk-go/authorization"
 	i "github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects"
 )
 
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.
@@ -145,4 +146,18 @@ func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
 	}
 
 	return nil
+}
+
+// ListLicenseProperties.
+func (a *API) ListLicenseProperties() (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_license_properties", nil, &resp)
+	return resp, err
+}
+
+// ListGroupProperties.
+func (a *API) ListGroupProperties() (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_group_properties", nil, &resp)
+	return resp, err
 }
