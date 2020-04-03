@@ -133,7 +133,7 @@ type updateThreadPropertiesRequest struct {
 	Properties objects.Properties `json:"properties"`
 }
 
-type deleteChatThreadPropertiesRequest struct {
+type deleteThreadPropertiesRequest struct {
 	ChatID     string              `json:"chat_id"`
 	ThreadID   string              `json:"thread_id"`
 	Properties map[string][]string `json:"properties"`
@@ -154,7 +154,7 @@ type deleteEventPropertiesRequest struct {
 }
 
 // used for both tagging and untagging
-type changeChatThreadTagRequest struct {
+type changeThreadTagRequest struct {
 	ChatID   string `json:"chat_id"`
 	ThreadID string `json:"thread_id"`
 	Tag      string `json:"tag"`

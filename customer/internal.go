@@ -100,7 +100,7 @@ type updateThreadPropertiesRequest struct {
 	Properties objects.Properties `json:"properties"`
 }
 
-type deleteChatThreadPropertiesRequest struct {
+type deleteThreadPropertiesRequest struct {
 	ChatID     string              `json:"chat_id"`
 	ThreadID   string              `json:"thread_id"`
 	Properties map[string][]string `json:"properties"`

@@ -252,9 +252,9 @@ func (a *API) UpdateThreadProperties(chatID, threadID string, properties objects
 	}, &emptyResponse{})
 }
 
-// DeleteChatThreadProperties deletes given chat thread's properties.
-func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
-	return a.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
+// DeleteThreadProperties deletes given thread's properties.
+func (a *API) DeleteThreadProperties(chatID, threadID string, properties map[string][]string) error {
+	return a.Call("delete_thread_properties", &deleteThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
@@ -281,18 +281,18 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 	}, &emptyResponse{})
 }
 
-// TagChatThread adds given tag to chat thread.
-func (a *API) TagChatThread(chatID, threadID, tag string) error {
-	return a.Call("tag_chat_thread", &changeChatThreadTagRequest{
+// TagThread adds given tag to thread.
+func (a *API) TagThread(chatID, threadID, tag string) error {
+	return a.Call("tag_thread", &changeThreadTagRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		Tag:      tag,
 	}, &emptyResponse{})
 }
 
-// UntagChatThread removes given tag from chat thread.
-func (a *API) UntagChatThread(chatID, threadID, tag string) error {
-	return a.Call("untag_chat_thread", &changeChatThreadTagRequest{
+// UntagThread removes given tag from thread.
+func (a *API) UntagThread(chatID, threadID, tag string) error {
+	return a.Call("untag_thread", &changeThreadTagRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		Tag:      tag,

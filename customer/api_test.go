@@ -99,16 +99,16 @@ var mockedResponses = map[string]string{
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
-	"send_rich_message_postback":    `{}`,
-	"send_sneak_peek":               `{}`,
-	"update_chat_properties":        `{}`,
-	"delete_chat_properties":        `{}`,
-	"update_thread_properties":      `{}`,
-	"delete_chat_thread_properties": `{}`,
-	"update_event_properties":       `{}`,
-	"delete_event_properties":       `{}`,
-	"update_customer":               `{}`,
-	"set_customer_session_fields":   `{}`,
+	"send_rich_message_postback":  `{}`,
+	"send_sneak_peek":             `{}`,
+	"update_chat_properties":      `{}`,
+	"delete_chat_properties":      `{}`,
+	"update_thread_properties":    `{}`,
+	"delete_thread_properties":    `{}`,
+	"update_event_properties":     `{}`,
+	"delete_event_properties":     `{}`,
+	"update_customer":             `{}`,
+	"set_customer_session_fields": `{}`,
 	"list_group_statuses": `{
 		"groups_status": {
 			"1": "online",
@@ -499,16 +499,16 @@ func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *te
 }
 
 func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "delete_chat_thread_properties"))
+	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
 	if rErr != nil {
-		t.Errorf("DeleteChatThreadProperties failed: %v", rErr)
+		t.Errorf("DeleteThreadProperties failed: %v", rErr)
 	}
 }
 
@@ -871,15 +871,15 @@ func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_thread_properties"))
+	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
-	verifyErrorResponse("DeleteChatThreadProperties", rErr, t)
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	verifyErrorResponse("DeleteThreadProperties", rErr, t)
 }
 
 func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {

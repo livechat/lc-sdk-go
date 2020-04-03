@@ -121,18 +121,18 @@ var mockedResponses = map[string]string{
 	"set_access":            `{}`,
 	"add_user_to_chat":      `{}`,
 	"remove_user_from_chat": `{}`,
-	"tag_chat_thread":       `{}`,
-	"untag_chat_thread":     `{}`,
+	"tag_thread":            `{}`,
+	"untag_thread":          `{}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
-	"send_rich_message_postback":    `{}`,
-	"update_chat_properties":        `{}`,
-	"delete_chat_properties":        `{}`,
-	"update_thread_properties":      `{}`,
-	"delete_chat_thread_properties": `{}`,
-	"update_event_properties":       `{}`,
-	"delete_event_properties":       `{}`,
+	"send_rich_message_postback": `{}`,
+	"update_chat_properties":     `{}`,
+	"delete_chat_properties":     `{}`,
+	"update_thread_properties":   `{}`,
+	"delete_thread_properties":   `{}`,
+	"update_event_properties":    `{}`,
+	"delete_event_properties":    `{}`,
 	"get_customer": `{
 		"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 		"type": "customer",
@@ -639,16 +639,16 @@ func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testi
 }
 
 func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "delete_chat_thread_properties"))
+	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
 	if rErr != nil {
-		t.Errorf("DeleteChatThreadProperties failed: %v", rErr)
+		t.Errorf("DeleteThreadProperties failed: %v", rErr)
 	}
 }
 
@@ -681,30 +681,30 @@ func TestDeleteEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 }
 
 func TestTagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "tag_chat_thread"))
+	client := NewTestClient(createMockedResponder(t, "tag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.TagChatThread("stubChatID", "stubThreadID", "tag")
+	rErr := api.TagThread("stubChatID", "stubThreadID", "tag")
 	if rErr != nil {
-		t.Errorf("TagChatThread failed: %v", rErr)
+		t.Errorf("TagThread failed: %v", rErr)
 	}
 }
 
 func TestUntagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "untag_chat_thread"))
+	client := NewTestClient(createMockedResponder(t, "untag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UntagChatThread("stubChatID", "stubThreadID", "tag")
+	rErr := api.UntagThread("stubChatID", "stubThreadID", "tag")
 	if rErr != nil {
-		t.Errorf("UntagChatThread failed: %v", rErr)
+		t.Errorf("UntagThread failed: %v", rErr)
 	}
 }
 
@@ -1135,15 +1135,15 @@ func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_thread_properties"))
+	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
-	verifyErrorResponse("DeleteChatThreadProperties", rErr, t)
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	verifyErrorResponse("DeleteThreadProperties", rErr, t)
 }
 
 func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1171,27 +1171,27 @@ func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestTagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "tag_chat_thread"))
+	client := NewTestClient(createMockedErrorResponder(t, "tag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.TagChatThread("stubChatID", "stubThreadID", "tag")
-	verifyErrorResponse("TagChatThread", rErr, t)
+	rErr := api.TagThread("stubChatID", "stubThreadID", "tag")
+	verifyErrorResponse("TagThread", rErr, t)
 }
 
 func TestUntagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "untag_chat_thread"))
+	client := NewTestClient(createMockedErrorResponder(t, "untag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UntagChatThread("stubChatID", "stubThreadID", "tag")
-	verifyErrorResponse("UntagChatThread", rErr, t)
+	rErr := api.UntagThread("stubChatID", "stubThreadID", "tag")
+	verifyErrorResponse("UntagThread", rErr, t)
 }
 
 func TesGetCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
