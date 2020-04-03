@@ -42,14 +42,14 @@ func (a *API) ListChats(filters *chatsFilters, page, limit uint) (summary []obje
 }
 
 // GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID, order, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
+func (a *API) GetChatThreadsSummary(chatID, sortOrder, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
 	var resp getChatThreadsSummaryResponse
 	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
 		hashedPaginationRequest: &hashedPaginationRequest{
-			Order:  order,
-			Limit:  limit,
-			PageID: pageID,
+			SortOrder: sortOrder,
+			Limit:     limit,
+			PageID:    pageID,
 		},
 	}, &resp)
 
@@ -300,13 +300,13 @@ func (a *API) UntagChatThread(chatID, threadID, tag string) error {
 }
 
 // ListCustomers returns the list of Customers.
-func (a *API) ListCustomers(limit uint, pageID, order string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
+func (a *API) ListCustomers(limit uint, pageID, sortOrder string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
 	var resp listCustomersResponse
 	err = a.Call("list_customers", &listCustomersRequest{
-		PageID:  pageID,
-		Limit:   limit,
-		Order:   order,
-		Filters: filters,
+		PageID:    pageID,
+		Limit:     limit,
+		SortOrder: sortOrder,
+		Filters:   filters,
 	}, &resp)
 
 	return resp.Customers, resp.TotalCustomers, resp.PreviousPageID, resp.NextPageID, err

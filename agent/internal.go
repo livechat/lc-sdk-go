@@ -161,10 +161,10 @@ type changeChatThreadTagRequest struct {
 }
 
 type listCustomersRequest struct {
-	PageID  string            `json:"page_id,omitempty"`
-	Limit   uint              `json:"limit,omitempty"`
-	Order   string            `json:"order,omitempty"`
-	Filters *customersFilters `json:"filters,omitempty"`
+	PageID    string            `json:"page_id,omitempty"`
+	Limit     uint              `json:"limit,omitempty"`
+	SortOrder string            `json:"sort_order,omitempty"`
+	Filters   *customersFilters `json:"filters,omitempty"`
 }
 
 type listCustomersResponse struct {
@@ -226,9 +226,9 @@ type multicastRequest struct {
 type emptyResponse struct{}
 
 type hashedPaginationRequest struct {
-	PageID string `json:"page_id,omitempty"`
-	Limit  uint   `json:"limit,omitempty"`
-	Order  string `json:"order,omitempty"`
+	PageID    string `json:"page_id,omitempty"`
+	Limit     uint   `json:"limit,omitempty"`
+	SortOrder string `json:"sort_order,omitempty"`
 }
 
 type hashedPaginationResponse struct {
