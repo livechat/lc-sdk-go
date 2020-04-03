@@ -48,13 +48,13 @@ func (a *API) UnregisterWebhook(id string) error {
 	}, &emptyResponse{})
 }
 
-// CreateBotAgent allows to create bot agent and returns its ID
-func (a *API) CreateBotAgent(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
-	var resp createBotAgentResponse
+// CreateBot allows to create bot and returns its ID
+func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
+	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
 	}
-	err := a.Call("create_bot_agent", &createBotAgentRequest{
+	err := a.Call("create_bot", &createBotRequest{
 		Name:                 name,
 		Avatar:               avatar,
 		Status:               status,
@@ -67,14 +67,14 @@ func (a *API) CreateBotAgent(name, avatar string, status BotStatus, maxChats uin
 	return resp.BotID, err
 }
 
-// UpdateBotAgent allows to update bot agent's properties
-func (a *API) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
+// UpdateBot allows to update bot
+func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
-	return a.Call("update_bot_agent", &updateBotAgentRequest{
+	return a.Call("update_bot", &updateBotRequest{
 		BotID: id,
-		createBotAgentRequest: &createBotAgentRequest{
+		createBotRequest: &createBotRequest{
 			Name:                 name,
 			Avatar:               avatar,
 			Status:               status,
@@ -86,9 +86,9 @@ func (a *API) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats
 	}, &emptyResponse{})
 }
 
-// RemoveBotAgent removes bot with given ID
-func (a *API) RemoveBotAgent(id string) error {
-	return a.Call("remove_bot_agent", &removeBotAgentRequest{
+// RemoveBot removes bot with given ID
+func (a *API) RemoveBot(id string) error {
+	return a.Call("remove_bot", &removeBotRequest{
 		BotID: id,
 	}, &emptyResponse{})
 }

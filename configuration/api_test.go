@@ -51,11 +51,11 @@ var mockedResponses = map[string]string{
     }
   ]`,
 	"unregister_webhook": `{}`,
-	"create_bot_agent": `{
+	"create_bot": `{
     "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
 	}`,
-	"update_bot_agent": `{}`,
-	"remove_bot_agent": `{}`,
+	"update_bot": `{}`,
+	"remove_bot": `{}`,
 	"get_bot_agents": `{
     "bot_agents": [{
         "id": "5c9871d5372c824cbf22d860a707a578",
@@ -302,16 +302,16 @@ func TestUnregisterWebhookShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_bot_agent"))
+	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBotAgent("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 
 	if botID != "5c9871d5372c824cbf22d860a707a578" {
@@ -320,7 +320,7 @@ func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_bot_agent"))
+	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
@@ -328,28 +328,28 @@ func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
-	_, rErr := api.CreateBotAgent("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 }
 
 func TestUpdateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_bot_agent"))
+	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBotAgent("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
-		t.Errorf("UpdateBotAgent failed: %v", rErr)
+		t.Errorf("UpdateBot failed: %v", rErr)
 	}
 }
 
 func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_bot_agent"))
+	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
@@ -357,23 +357,23 @@ func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
-	rErr := api.UpdateBotAgent("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 }
 
 func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "remove_bot_agent"))
+	client := NewTestClient(createMockedResponder(t, "remove_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RemoveBotAgent("pqi8oasdjahuakndw9nsad9na")
+	rErr := api.RemoveBot("pqi8oasdjahuakndw9nsad9na")
 	if rErr != nil {
-		t.Errorf("RemoveBotAgent failed: %v", rErr)
+		t.Errorf("RemoveBot failed: %v", rErr)
 	}
 }
 

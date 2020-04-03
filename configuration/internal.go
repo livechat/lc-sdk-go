@@ -10,7 +10,7 @@ type unregisterWebhookRequest struct {
 
 type listRegisteredWebhooksResponse []RegisteredWebhook
 
-type createBotAgentRequest struct {
+type createBotRequest struct {
 	Name                 string            `json:"name"`
 	Status               BotStatus         `json:"status"`
 	Avatar               string            `json:"string,omitempty"`
@@ -20,17 +20,17 @@ type createBotAgentRequest struct {
 	Webhooks             *BotWebhooks      `json:"webhooks,omitempty"`
 }
 
-type createBotAgentResponse struct {
+type createBotResponse struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type removeBotAgentRequest struct {
+type removeBotRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type updateBotAgentRequest struct {
+type updateBotRequest struct {
 	BotID string `json:"id"`
-	*createBotAgentRequest
+	*createBotRequest
 }
 
 type getBotAgentsRequest struct {
