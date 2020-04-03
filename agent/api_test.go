@@ -133,7 +133,7 @@ var mockedResponses = map[string]string{
 	"delete_chat_thread_properties": `{}`,
 	"update_event_properties":       `{}`,
 	"delete_event_properties":       `{}`,
-	"get_customers": `{
+	"list_customers": `{
 		"customers": [],
 		"total_customers": 0,
 		"previous_page_id": "prevpagehash"
@@ -645,16 +645,16 @@ func TestUntagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testin
 }
 
 func TestGetCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_customers"))
+	client := NewTestClient(createMockedResponder(t, "list_customers"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	customers, total, prevPage, nextPage, rErr := api.GetCustomers(100, "page", "asc", agent.NewCustomersFilters())
+	customers, total, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", agent.NewCustomersFilters())
 	if rErr != nil {
-		t.Errorf("GetCustomers failed: %v", rErr)
+		t.Errorf("ListCustomers failed: %v", rErr)
 	}
 
 	if len(customers) != 0 {
@@ -1093,15 +1093,15 @@ func TestUntagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TesGetCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_customers"))
+	client := NewTestClient(createMockedErrorResponder(t, "list_customers"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.GetCustomers(100, "page", "asc", agent.NewCustomersFilters())
-	verifyErrorResponse("GetCustomers", rErr, t)
+	_, _, _, _, rErr := api.ListCustomers(100, "page", "asc", agent.NewCustomersFilters())
+	verifyErrorResponse("ListCustomers", rErr, t)
 }
 
 func TestCreateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {

@@ -187,7 +187,7 @@ type DateRangeFilter struct {
 	EQ  string `json:"eq,omitempty"`
 }
 
-// NewCustomersFilters creates empty structure to aggregate filters for customers in GetCustomers method
+// NewCustomersFilters creates empty structure to aggregate filters for customers in ListCustomers method
 func NewCustomersFilters() *customersFilters {
 	return &customersFilters{}
 }

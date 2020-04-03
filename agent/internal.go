@@ -160,14 +160,14 @@ type changeChatThreadTagRequest struct {
 	Tag      string `json:"tag"`
 }
 
-type getCustomersRequest struct {
+type listCustomersRequest struct {
 	PageID  string            `json:"page_id,omitempty"`
 	Limit   uint              `json:"limit,omitempty"`
 	Order   string            `json:"order,omitempty"`
 	Filters *customersFilters `json:"filters,omitempty"`
 }
 
-type getCustomersResponse struct {
+type listCustomersResponse struct {
 	hashedPaginationResponse
 	Customers      []objects.Customer `json:"customers"`
 	TotalCustomers uint               `json:"total_customers"`

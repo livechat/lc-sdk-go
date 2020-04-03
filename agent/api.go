@@ -299,10 +299,10 @@ func (a *API) UntagChatThread(chatID, threadID, tag string) error {
 	}, &emptyResponse{})
 }
 
-// GetCustomers returns the list of Customers.
-func (a *API) GetCustomers(limit uint, pageID, order string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
-	var resp getCustomersResponse
-	err = a.Call("get_customers", &getCustomersRequest{
+// ListCustomers returns the list of Customers.
+func (a *API) ListCustomers(limit uint, pageID, order string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
+	var resp listCustomersResponse
+	err = a.Call("list_customers", &listCustomersRequest{
 		PageID:  pageID,
 		Limit:   limit,
 		Order:   order,
