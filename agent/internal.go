@@ -37,12 +37,12 @@ type getChatThreadsResponse struct {
 	Chat objects.Chat `json:"chat"`
 }
 
-type getArchivesRequest struct {
+type listArchivesRequest struct {
 	Filters    *archivesFilters   `json:"filters,omitempty"`
 	Pagination *paginationRequest `json:"pagination,omitempty"`
 }
 
-type getArchivesResponse struct {
+type listArchivesResponse struct {
 	Chats      []objects.Chat     `json:"chats"`
 	Pagination paginationResponse `json:"pagination"`
 }

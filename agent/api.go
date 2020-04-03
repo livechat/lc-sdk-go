@@ -67,10 +67,10 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, 
 	return resp.Chat, err
 }
 
-// GetArchives returns archived chats.
-func (a *API) GetArchives(filters *archivesFilters, page, limit uint) (chats []objects.Chat, currentPage, totalPages uint, err error) {
-	var resp getArchivesResponse
-	err = a.Call("get_archives", &getArchivesRequest{
+// ListArchives returns archived chats.
+func (a *API) ListArchives(filters *archivesFilters, page, limit uint) (chats []objects.Chat, currentPage, totalPages uint, err error) {
+	var resp listArchivesResponse
+	err = a.Call("list_archives", &listArchivesRequest{
 		Filters: filters,
 		Pagination: &paginationRequest{
 			Page:  page,

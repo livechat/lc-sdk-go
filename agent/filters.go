@@ -48,7 +48,7 @@ type SurveyFilter struct {
 	AnswerID string `json:"answer_id"`
 }
 
-// NewArchivesFilters creates empty structure to aggregate filters for GetArchives method
+// NewArchivesFilters creates empty structure to aggregate filters for ListArchives method
 func NewArchivesFilters() *archivesFilters {
 	return &archivesFilters{}
 }

@@ -98,7 +98,7 @@ var mockedResponses = map[string]string{
 			"threads": []
 		}
 	}`,
-	"get_archives": `{
+	"list_archives": `{
 		"chats": [
 			{
 				"id": "PJ0MRSHTDG",
@@ -365,14 +365,14 @@ func TestGetChatThreadsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestGetArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_archives"))
+	client := NewTestClient(createMockedResponder(t, "list_archives"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	chats, page, total, rErr := api.GetArchives(agent.NewArchivesFilters(), 1, 20)
+	chats, page, total, rErr := api.ListArchives(agent.NewArchivesFilters(), 1, 20)
 	if rErr != nil {
 		t.Errorf("GetChatThreads failed: %v", rErr)
 	}
@@ -863,15 +863,15 @@ func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestGetArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_archives"))
+	client := NewTestClient(createMockedErrorResponder(t, "list_archives"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, rErr := api.GetArchives(agent.NewArchivesFilters(), 1, 20)
-	verifyErrorResponse("GetArchives", rErr, t)
+	_, _, _, rErr := api.ListArchives(agent.NewArchivesFilters(), 1, 20)
+	verifyErrorResponse("ListArchives", rErr, t)
 }
 
 func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
