@@ -218,9 +218,9 @@ type sendTypingIndicatorRequest struct {
 }
 
 type multicastRequest struct {
-	Scopes  MulticastScopes `json:"scopes"`
-	Content json.RawMessage `json:"content"`
-	Type    string          `json:"type,omitempty"`
+	Recipients MulticastRecipients `json:"recipients"`
+	Content    json.RawMessage     `json:"content"`
+	Type       string              `json:"type,omitempty"`
 }
 
 type emptyResponse struct{}

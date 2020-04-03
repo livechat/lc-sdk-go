@@ -375,10 +375,10 @@ func (a *API) SendTypingIndicator(chatID, recipients string, isTyping bool) erro
 }
 
 // Multicast method serves for the chat-unrelated communication. Messages sent using multicast are not being saved.
-func (a *API) Multicast(scopes MulticastScopes, content json.RawMessage, multicastType string) error {
+func (a *API) Multicast(recipients MulticastRecipients, content json.RawMessage, multicastType string) error {
 	return a.Call("multicast", &multicastRequest{
-		Scopes:  scopes,
-		Content: content,
-		Type:    multicastType,
+		Recipients: recipients,
+		Content:    content,
+		Type:       multicastType,
 	}, &emptyResponse{})
 }

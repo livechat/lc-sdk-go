@@ -766,7 +766,7 @@ func TestMulticastShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.Multicast(agent.MulticastScopes{}, []byte("{}"), "type")
+	rErr := api.Multicast(agent.MulticastRecipients{}, []byte("{}"), "type")
 	if rErr != nil {
 		t.Errorf("Multicast failed: %v", rErr)
 	}
@@ -1183,7 +1183,7 @@ func TestMulticastShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.Multicast(agent.MulticastScopes{}, []byte("{}"), "type")
+	rErr := api.Multicast(agent.MulticastRecipients{}, []byte("{}"), "type")
 	verifyErrorResponse("Multicast", rErr, t)
 }
 

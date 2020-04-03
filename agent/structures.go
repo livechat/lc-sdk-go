@@ -16,21 +16,21 @@ type InitialChat struct {
 	Users []*objects.User `json:"users,omitempty"`
 }
 
-// MulticastScopes aggregates Agent and Customer Scopes that multicast should be sent to
-type MulticastScopes struct {
-	Agents    *MulticastScopesAgents    `json:"agents,omitempty"`
-	Customers *MulticastScopesCustomers `json:"customers,omitempty"`
+// MulticastRecipients aggregates Agent and Customer recipients that multicast should be sent to
+type MulticastRecipients struct {
+	Agents    *MulticastRecipientsAgents    `json:"agents,omitempty"`
+	Customers *MulticastRecipientsCustomers `json:"customers,omitempty"`
 }
 
-// MulticastScopesAgents represents scopes for multicast to agents
-type MulticastScopesAgents struct {
+// MulticastRecipientsAgents represents recipients for multicast to agents
+type MulticastRecipientsAgents struct {
 	Groups []uint   `json:"groups,omitempty"`
 	IDs    []string `json:"ids,omitempty"`
 	All    *bool    `json:"all,omitempty"`
 }
 
-// MulticastScopesCustomers represents scopes for multicast to customers
-type MulticastScopesCustomers struct {
+// MulticastRecipientsCustomers represents recipients for multicast to customers
+type MulticastRecipientsCustomers struct {
 	IDs []string `json:"ids,omitempty"`
 }
 
