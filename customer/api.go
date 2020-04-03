@@ -300,10 +300,10 @@ func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
 	return &resp, err
 }
 
-// GetURLDetails returns info on a given URL.
-func (a *API) GetURLDetails(url string) (*URLDetails, error) {
-	var resp URLDetails
-	err := a.Call("get_url_details", &getURLDetailsRequest{
+// GetURLInfo returns info on a given URL.
+func (a *API) GetURLInfo(url string) (*URLInfo, error) {
+	var resp URLInfo
+	err := a.Call("get_url_info", &getURLInfoRequest{
 		URL: url,
 	}, &resp)
 	return &resp, err

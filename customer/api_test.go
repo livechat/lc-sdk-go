@@ -152,7 +152,7 @@ var mockedResponses = map[string]string{
 			"type": "agent"
 		}
 	}`,
-	"get_url_details": `{
+	"get_url_info": `{
 		"title": "LiveChat | Live Chat Software and Help Desk Software",
 		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
 		"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
@@ -649,22 +649,22 @@ func TestGetPredictedAgentShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 	}
 }
 
-func TestGetURLDetailsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_url_details"))
+func TestGetURLInfoShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_url_info"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	details, rErr := api.GetURLDetails("http://totally.unsuspicious.url.com")
+	info, rErr := api.GetURLInfo("http://totally.unsuspicious.url.com")
 	if rErr != nil {
-		t.Errorf("GetURLDetails failed: %v", rErr)
+		t.Errorf("GetURLInfo failed: %v", rErr)
 	}
 	// TODO add better validation
 
-	if details == nil {
-		t.Errorf("Incorrect details")
+	if info == nil {
+		t.Errorf("Incorrect info")
 	}
 }
 
@@ -968,16 +968,16 @@ func TestGetPredictedAgentShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("GetPredictedAgent", rErr, t)
 }
 
-func TestGetURLDetailsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_url_details"))
+func TestGetURLInfoShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_url_info"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetURLDetails("http://totally.unsuspicious.url.com")
-	verifyErrorResponse("GetURLDetails", rErr, t)
+	_, rErr := api.GetURLInfo("http://totally.unsuspicious.url.com")
+	verifyErrorResponse("GetURLInfo", rErr, t)
 }
 
 func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {

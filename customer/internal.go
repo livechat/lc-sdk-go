@@ -156,7 +156,7 @@ type getFormResponse struct {
 	Enabled bool  `json:"enabled"`
 }
 
-type getURLDetailsRequest struct {
+type getURLInfoRequest struct {
 	URL string `json:"url"`
 }
 
