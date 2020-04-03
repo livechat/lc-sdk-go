@@ -166,3 +166,14 @@ type markEventsAsSeenRequest struct {
 }
 
 type emptyResponse struct{}
+
+type listLicensePropertiesRequest struct {
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name,omitempty"`
+}
+
+type listGroupPropertiesRequest struct {
+	GroupID   uint   `json:"group_id"`
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name,omitempty"`
+}

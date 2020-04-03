@@ -490,7 +490,7 @@ func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListLicenseProperties()
+	resp, rErr := api.ListLicenseProperties("", "")
 	if rErr != nil {
 		t.Errorf("ListLicenseProperties failed: %v", rErr)
 	}
@@ -512,7 +512,7 @@ func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListGroupProperties()
+	resp, rErr := api.ListGroupProperties(0, "", "")
 	if rErr != nil {
 		t.Errorf("ListGroupProperties failed: %v", rErr)
 	}

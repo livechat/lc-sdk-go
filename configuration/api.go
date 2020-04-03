@@ -148,16 +148,23 @@ func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
 	return nil
 }
 
-// ListLicenseProperties.
-func (a *API) ListLicenseProperties() (objects.Properties, error) {
+// ListLicenseProperties returns the properties set within a license.
+func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (objects.Properties, error) {
 	var resp objects.Properties
-	err := a.Call("list_license_properties", nil, &resp)
+	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
+		NamespacePrefix: namespacePrefix,
+		NamePrefix:      namePrefix,
+	}, &resp)
 	return resp, err
 }
 
-// ListGroupProperties.
-func (a *API) ListGroupProperties() (objects.Properties, error) {
+// ListGroupProperties returns the properties set within a group.
+func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix string) (objects.Properties, error) {
 	var resp objects.Properties
-	err := a.Call("list_group_properties", nil, &resp)
+	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
+		GroupID:         groupID,
+		NamespacePrefix: namespacePrefix,
+		NamePrefix:      namePrefix,
+	}, &resp)
 	return resp, err
 }

@@ -64,3 +64,14 @@ type getGroupRequest struct {
 type getGroupResponse *Group
 
 type emptyResponse struct{}
+
+type listLicensePropertiesRequest struct {
+	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	NamePrefix      string `json:"name_prefix,omitempty"`
+}
+
+type listGroupPropertiesRequest struct {
+	GroupID         uint   `json:"group_id"`
+	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	NamePrefix      string `json:"name_prefix,omitempty"`
+}

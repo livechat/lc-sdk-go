@@ -324,16 +324,23 @@ func (a *API) GetCustomer() (*objects.Customer, error) {
 	return &resp, err
 }
 
-// ListLicenseProperties.
-func (a *API) ListLicenseProperties() (objects.Properties, error) {
+// ListLicenseProperties returns the properties of a given license.
+func (a *API) ListLicenseProperties(namespace, name string) (objects.Properties, error) {
 	var resp objects.Properties
-	err := a.Call("list_license_properties", nil, &resp)
+	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
+		Namespace: namespace,
+		Name:      name,
+	}, &resp)
 	return resp, err
 }
 
-// ListGroupProperties.
-func (a *API) ListGroupProperties() (objects.Properties, error) {
+// ListGroupProperties returns the properties of a given group.
+func (a *API) ListGroupProperties(groupID uint, namespace, name string) (objects.Properties, error) {
 	var resp objects.Properties
-	err := a.Call("list_group_properties", nil, &resp)
+	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
+		GroupID:   groupID,
+		Namespace: namespace,
+		Name:      name,
+	}, &resp)
 	return resp, err
 }
