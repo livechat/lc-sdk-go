@@ -227,19 +227,19 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 }
 
 // UpdateCustomer updates current customer's info.
-func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
+func (a *API) UpdateCustomer(name, email, avatarURL string, sessionFields []map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{
-		Name:   name,
-		Email:  email,
-		Avatar: avatarURL,
-		Fields: fields,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatarURL,
+		SessionFields: sessionFields,
 	}, &emptyResponse{})
 }
 
-// SetCustomerFields sets current customer's fields.
-func (a *API) SetCustomerFields(fields map[string]string) error {
-	return a.Call("set_customer_fields", &setCustomerFieldsRequest{
-		Fields: fields,
+// SetCustomerSessionFields sets current customer's fields.
+func (a *API) SetCustomerSessionFields(sessionFields []map[string]string) error {
+	return a.Call("set_customer_session_fields", &setCustomerSessionFieldsRequest{
+		SessionFields: sessionFields,
 	}, &emptyResponse{})
 }
 

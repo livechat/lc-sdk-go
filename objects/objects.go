@@ -215,10 +215,10 @@ type Customer struct {
 		GreetingsShownCount    int `json:"greetings_shown_count"`
 		GreetingsAcceptedCount int `json:"greetings_accepted_count"`
 	} `json:"statistics"`
-	AgentLastEventCreatedAt    time.Time         `json:"agent_last_event_created_at"`
-	CustomerLastEventCreatedAt time.Time         `json:"customer_last_event_created_at"`
-	CreatedAt                  time.Time         `json:"created_at"`
-	Fields                     map[string]string `json:"fields"`
+	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`
+	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`
+	CreatedAt                  time.Time           `json:"created_at"`
+	SessionFields              []map[string]string `json:"session_fields"`
 }
 
 // ThreadSummary represents a short summary of a thread.

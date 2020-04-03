@@ -160,6 +160,13 @@ type changeChatThreadTagRequest struct {
 	Tag      string `json:"tag"`
 }
 
+type getCustomersRequest struct {
+	CustomerID string `json:"customer_id"`
+}
+
+type getCustomersResponse struct {
+}
+
 type listCustomersRequest struct {
 	PageID    string            `json:"page_id,omitempty"`
 	Limit     uint              `json:"limit,omitempty"`
@@ -174,10 +181,10 @@ type listCustomersResponse struct {
 }
 
 type createCustomerRequest struct {
-	Name   string            `json:"name,omitempty"`
-	Email  string            `json:"email,omitempty"`
-	Avatar string            `json:"avatar,omitempty"`
-	Fields map[string]string `json:"fields,omitempty"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
 type createCustomerResponse struct {
@@ -185,11 +192,11 @@ type createCustomerResponse struct {
 }
 
 type updateCustomerRequest struct {
-	CustomerID string            `json:"customer_id"`
-	Name       string            `json:"name,omitempty"`
-	Email      string            `json:"email,omitempty"`
-	Avatar     string            `json:"avatar,omitempty"`
-	Fields     map[string]string `json:"fields,omitempty"`
+	CustomerID    string              `json:"customer_id"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
 type updateCustomerResponse struct {

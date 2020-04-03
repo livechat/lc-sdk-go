@@ -295,9 +295,9 @@ func customerCreated(wh *webhooks.Webhook) error {
 	propEq("CreatedAt", payload.CreatedAt, t, &errors)
 	propEq("Email", payload.Email, "customer1@example.com", &errors)
 	propEq("Avatar", payload.Avatar, "https://example.com/avatars/1.jpg", &errors)
-	propEq("Fields", len(payload.Fields), 2, &errors)
-	propEq("Fields[some_key]", payload.Fields["some_key"], "some_value", &errors)
-	propEq("Fields[some_other_key]", payload.Fields["some_other_key"], "some_other_value", &errors)
+	propEq("SessionFields", len(payload.SessionFields), 2, &errors)
+	propEq("SessionFields[0][some_key]", payload.SessionFields[0]["some_key"], "some_value", &errors)
+	propEq("SessionFields[1][some_other_key]", payload.SessionFields[1]["some_other_key"], "some_other_value", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)

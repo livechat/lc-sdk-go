@@ -299,6 +299,16 @@ func (a *API) UntagChatThread(chatID, threadID, tag string) error {
 	}, &emptyResponse{})
 }
 
+// GetCustomer returns Customer.
+func (a *API) GetCustomer(customerID string) (customer objects.Customer, err error) {
+	var resp objects.Customer
+	err = a.Call("get_customer", &getCustomersRequest{
+		CustomerID: customerID,
+	}, &resp)
+
+	return resp, err
+}
+
 // ListCustomers returns the list of Customers.
 func (a *API) ListCustomers(limit uint, pageID, sortOrder string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
 	var resp listCustomersResponse
@@ -313,27 +323,27 @@ func (a *API) ListCustomers(limit uint, pageID, sortOrder string, filters *custo
 }
 
 // CreateCustomer creates new Customer.
-func (a *API) CreateCustomer(name, email, avatar string, fields map[string]string) (string, error) {
+func (a *API) CreateCustomer(name, email, avatar string, sessionFields []map[string]string) (string, error) {
 	var resp createCustomerResponse
 	err := a.Call("create_customer", &createCustomerRequest{
-		Name:   name,
-		Email:  email,
-		Avatar: avatar,
-		Fields: fields,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatar,
+		SessionFields: sessionFields,
 	}, &resp)
 
 	return resp.CustomerID, err
 }
 
 // UpdateCustomer updates customer's info.
-func (a *API) UpdateCustomer(customerID, name, email, avatar string, fields map[string]string) (objects.Customer, error) {
+func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) (objects.Customer, error) {
 	var resp updateCustomerResponse
 	err := a.Call("update_customer", &updateCustomerRequest{
-		CustomerID: customerID,
-		Name:       name,
-		Email:      email,
-		Avatar:     avatar,
-		Fields:     fields,
+		CustomerID:    customerID,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatar,
+		SessionFields: sessionFields,
 	}, &resp)
 
 	return resp.Customer, err

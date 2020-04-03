@@ -133,6 +133,60 @@ var mockedResponses = map[string]string{
 	"delete_chat_thread_properties": `{}`,
 	"update_event_properties":       `{}`,
 	"delete_event_properties":       `{}`,
+	"get_customer": `{
+		"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		"type": "customer",
+		"created_at": "2017-10-11T15:19:21.010200Z",
+		"name": "John Smith",
+		"email": "customer1@example.com",
+		"avatar": "example.com/avatars/1.jpg",
+		"session_fields": [{
+			"custom_key": "custom_value"
+		}, {
+			"another_custom_key": "another_custom_value"
+		}],
+		"last_visit": {
+			"started_at": "2017-10-12T15:19:21.010200Z",
+			"referrer": "http://www.google.com/",
+			"ip": "194.181.146.130",
+			"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+			"geolocation": {
+				"latitude": "-14.6973803",
+				"longitude": "-75.1266898",
+				"country": "Poland",
+				"country_code": "PL",
+				"region": "Dolnoslaskie",
+				"city": "Wroclaw",
+				"timezone": "Europe/Warsaw"
+			},
+			"last_pages": [
+				{
+					"opened_at": "2017-10-12T15:19:21.010200Z",
+					"url": "https://www.livechatinc.com/",
+					"title": "LiveChat - Homepage"
+				},
+				{
+					"opened_at": "2017-10-12T15:19:21.010200Z",
+					"url": "https://www.livechatinc.com/tour",
+					"title": "LiveChat - Tour"
+				}
+			]
+		},
+		"statistics": {
+			"chats_count": 3,
+			"threads_count": 9,
+			"visits_count": 5,
+			"page_views_count": 1337,
+			"greetings_shown_count": 69,
+			"greetings_accepted_count": 42
+		},
+		"__priv_lc2_customer_id": "S1525771305.dafea66e5c",
+		"agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+		"customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+		"chat_ids": [
+				"PWJ8Y4THAV"
+		]
+	}`,
 	"list_customers": `{
 		"customers": [],
 		"total_customers": 0,
@@ -644,6 +698,44 @@ func TestUntagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testin
 	}
 }
 
+func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_customer"))
+
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	customer, rErr := api.GetCustomer("b7eff798-f8df-4364-8059-649c35c9ed0c")
+	if rErr != nil {
+		t.Errorf("GetCustomer failed: %v", rErr)
+	}
+
+	if customer.ID != "b7eff798-f8df-4364-8059-649c35c9ed0c" {
+		t.Errorf("Invalid customer ID: %v", customer.ID)
+	}
+
+	if customer.Type != "customer" {
+		t.Errorf("Invalid customer type: %v", customer.Type)
+	}
+
+	if customer.Name != "John Smith" {
+		t.Errorf("Invalid customer name: %v", customer.Name)
+	}
+
+	if customer.Email != "customer1@example.com" {
+		t.Errorf("Invalid customer email: %v", customer.Email)
+	}
+
+	if customer.Avatar != "example.com/avatars/1.jpg" {
+		t.Errorf("Invalid customer avatar: %v", customer.Avatar)
+	}
+
+	if len(customer.SessionFields) != 2 {
+		t.Errorf("Invalid customer session fields: %+v", customer.SessionFields)
+	}
+}
+
 func TestGetCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_customers"))
 
@@ -679,7 +771,7 @@ func TestCreateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	customerID, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	customerID, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	if rErr != nil {
 		t.Errorf("CreateCustomer failed: %v", rErr)
 	}
@@ -696,7 +788,7 @@ func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	_, rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1112,7 +1204,7 @@ func TestCreateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	_, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	verifyErrorResponse("CreateCustomer", rErr, t)
 }
 func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1123,7 +1215,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	_, rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 

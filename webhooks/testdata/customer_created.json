@@ -8,9 +8,10 @@
         "created_at": "2019-11-14T14:27:24.410018Z",
         "email": "customer1@example.com",
         "avatar": "https://example.com/avatars/1.jpg",
-        "fields": {
-            "some_key": "some_value",
+        "session_fields": [{
+            "some_key": "some_value"
+        }, {
             "some_other_key": "some_other_value"
-        }
+        }]
     }
 }

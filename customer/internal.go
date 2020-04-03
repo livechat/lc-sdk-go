@@ -121,14 +121,14 @@ type deleteEventPropertiesRequest struct {
 }
 
 type updateCustomerRequest struct {
-	Name   string            `json:"name,omitempty"`
-	Email  string            `json:"email,omitempty"`
-	Avatar string            `json:"avatar,omitempty"`
-	Fields map[string]string `json:"fields,omitempty"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
-type setCustomerFieldsRequest struct {
-	Fields map[string]string `json:"fields"`
+type setCustomerSessionFieldsRequest struct {
+	SessionFields []map[string]string `json:"session_fields"`
 }
 
 type listGroupStatusesRequest struct {

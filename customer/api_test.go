@@ -108,7 +108,7 @@ var mockedResponses = map[string]string{
 	"update_event_properties":       `{}`,
 	"delete_event_properties":       `{}`,
 	"update_customer":               `{}`,
-	"set_customer_fields":           `{}`,
+	"set_customer_session_fields":   `{}`,
 	"list_group_statuses": `{
 		"groups_status": {
 			"1": "online",
@@ -538,23 +538,23 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
 }
 
 func TestSetCustomerFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "set_customer_fields"))
+	client := NewTestClient(createMockedResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetCustomerFields(map[string]string{})
+	rErr := api.SetCustomerSessionFields([]map[string]string{})
 	if rErr != nil {
-		t.Errorf("SetCustomerFields failed: %v", rErr)
+		t.Errorf("SetCustomerSessionFields failed: %v", rErr)
 	}
 }
 
@@ -904,20 +904,20 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
 func TestSetCustomerFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "set_customer_fields"))
+	client := NewTestClient(createMockedErrorResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetCustomerFields(map[string]string{})
-	verifyErrorResponse("SetCustomerFields", rErr, t)
+	rErr := api.SetCustomerSessionFields([]map[string]string{})
+	verifyErrorResponse("SetCustomerSessionFields", rErr, t)
 }
 
 func TestListGroupStatusesShouldNotCrashOnErrorResponse(t *testing.T) {
