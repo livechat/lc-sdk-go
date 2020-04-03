@@ -109,7 +109,7 @@ var mockedResponses = map[string]string{
 	"delete_event_properties":       `{}`,
 	"update_customer":               `{}`,
 	"set_customer_fields":           `{}`,
-	"get_groups_status": `{
+	"list_group_statuses": `{
 		"groups_status": {
 			"1": "online",
 			"2": "offline",
@@ -558,17 +558,17 @@ func TestSetCustomerFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 	}
 }
 
-func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_groups_status"))
+func TestListGroupStatusesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_group_statuses"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	groupsStatus, rErr := api.GetGroupsStatus([]int{1, 2, 3})
+	groupStatuses, rErr := api.ListGroupStatuses([]int{1, 2, 3})
 	if rErr != nil {
-		t.Errorf("GetGroupsStatus failed: %v", rErr)
+		t.Errorf("ListGroupStatuses failed: %v", rErr)
 	}
 
 	expectedStatus := map[int]customer.GroupStatus{
@@ -577,11 +577,11 @@ func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		3: customer.GroupStatusOnlineForQueue,
 	}
 
-	if len(groupsStatus) != 3 {
-		t.Errorf("Invalid size of groupsStatus map: %v, expected 3", len(groupsStatus))
+	if len(groupStatuses) != 3 {
+		t.Errorf("Invalid size of groupStatuses map: %v, expected 3", len(groupStatuses))
 	}
 
-	for group, status := range groupsStatus {
+	for group, status := range groupStatuses {
 		if status != expectedStatus[group] {
 			t.Errorf("Incorrect status: %v, for group: %v", status, group)
 		}
@@ -920,16 +920,16 @@ func TestSetCustomerFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("SetCustomerFields", rErr, t)
 }
 
-func TestGetGroupsStatusShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_groups_status"))
+func TestListGroupStatusesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "list_group_statuses"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetGroupsStatus([]int{1, 2, 3})
-	verifyErrorResponse("GetGroupsStatus", rErr, t)
+	_, rErr := api.ListGroupStatuses([]int{1, 2, 3})
+	verifyErrorResponse("ListGroupStatuses", rErr, t)
 }
 
 func TestCheckGoalsShouldNotCrashOnErrorResponse(t *testing.T) {

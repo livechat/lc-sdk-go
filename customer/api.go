@@ -243,19 +243,19 @@ func (a *API) SetCustomerFields(fields map[string]string) error {
 	}, &emptyResponse{})
 }
 
-// GetGroupsStatus returns status of provided groups.
+// ListGroupStatuses returns status of provided groups.
 //
 // Possible values are: GroupStatusOnline, GroupStatusOffline and GroupStatusOnlineForQueue.
 // GroupStatusUnknown should never be returned.
-func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
-	req := &getGroupsStatusRequest{}
+func (a *API) ListGroupStatuses(groups []int) (map[int]GroupStatus, error) {
+	req := &listGroupStatusesRequest{}
 	if len(groups) == 0 {
 		req.All = true
 	} else {
 		req.Groups = groups
 	}
-	var resp getGroupsStatusResponse
-	err := a.Call("get_groups_status", req, &resp)
+	var resp listGroupStatusesResponse
+	err := a.Call("list_group_statuses", req, &resp)
 
 	r := map[int]GroupStatus{}
 

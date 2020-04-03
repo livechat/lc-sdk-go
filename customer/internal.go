@@ -131,12 +131,12 @@ type setCustomerFieldsRequest struct {
 	Fields map[string]string `json:"fields"`
 }
 
-type getGroupsStatusRequest struct {
+type listGroupStatusesRequest struct {
 	All    bool  `json:"all,omitempty"`
 	Groups []int `json:"groups,omitempty"`
 }
 
-type getGroupsStatusResponse struct {
+type listGroupStatusesResponse struct {
 	Status map[int]string `json:"groups_status"`
 }
 
