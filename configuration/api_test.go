@@ -56,7 +56,7 @@ var mockedResponses = map[string]string{
 	}`,
 	"update_bot": `{}`,
 	"remove_bot": `{}`,
-	"get_bot_agents": `{
+	"list_bots": `{
     "bot_agents": [{
         "id": "5c9871d5372c824cbf22d860a707a578",
         "name": "John Doe",
@@ -378,16 +378,16 @@ func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestGetBotAgentsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_bot_agents"))
+	client := NewTestClient(createMockedResponder(t, "list_bots"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetBotAgents(true)
+	resp, rErr := api.ListBots(true)
 	if rErr != nil {
-		t.Errorf("GetBotAgents failed: %v", rErr)
+		t.Errorf("ListBots failed: %v", rErr)
 	}
 
 	if len(resp) != 1 || resp[0].ID != "5c9871d5372c824cbf22d860a707a578" {

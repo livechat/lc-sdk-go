@@ -33,11 +33,11 @@ type updateBotRequest struct {
 	*createBotRequest
 }
 
-type getBotAgentsRequest struct {
+type listBotsRequest struct {
 	All bool `json:"all"`
 }
 
-type getBotAgentsResponse struct {
+type listBotsResponse struct {
 	BotAgents []*BotAgent `json:"bot_agents"`
 }
 

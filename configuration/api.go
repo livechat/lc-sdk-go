@@ -93,10 +93,10 @@ func (a *API) RemoveBot(id string) error {
 	}, &emptyResponse{})
 }
 
-// GetBotAgents returns list of bot agents (all or caller's only, depending on getAll parameter)
-func (a *API) GetBotAgents(getAll bool) ([]*BotAgent, error) {
-	var resp getBotAgentsResponse
-	err := a.Call("get_bot_agents", &getBotAgentsRequest{
+// ListBots returns list of bots (all or caller's only, depending on getAll parameter)
+func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
+	var resp listBotsResponse
+	err := a.Call("list_bots", &listBotsRequest{
 		All: getAll,
 	}, &resp)
 
