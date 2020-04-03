@@ -46,7 +46,7 @@ var mockedResponses = map[string]string{
 	"send_event": `{
 		"event_id": "K600PKZON8"
 	}`,
-	"get_chats_summary": `{
+	"list_chats": `{
 		"chats_summary": [
 			{
 			  "id": "123",
@@ -289,16 +289,16 @@ func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestGetChatsSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chats_summary"))
+	client := NewTestClient(createMockedResponder(t, "list_chats"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	chatsSummary, found, prevPage, nextPage, rErr := api.GetChatsSummary(agent.NewChatsFilters(), 0, 20)
+	chatsSummary, found, prevPage, nextPage, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
 	if rErr != nil {
-		t.Errorf("GetChatsSummary failed: %v", rErr)
+		t.Errorf("ListChats failed: %v", rErr)
 	}
 
 	// TODO add better validation
@@ -827,15 +827,15 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 }
 
 func TestGetChatsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chats_summary"))
+	client := NewTestClient(createMockedErrorResponder(t, "list_chats"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.GetChatsSummary(agent.NewChatsFilters(), 0, 20)
-	verifyErrorResponse("GetChatsSummary", rErr, t)
+	_, _, _, _, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
+	verifyErrorResponse("ListChats", rErr, t)
 }
 
 func TestGetChatThreadsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {

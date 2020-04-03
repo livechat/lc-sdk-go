@@ -33,12 +33,12 @@ type activateChatResponse struct {
 	EventIDs []string `json:"event_ids"`
 }
 
-type getChatsSummaryRequest struct {
+type listChatsRequest struct {
 	Limit  uint `json:"limit,omitempty"`
 	Offset uint `json:"offset,omitempty"`
 }
 
-type getChatsSummaryResponse struct {
+type listChatsResponse struct {
 	Chats      []objects.Chat `json:"chats_summary"`
 	TotalChats uint           `json:"total_chats"`
 }

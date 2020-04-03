@@ -27,10 +27,10 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 	return &API{api}, nil
 }
 
-// GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
-	var resp getChatsSummaryResponse
-	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
+// ListChats returns chats list.
+func (a *API) ListChats(filters *chatsFilters, page, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
+	var resp listChatsResponse
+	err = a.Call("list_chats", &listChatsRequest{
 		Filters: filters,
 		Pagination: &paginationRequest{
 			Page:  page,

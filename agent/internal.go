@@ -6,12 +6,12 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
-type getChatsSummaryRequest struct {
+type listChatsRequest struct {
 	Filters    *chatsFilters      `json:"filters,omitempty"`
 	Pagination *paginationRequest `json:"pagination,omitempty"`
 }
 
-type getChatsSummaryResponse struct {
+type listChatsResponse struct {
 	hashedPaginationResponse
 	ChatsSummary []objects.ChatSummary `json:"chats_summary"`
 	FoundChats   uint                  `json:"found_chats"`

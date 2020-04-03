@@ -269,7 +269,7 @@ type chatsFilters struct {
 	Properties    PropertiesFilters `json:"properties,omitempty"`
 }
 
-// NewChatsFilters creates empty structure to aggregate filters for Chats in GetChatsSummary method
+// NewChatsFilters creates empty structure to aggregate filters for Chats in ListChats method
 // By default filters include also active chats
 func NewChatsFilters() *chatsFilters {
 	return &chatsFilters{

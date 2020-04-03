@@ -109,10 +109,10 @@ func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (t
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(offset, limit uint) (chats []objects.Chat, total uint, err error) {
-	var resp getChatsSummaryResponse
-	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
+// ListChats returns chats list.
+func (a *API) ListChats(offset, limit uint) (chats []objects.Chat, total uint, err error) {
+	var resp listChatsResponse
+	err = a.Call("list_chats", &listChatsRequest{
 		Limit:  limit,
 		Offset: offset,
 	}, &resp)
