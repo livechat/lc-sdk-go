@@ -323,3 +323,17 @@ func (a *API) GetCustomer() (*objects.Customer, error) {
 	err := a.Call("get_customer", nil, &resp)
 	return &resp, err
 }
+
+// ListLicenseProperties.
+func (a *API) ListLicenseProperties() (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_license_properties", nil, &resp)
+	return resp, err
+}
+
+// ListGroupProperties.
+func (a *API) ListGroupProperties() (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_group_properties", nil, &resp)
+	return resp, err
+}

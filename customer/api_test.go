@@ -161,7 +161,17 @@ var mockedResponses = map[string]string{
 		"url": "https://livechatinc.com"
 	}`,
 	"mark_events_as_seen": `{}`,
-	"get_customer":        `{}`, //TODO - create some real structure here
+	"list_license_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
+	"list_group_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
+	"get_customer": `{}`, //TODO - create some real structure here
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -1002,4 +1012,48 @@ func TestGetCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	_, rErr := api.GetCustomer()
 	verifyErrorResponse("GetCustomer", rErr, t)
+}
+
+func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_license_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListLicenseProperties()
+	if rErr != nil {
+		t.Errorf("ListLicenseProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid license properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid license property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
+}
+
+func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_group_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListGroupProperties()
+	if rErr != nil {
+		t.Errorf("ListGroupProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid group properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
 }
