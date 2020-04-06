@@ -57,4 +57,10 @@ type getPropertyConfigsRequest struct {
 
 type getPropertyConfigsResponse map[string]*PropertyConfig
 
+type getGroupRequest struct {
+	ID int `json:"id"`
+}
+
+type getGroupResponse *Group
+
 type emptyResponse struct{}

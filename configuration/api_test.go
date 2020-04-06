@@ -189,6 +189,17 @@ var mockedResponses = map[string]string{
 			}
 		}
 	}`,
+	"get_group": `{
+		"id": 1,
+		"name": "Sports shoes",
+		"language_code": "en",
+		"agent_priorities": {
+		  "agent1@example.com": "normal",
+		  "agent2@example.com": "normal",
+		  "agent3@example.com": "last"
+		},
+		"routing_status": "offline"
+	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -431,5 +442,27 @@ func TestGetPropertyConfigsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 
 	if _, exists := resp["58737b5829e65621a45d598aa6f2ed8e"]; !exists || len(resp) != 1 {
 		t.Errorf("Invalid property configs: %v", resp)
+	}
+}
+
+func TestGetGroupShouldReturnDataReceivedFromConfigurationAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_group"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.GetGroup(1)
+	if rErr != nil {
+		t.Errorf("GetGroup failed: %v", rErr)
+	}
+
+	if resp.ID != 1 {
+		t.Errorf("Invalid group id: %v", resp.ID)
+	}
+
+	if resp.LanguageCode != "en" {
+		t.Errorf("Invalid group language: %v", resp.LanguageCode)
 	}
 }
