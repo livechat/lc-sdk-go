@@ -128,6 +128,15 @@ func (a *API) GetPropertyConfigs(getAll bool) (map[string]*PropertyConfig, error
 	return resp, err
 }
 
+func (a *API) GetGroup(id int) (*Group, error) {
+	var resp getGroupResponse
+	err := a.Call("get_group", &getGroupRequest{
+		ID: id,
+	}, &resp)
+
+	return resp, err
+}
+
 func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
 	for _, group := range groups {
 		if group.Priority == DoNotAssign {

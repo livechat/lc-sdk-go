@@ -109,3 +109,12 @@ type PropertyAccess struct {
 	Read  bool `json:"read"`
 	Write bool `json:"write"`
 }
+
+// Group defines basic group information
+type Group struct {
+	ID              int                      `json:"id"`
+	Name            string                   `json:"name"`
+	LanguageCode    string                   `json:"language_code"`
+	AgentPriorities map[string]GroupPriority `json:"agent_priorities"`
+	RoutingStatus   string                   `json:"routing_status"`
+}
