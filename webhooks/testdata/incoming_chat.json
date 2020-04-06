@@ -1,8 +1,8 @@
 {
 	"webhook_id": "adaa18f4abe65dec0f86a5047ed32d2c",
 	"secret_key": "dummy_key",
-	"action": "incoming_chat_thread",
 	"license_id": 21377312,
+	"action": "incoming_chat",
 	"payload": {
 		"chat": {
 			"id": "PS0X0L086G",

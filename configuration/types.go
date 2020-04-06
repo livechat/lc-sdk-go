@@ -17,29 +17,30 @@ type WebhookAction string
 
 // Following Webhook actions are supported
 const (
-	IncomingChatThread          WebhookAction = "incoming_chat_thread"
+	IncomingChat                WebhookAction = "incoming_chat"
 	IncomingEvent               WebhookAction = "incoming_event"
+	EventUpdated                WebhookAction = "event_updated"
 	IncomingRichMessagePostback WebhookAction = "incoming_rich_message_postback"
 	LastSeenTimestampUpdated    WebhookAction = "last_seen_timestamp_updated"
-	ThreadClosed                WebhookAction = "thread_closed"
 	ChatDeactivated             WebhookAction = "chat_deactivated"
 	ChatPropertiesUpdated       WebhookAction = "chat_properties_updated"
+	ThreadPropertiesUpdated     WebhookAction = "thread_properties_updated"
 	ChatPropertiesDeleted       WebhookAction = "chat_properties_deleted"
-	ChatThreadPropertiesUpdated WebhookAction = "chat_thread_properties_updated"
-	ChatThreadPropertiesDeleted WebhookAction = "chat_thread_properties_deleted"
+	ThreadPropertiesDeleted     WebhookAction = "thread_properties_deleted"
 	ChatUserAdded               WebhookAction = "chat_user_added"
 	ChatUserRemoved             WebhookAction = "chat_user_removed"
-	ChatThreadTagged            WebhookAction = "chat_thread_tagged"
-	ChatThreadUntagged          WebhookAction = "chat_thread_untagged"
-	AgentStatusChanged          WebhookAction = "agent_status_changed"
+	ThreadTagged                WebhookAction = "thread_tagged"
+	ThreadUntagged              WebhookAction = "thread_untagged"
 	AgentDeleted                WebhookAction = "agent_deleted"
 	EventsMarkedAsSeen          WebhookAction = "events_marked_as_seen"
 	AccessGranted               WebhookAction = "access_granted"
 	AccessRevoked               WebhookAction = "access_revoked"
 	AccessSet                   WebhookAction = "access_set"
 	CustomerCreated             WebhookAction = "customer_created"
+	FollowUpRequested           WebhookAction = "follow_up_requested"
 	EventPropertiesUpdated      WebhookAction = "event_properties_updated"
 	EventPropertiesDeleted      WebhookAction = "event_properties_deleted"
+	RoutingStatusSet            WebhookAction = "routing_status_set"
 )
 
 // GroupPriority represents priority of assigning chats in group

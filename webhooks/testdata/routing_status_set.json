@@ -1,12 +1,11 @@
 {
 	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
 	"secret_key": "dummy_key",
-	"action": "chat_thread_untagged",
 	"license_id": 21377312,
+	"action": "routing_status_set",
 	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"thread_id": "K600PKZON8",
-		"tag": "bug_report"
+		"agent_id": "5c9871d5372c824cbf22d860a707a578",
+		"status": "accepting chats"
 	},
 	"additional_data": {}
 }
