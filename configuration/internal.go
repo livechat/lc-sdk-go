@@ -24,7 +24,7 @@ type createBotResponse struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type removeBotRequest struct {
+type deleteBotRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
 

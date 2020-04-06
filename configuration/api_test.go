@@ -55,7 +55,7 @@ var mockedResponses = map[string]string{
     "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
 	}`,
 	"update_bot": `{}`,
-	"remove_bot": `{}`,
+	"delete_bot": `{}`,
 	"list_bots": `{
     "bot_agents": [{
         "id": "5c9871d5372c824cbf22d860a707a578",
@@ -379,16 +379,16 @@ func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 }
 
 func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "remove_bot"))
+	client := NewTestClient(createMockedResponder(t, "delete_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RemoveBot("pqi8oasdjahuakndw9nsad9na")
+	rErr := api.DeleteBot("pqi8oasdjahuakndw9nsad9na")
 	if rErr != nil {
-		t.Errorf("RemoveBot failed: %v", rErr)
+		t.Errorf("DeleteBot failed: %v", rErr)
 	}
 }
 

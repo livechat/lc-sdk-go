@@ -87,9 +87,9 @@ func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint
 	}, &emptyResponse{})
 }
 
-// RemoveBot removes bot with given ID
-func (a *API) RemoveBot(id string) error {
-	return a.Call("remove_bot", &removeBotRequest{
+// DeleteBot deletes bot with given ID
+func (a *API) DeleteBot(id string) error {
+	return a.Call("delete_bot", &deleteBotRequest{
 		BotID: id,
 	}, &emptyResponse{})
 }
