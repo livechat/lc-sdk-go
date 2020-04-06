@@ -357,7 +357,7 @@ func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetChatsSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_chats"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -365,15 +365,15 @@ func TestGetChatsSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatsSummary, found, prevPage, nextPage, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
+	chats, found, prevPage, nextPage, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
 	if rErr != nil {
 		t.Errorf("ListChats failed: %v", rErr)
 	}
 
 	// TODO add better validation
 
-	if chatsSummary == nil {
-		t.Errorf("Invalid chats summary")
+	if chats == nil {
+		t.Errorf("Invalid chats")
 	}
 	if found != 1 {
 		t.Errorf("Invalid total chats: %v", found)
@@ -433,7 +433,7 @@ func TestGetChatThreadsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_archives"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -443,7 +443,7 @@ func TestGetArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 
 	chats, page, total, rErr := api.ListArchives(agent.NewArchivesFilters(), 1, 20)
 	if rErr != nil {
-		t.Errorf("GetChatThreads failed: %v", rErr)
+		t.Errorf("ListArchives failed: %v", rErr)
 	}
 
 	if chats[0].ID != "PJ0MRSHTDG" {
@@ -457,7 +457,7 @@ func TestGetArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCloseThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestDeactivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "deactivate_chat"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -629,7 +629,7 @@ func TestDeleteChatPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) 
 	}
 }
 
-func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestUpdateThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -643,7 +643,7 @@ func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testi
 	}
 }
 
-func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestDeleteThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -685,7 +685,7 @@ func TestDeleteEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 	}
 }
 
-func TestTagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestTagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "tag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -699,7 +699,7 @@ func TestTagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.
 	}
 }
 
-func TestUntagChatThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestUntagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "untag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -751,7 +751,7 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_customers"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -933,7 +933,7 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("ActivateChat", rErr, t)
 }
 
-func TestGetChatsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_chats"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -969,7 +969,7 @@ func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("GetChatThreads", rErr, t)
 }
 
-func TestGetArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestListArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_archives"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -981,7 +981,7 @@ func TestGetArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("ListArchives", rErr, t)
 }
 
-func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "deactivate_chat"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -1127,7 +1127,7 @@ func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("DeleteChatProperties", rErr, t)
 }
 
-func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestUpdateThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -1139,7 +1139,7 @@ func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("UpdateThreadProperties", rErr, t)
 }
 
-func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestDeleteThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -1175,7 +1175,7 @@ func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("DeleteEventProperties", rErr, t)
 }
 
-func TestTagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestTagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "tag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -1187,7 +1187,7 @@ func TestTagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("TagThread", rErr, t)
 }
 
-func TestUntagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestUntagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "untag_thread"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
@@ -1199,7 +1199,7 @@ func TestUntagChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("UntagThread", rErr, t)
 }
 
-func TesGetCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestListCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_customers"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")

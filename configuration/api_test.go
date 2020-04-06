@@ -316,7 +316,7 @@ func TestUnregisterWebhookShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestCreateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -334,7 +334,7 @@ func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
+func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -349,7 +349,7 @@ func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 }
 
-func TestUpdateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestUpdateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -363,7 +363,7 @@ func TestUpdateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
+func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -378,7 +378,7 @@ func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 }
 
-func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestDeleteBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -392,7 +392,7 @@ func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetBotAgentsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListBotsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_bots"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -406,11 +406,11 @@ func TestGetBotAgentsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 
 	if len(resp) != 1 || resp[0].ID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid bot agents: %v", resp)
+		t.Errorf("Invalid bots: %v", resp)
 	}
 }
 
-func TestGetBotAgentDetailsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestGetBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -424,7 +424,7 @@ func TestGetBotAgentDetailsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 
 	if resp.ID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid bot agents: %v", resp)
+		t.Errorf("Invalid bot: %v", resp)
 	}
 }
 

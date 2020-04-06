@@ -341,7 +341,7 @@ func TestActivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
-func TestGetChatsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestListChatsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_chats"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -349,15 +349,15 @@ func TestGetChatsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatsSummary, total, rErr := api.ListChats(0, 20)
+	chats, total, rErr := api.ListChats(0, 20)
 	if rErr != nil {
 		t.Errorf("ListChats failed: %v", rErr)
 	}
 
 	// TODO add better validation
 
-	if chatsSummary == nil {
-		t.Errorf("Invalid chats summary")
+	if chats == nil {
+		t.Errorf("Invalid chats")
 	}
 	if total != 1 {
 		t.Errorf("Invalid total chats: %v", total)
@@ -405,7 +405,7 @@ func TestGetChatThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
-func TestCloseThreadShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestDeactivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -493,7 +493,7 @@ func TestDeleteChatPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.
 	}
 }
 
-func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestUpdateThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -507,7 +507,7 @@ func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *te
 	}
 }
 
-func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestDeleteThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -563,7 +563,7 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
-func TestSetCustomerFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestSetCustomerSessionFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -759,7 +759,7 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("ActivateChat", rErr, t)
 }
 
-func TestGetChatsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_chats"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -795,7 +795,7 @@ func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("GetChatThreads", rErr, t)
 }
 
-func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -867,7 +867,7 @@ func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("DeleteChatProperties", rErr, t)
 }
 
-func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestUpdateThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -879,7 +879,7 @@ func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("UpdateThreadProperties", rErr, t)
 }
 
-func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestDeleteThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
@@ -927,7 +927,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
-func TestSetCustomerFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
+func TestSetCustomerSessionFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
