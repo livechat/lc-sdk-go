@@ -136,8 +136,6 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &EventPropertiesDeleted{}
 		case "routing_status_set":
 			payload = &RoutingStatusSet{}
-		case "last_seen_timestamp_updated":
-			payload = &LastSeenTimestampUpdated{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return
