@@ -224,7 +224,7 @@ func chatUserAdded(wh *webhooks.Webhook) error {
 	propEq("Customer.Email", customer.Email, "test@test.pl", &errors)
 	propEq("Customer.Avatar", customer.Avatar, "", &errors)
 	propEq("Customer.Present", customer.Present, true, &errors)
-	propEq("Customer.LastSeen", customer.LastSeen.String(), "2019-10-08 13:56:53 +0200 CEST", &errors)
+	propEq("Customer.EventsSeenUpTo", customer.EventsSeenUpTo.String(), "2019-10-08 11:56:53 +0000 UTC", &errors)
 
 	lastVisit := customer.LastVisit
 	propEq("LastVisit.IP", lastVisit.IP, "37.248.156.62", &errors)
@@ -410,7 +410,7 @@ func incomingChatThread(wh *webhooks.Webhook) error {
 	propEq("Customer.Email", customer.Email, "test@test.pl", &errors)
 	propEq("Customer.Avatar", customer.Avatar, "", &errors)
 	propEq("Customer.Present", customer.Present, true, &errors)
-	propEq("Customer.LastSeen", customer.LastSeen.String(), "2019-10-08 13:56:53 +0200 CEST", &errors)
+	propEq("Customer.EventsSeenUpTo", customer.EventsSeenUpTo.String(), "2019-10-08 13:56:53 +0000 UTC", &errors)
 
 	lastVisit := customer.LastVisit
 	propEq("LastVisit.IP", lastVisit.IP, "37.248.156.62", &errors)
@@ -450,7 +450,7 @@ func incomingChatThread(wh *webhooks.Webhook) error {
 	propEq("Agent.Email", agent.Email, "l.wojciechowski@livechatinc.com", &errors)
 	propEq("Agent.Avatar", agent.Avatar, "livechat.s3.amazonaws.com/default/avatars/a14.png", &errors)
 	propEq("Agent.Present", agent.Present, true, &errors)
-	propEq("Agent.LastSeen", agent.LastSeen.String(), "1970-01-01 01:00:00 +0100 CET", &errors)
+	propEq("Agent.EventsSeenUpTo", agent.EventsSeenUpTo.String(), "1970-01-01 01:00:00 +0000 UTC", &errors)
 	propEq("Agent.RoutingStatus", agent.RoutingStatus, "accepting_chats", &errors)
 
 	propEq("Chat.Threads.length", len(chat.Threads), 1, &errors)

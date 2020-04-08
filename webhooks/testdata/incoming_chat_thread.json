@@ -12,7 +12,7 @@
 					"name": "test",
 					"email": "test@test.pl",
 					"present": true,
-					"last_seen_timestamp": 1570535813,
+					"events_seen_up_to": "2019-10-08T13:56:53.000000Z",
 					"type": "customer",
 					"created_at": "2019-06-11T11:00:10.329000Z",
 					"last_visit": {
@@ -50,7 +50,7 @@
 					"name": "\u0141ukasz Wojciechowski",
 					"email": "l.wojciechowski@livechatinc.com",
 					"present": true,
-					"last_seen_timestamp": 0,
+					"events_seen_up_to": "1970-01-01T01:00:00.000000Z",
 					"type": "agent",
 					"avatar": "livechat.s3.amazonaws.com/default/avatars/a14.png",
 					"routing_status": "accepting_chats"

@@ -35,7 +35,7 @@ var mockedResponses = map[string]string{
 	"register_webhook": `{
 		"webhook_id": "pqi8oasdjahuakndw9nsad9na"
 	}`,
-	"get_webhooks_config": `[
+	"list_registered_webhooks": `[
     {
       "webhook_id": "pqi8oasdjahuakndw9nsad9na",
       "url": "http://myservice.com/webhooks",
@@ -270,7 +270,7 @@ func TestRegisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 }
 
 func TestListRegisteredWebhooksShouldReturnDataReceivedFromConfApi(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_webhooks_config"))
+	client := NewTestClient(createMockedResponder(t, "list_registered_webhooks"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
