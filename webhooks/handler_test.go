@@ -120,13 +120,13 @@ func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 
 func TestPayloadParsingOK(t *testing.T) {
 	withLicenseCheck := func(verifier webhooks.Handler) webhooks.Handler {
-		return func(licenseID int, payload interface{}) error {
+		return func(wh *webhooks.Webhook) error {
 			var errors string
-			propEq("LicenseID", licenseID, 21377312, &errors)
+			propEq("LicenseID", wh.LicenseID, 21377312, &errors)
 			if errors != "" {
 				return fmt.Errorf(errors)
 			}
-			return verifier(licenseID, payload)
+			return verifier(wh)
 		}
 	}
 	testAction := func(action string, verifier webhooks.Handler) error {
