@@ -28,13 +28,14 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 }
 
 // ListChats returns chats list.
-func (a *API) ListChats(filters *chatsFilters, page, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
+func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
 		Filters: filters,
-		Pagination: &paginationRequest{
-			Page:  page,
-			Limit: limit,
+		hashedPaginationRequest: &hashedPaginationRequest{
+			SortOrder: sortOrder,
+			PageID:    pageID,
+			Limit:     limit,
 		},
 	}, &resp)
 

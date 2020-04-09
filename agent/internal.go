@@ -7,8 +7,8 @@ import (
 )
 
 type listChatsRequest struct {
-	Filters    *chatsFilters      `json:"filters,omitempty"`
-	Pagination *paginationRequest `json:"pagination,omitempty"`
+	Filters *chatsFilters `json:"filters,omitempty"`
+	*hashedPaginationRequest
 }
 
 type listChatsResponse struct {

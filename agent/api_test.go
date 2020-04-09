@@ -365,7 +365,7 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chats, found, prevPage, nextPage, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
+	chats, found, prevPage, nextPage, rErr := api.ListChats(agent.NewChatsFilters(), "", "", 20)
 	if rErr != nil {
 		t.Errorf("ListChats failed: %v", rErr)
 	}
@@ -941,7 +941,7 @@ func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.ListChats(agent.NewChatsFilters(), 0, 20)
+	_, _, _, _, rErr := api.ListChats(agent.NewChatsFilters(), "", "", 20)
 	verifyErrorResponse("ListChats", rErr, t)
 }
 
