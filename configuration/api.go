@@ -114,9 +114,9 @@ func (a *API) GetBot(id string) (*BotAgentDetails, error) {
 	return resp.BotAgent, err
 }
 
-// CreateProperties allows to create properties
-func (a *API) CreateProperties(properties map[string]*PropertyConfig) error {
-	return a.Call("create_properties", properties, &emptyResponse{})
+// RegisterProperties allows to create properties
+func (a *API) RegisterProperties(properties map[string]*PropertyConfig) error {
+	return a.Call("register_properties", properties, &emptyResponse{})
 }
 
 // ListRegisteredProperties return list of properties along with their configuration

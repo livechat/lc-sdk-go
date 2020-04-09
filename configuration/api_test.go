@@ -105,7 +105,7 @@ var mockedResponses = map[string]string{
         }
     }
 	}`,
-	"create_properties": `{
+	"register_properties": `{
 		"58737b5829e65621a45d598aa6f2ed8e": {
 			"greeting": {
 				"type": "string",
@@ -428,21 +428,21 @@ func TestGetBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreatePropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_properties"))
+func TestRegisterPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "register_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CreateProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
+	rErr := api.RegisterProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
 	if rErr != nil {
-		t.Errorf("CreateProperties failed: %v", rErr)
+		t.Errorf("RegisterProperties failed: %v", rErr)
 	}
 }
 
-func TestGetPropertyConfigsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListRegisteredPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_registered_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
