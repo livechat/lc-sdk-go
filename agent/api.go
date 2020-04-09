@@ -337,17 +337,14 @@ func (a *API) CreateCustomer(name, email, avatar string, sessionFields []map[str
 }
 
 // UpdateCustomer updates customer's info.
-func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) (objects.Customer, error) {
-	var resp updateCustomerResponse
-	err := a.Call("update_customer", &updateCustomerRequest{
+func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) error {
+	return a.Call("update_customer", &updateCustomerRequest{
 		CustomerID:    customerID,
 		Name:          name,
 		Email:         email,
 		Avatar:        avatar,
 		SessionFields: sessionFields,
-	}, &resp)
-
-	return resp.Customer, err
+	}, &emptyResponse{})
 }
 
 // BanCustomer bans customer for specific period of time (expressed in days).

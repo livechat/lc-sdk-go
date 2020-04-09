@@ -199,10 +199,6 @@ type updateCustomerRequest struct {
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
-type updateCustomerResponse struct {
-	Customer objects.Customer `json:"customer"`
-}
-
 type banCustomerRequest struct {
 	CustomerID string `json:"customer_id"`
 	Ban        ban    `json:"ban"`
