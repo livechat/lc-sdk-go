@@ -67,7 +67,11 @@ func (a *API) Call(action string, reqPayload interface{}, respPayload interface{
 	if token.LicenseID != nil {
 		url = fmt.Sprintf("%s?license_id=%v", url, *token.LicenseID)
 	}
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(rawBody))
+	method := "POST"
+	if a.name == "customer" && (action == "list_license_properties" || action == "list_group_properties") {
+		method = "GET"
+	}
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(rawBody))
 	if err != nil {
 		return err
 	}

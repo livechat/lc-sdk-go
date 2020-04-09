@@ -10,7 +10,7 @@ type unregisterWebhookRequest struct {
 
 type listRegisteredWebhooksResponse []RegisteredWebhook
 
-type createBotAgentRequest struct {
+type createBotRequest struct {
 	Name                 string            `json:"name"`
 	Status               BotStatus         `json:"status"`
 	Avatar               string            `json:"string,omitempty"`
@@ -20,42 +20,42 @@ type createBotAgentRequest struct {
 	Webhooks             *BotWebhooks      `json:"webhooks,omitempty"`
 }
 
-type createBotAgentResponse struct {
+type createBotResponse struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type removeBotAgentRequest struct {
+type deleteBotRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type updateBotAgentRequest struct {
+type updateBotRequest struct {
 	BotID string `json:"id"`
-	*createBotAgentRequest
+	*createBotRequest
 }
 
-type getBotAgentsRequest struct {
+type listBotsRequest struct {
 	All bool `json:"all"`
 }
 
-type getBotAgentsResponse struct {
+type listBotsResponse struct {
 	BotAgents []*BotAgent `json:"bot_agents"`
 }
 
-type getBotAgentDetailsRequest struct {
+type getBotRequest struct {
 	BotID string `json:"bot_agent_id"`
 }
 
-type getBotAgentDetailsResponse struct {
+type getBotResponse struct {
 	BotAgent *BotAgentDetails `json:"bot_agent"`
 }
 
 type createPropertiesRequest map[string]*PropertyConfig
 
-type getPropertyConfigsRequest struct {
+type listRegisteredPropertiesRequest struct {
 	All bool `json:"all"`
 }
 
-type getPropertyConfigsResponse map[string]*PropertyConfig
+type listRegisteredPropertiesResponse map[string]*PropertyConfig
 
 type getGroupRequest struct {
 	ID int `json:"id"`
@@ -64,3 +64,14 @@ type getGroupRequest struct {
 type getGroupResponse *Group
 
 type emptyResponse struct{}
+
+type listLicensePropertiesRequest struct {
+	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	NamePrefix      string `json:"name_prefix,omitempty"`
+}
+
+type listGroupPropertiesRequest struct {
+	GroupID         uint   `json:"group_id"`
+	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	NamePrefix      string `json:"name_prefix,omitempty"`
+}

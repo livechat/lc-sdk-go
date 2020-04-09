@@ -51,12 +51,12 @@ var mockedResponses = map[string]string{
     }
   ]`,
 	"unregister_webhook": `{}`,
-	"create_bot_agent": `{
+	"create_bot": `{
     "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
 	}`,
-	"update_bot_agent": `{}`,
-	"remove_bot_agent": `{}`,
-	"get_bot_agents": `{
+	"update_bot": `{}`,
+	"delete_bot": `{}`,
+	"list_bots": `{
     "bot_agents": [{
         "id": "5c9871d5372c824cbf22d860a707a578",
         "name": "John Doe",
@@ -64,7 +64,7 @@ var mockedResponses = map[string]string{
         "status": "accepting chats"
     }]
 	}`,
-	"get_bot_agent_details": `{
+	"get_bot": `{
     "bot_agent": {
         "id": "5c9871d5372c824cbf22d860a707a578",
         "name": "John Doe",
@@ -105,7 +105,7 @@ var mockedResponses = map[string]string{
         }
     }
 	}`,
-	"create_properties": `{
+	"register_properties": `{
 		"58737b5829e65621a45d598aa6f2ed8e": {
 			"greeting": {
 				"type": "string",
@@ -147,7 +147,7 @@ var mockedResponses = map[string]string{
 			}
 		}
 	}`,
-	"get_property_configs": `{
+	"list_registered_properties": `{
 		"58737b5829e65621a45d598aa6f2ed8e": {
 			"greeting": {
 				"type": "string",
@@ -200,6 +200,16 @@ var mockedResponses = map[string]string{
 		},
 		"routing_status": "offline"
 	}`,
+	"list_license_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
+	"list_group_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -221,6 +231,11 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 
 		if req.URL.String() != "https://api.livechatinc.com/v3.2/configuration/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Configuration API request: %s", req.URL.String())
+			return createServerError("Invalid URL")
+		}
+
+		if req.Method != "POST" {
+			t.Errorf("Invalid method: %s for Configuration API action: %s", req.Method, method)
 			return createServerError("Invalid URL")
 		}
 
@@ -301,17 +316,17 @@ func TestUnregisterWebhookShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_bot_agent"))
+func TestCreateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBotAgent("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 
 	if botID != "5c9871d5372c824cbf22d860a707a578" {
@@ -319,8 +334,8 @@ func TestCreateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_bot_agent"))
+func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
@@ -328,28 +343,28 @@ func TestCreateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
-	_, rErr := api.CreateBotAgent("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 }
 
-func TestUpdateBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_bot_agent"))
+func TestUpdateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBotAgent("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
-		t.Errorf("UpdateBotAgent failed: %v", rErr)
+		t.Errorf("UpdateBot failed: %v", rErr)
 	}
 }
 
-func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_bot_agent"))
+func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
@@ -357,87 +372,87 @@ func TestUpdateBotAgentShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
-	rErr := api.UpdateBotAgent("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
-		t.Errorf("CreateBotAgent failed: %v", rErr)
+		t.Errorf("CreateBot failed: %v", rErr)
 	}
 }
 
-func TestRemoveBotAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "remove_bot_agent"))
+func TestDeleteBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RemoveBotAgent("pqi8oasdjahuakndw9nsad9na")
+	rErr := api.DeleteBot("pqi8oasdjahuakndw9nsad9na")
 	if rErr != nil {
-		t.Errorf("RemoveBotAgent failed: %v", rErr)
+		t.Errorf("DeleteBot failed: %v", rErr)
 	}
 }
 
-func TestGetBotAgentsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_bot_agents"))
+func TestListBotsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_bots"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetBotAgents(true)
+	resp, rErr := api.ListBots(true)
 	if rErr != nil {
-		t.Errorf("GetBotAgents failed: %v", rErr)
+		t.Errorf("ListBots failed: %v", rErr)
 	}
 
 	if len(resp) != 1 || resp[0].ID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid bot agents: %v", resp)
+		t.Errorf("Invalid bots: %v", resp)
 	}
 }
 
-func TestGetBotAgentDetailsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_bot_agent_details"))
+func TestGetBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetBotAgentDetails("5c9871d5372c824cbf22d860a707a578")
+	resp, rErr := api.GetBot("5c9871d5372c824cbf22d860a707a578")
 	if rErr != nil {
-		t.Errorf("GetBotAgentDetails failed: %v", rErr)
+		t.Errorf("GetBot failed: %v", rErr)
 	}
 
 	if resp.ID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid bot agents: %v", resp)
+		t.Errorf("Invalid bot: %v", resp)
 	}
 }
 
-func TestCreatePropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_properties"))
+func TestRegisterPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "register_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CreateProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
+	rErr := api.RegisterProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
 	if rErr != nil {
-		t.Errorf("CreateProperties failed: %v", rErr)
+		t.Errorf("RegisterProperties failed: %v", rErr)
 	}
 }
 
-func TestGetPropertyConfigsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_property_configs"))
+func TestListRegisteredPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_registered_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetPropertyConfigs(true)
+	resp, rErr := api.ListRegisteredProperties(true)
 	if rErr != nil {
-		t.Errorf("GetPropertyConfigs failed: %v", rErr)
+		t.Errorf("ListRegisteredProperties failed: %v", rErr)
 	}
 
 	if _, exists := resp["58737b5829e65621a45d598aa6f2ed8e"]; !exists || len(resp) != 1 {
@@ -464,5 +479,49 @@ func TestGetGroupShouldReturnDataReceivedFromConfigurationAPI(t *testing.T) {
 
 	if resp.LanguageCode != "en" {
 		t.Errorf("Invalid group language: %v", resp.LanguageCode)
+	}
+}
+
+func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_license_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListLicenseProperties("", "")
+	if rErr != nil {
+		t.Errorf("ListLicenseProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid license properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid license property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
+}
+
+func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_group_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListGroupProperties(0, "", "")
+	if rErr != nil {
+		t.Errorf("ListGroupProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid group properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
 	}
 }

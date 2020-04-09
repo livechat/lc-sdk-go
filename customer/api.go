@@ -109,10 +109,10 @@ func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (t
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(offset, limit uint) (chats []objects.Chat, total uint, err error) {
-	var resp getChatsSummaryResponse
-	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
+// ListChats returns chats list.
+func (a *API) ListChats(offset, limit uint) (chats []objects.Chat, total uint, err error) {
+	var resp listChatsResponse
+	err = a.Call("list_chats", &listChatsRequest{
 		Limit:  limit,
 		Offset: offset,
 	}, &resp)
@@ -143,10 +143,10 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, 
 	return resp.Chat, err
 }
 
-// CloseThread closes active thread for given chat. If no thread is active, then this
+// DeactivateChat deactivates active thread for given chat. If no thread is active, then this
 // method is a no-op.
-func (a *API) CloseThread(chatID string) error {
-	return a.Call("close_thread", &closeThreadRequest{
+func (a *API) DeactivateChat(chatID string) error {
+	return a.Call("deactivate_chat", &deactivateChatRequest{
 		ChatID: chatID,
 	}, &emptyResponse{})
 }
@@ -188,18 +188,18 @@ func (a *API) DeleteChatProperties(chatID string, properties map[string][]string
 	}, &emptyResponse{})
 }
 
-// UpdateChatThreadProperties updates given chat thread's properties.
-func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
-	return a.Call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
+// UpdateThreadProperties updates given thread's properties.
+func (a *API) UpdateThreadProperties(chatID, threadID string, properties objects.Properties) error {
+	return a.Call("update_thread_properties", &updateThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
 
-// DeleteChatThreadProperties deletes given chat thread's properties.
-func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
-	return a.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
+// DeleteThreadProperties deletes given chat thread's properties.
+func (a *API) DeleteThreadProperties(chatID, threadID string, properties map[string][]string) error {
+	return a.Call("delete_thread_properties", &deleteThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
@@ -227,35 +227,35 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 }
 
 // UpdateCustomer updates current customer's info.
-func (a *API) UpdateCustomer(name, email, avatarURL string, fields map[string]string) error {
+func (a *API) UpdateCustomer(name, email, avatarURL string, sessionFields []map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{
-		Name:   name,
-		Email:  email,
-		Avatar: avatarURL,
-		Fields: fields,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatarURL,
+		SessionFields: sessionFields,
 	}, &emptyResponse{})
 }
 
-// SetCustomerFields sets current customer's fields.
-func (a *API) SetCustomerFields(fields map[string]string) error {
-	return a.Call("set_customer_fields", &setCustomerFieldsRequest{
-		Fields: fields,
+// SetCustomerSessionFields sets current customer's fields.
+func (a *API) SetCustomerSessionFields(sessionFields []map[string]string) error {
+	return a.Call("set_customer_session_fields", &setCustomerSessionFieldsRequest{
+		SessionFields: sessionFields,
 	}, &emptyResponse{})
 }
 
-// GetGroupsStatus returns status of provided groups.
+// ListGroupStatuses returns status of provided groups.
 //
 // Possible values are: GroupStatusOnline, GroupStatusOffline and GroupStatusOnlineForQueue.
 // GroupStatusUnknown should never be returned.
-func (a *API) GetGroupsStatus(groups []int) (map[int]GroupStatus, error) {
-	req := &getGroupsStatusRequest{}
+func (a *API) ListGroupStatuses(groups []int) (map[int]GroupStatus, error) {
+	req := &listGroupStatusesRequest{}
 	if len(groups) == 0 {
 		req.All = true
 	} else {
 		req.Groups = groups
 	}
-	var resp getGroupsStatusResponse
-	err := a.Call("get_groups_status", req, &resp)
+	var resp listGroupStatusesResponse
+	err := a.Call("list_group_statuses", req, &resp)
 
 	r := map[int]GroupStatus{}
 
@@ -300,10 +300,10 @@ func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
 	return &resp, err
 }
 
-// GetURLDetails returns info on a given URL.
-func (a *API) GetURLDetails(url string) (*URLDetails, error) {
-	var resp URLDetails
-	err := a.Call("get_url_details", &getURLDetailsRequest{
+// GetURLInfo returns info on a given URL.
+func (a *API) GetURLInfo(url string) (*URLInfo, error) {
+	var resp URLInfo
+	err := a.Call("get_url_info", &getURLInfoRequest{
 		URL: url,
 	}, &resp)
 	return &resp, err
@@ -322,4 +322,25 @@ func (a *API) GetCustomer() (*objects.Customer, error) {
 	var resp objects.Customer
 	err := a.Call("get_customer", nil, &resp)
 	return &resp, err
+}
+
+// ListLicenseProperties returns the properties of a given license.
+func (a *API) ListLicenseProperties(namespace, name string) (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
+		Namespace: namespace,
+		Name:      name,
+	}, &resp)
+	return resp, err
+}
+
+// ListGroupProperties returns the properties of a given group.
+func (a *API) ListGroupProperties(groupID uint, namespace, name string) (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
+		GroupID:   groupID,
+		Namespace: namespace,
+		Name:      name,
+	}, &resp)
+	return resp, err
 }

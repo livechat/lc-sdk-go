@@ -21,8 +21,8 @@ type PredictedAgent struct {
 	Type      string `json:"type"`
 }
 
-// URLDetails contains some OpenGraph details of the URL.
-type URLDetails struct {
+// URLInfo contains some OpenGraph info of the URL.
+type URLInfo struct {
 	Title            string `json:"title"`
 	Description      string `json:"description"`
 	URL              string `json:"url"`

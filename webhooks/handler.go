@@ -90,54 +90,50 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 
 		var payload interface{}
 		switch wh.Action {
-		case "incoming_chat_thread":
-			payload = &IncomingChatThread{}
-		case "thread_closed":
-			payload = &ThreadClosed{}
-		case "chat_deactivated":
-			payload = &ChatDeactivated{}
-		case "access_granted":
-			payload = &AccessGranted{}
-		case "access_revoked":
-			payload = &AccessRevoked{}
-		case "access_set":
-			payload = &AccessSet{}
-		case "chat_user_added":
-			payload = &ChatUserAdded{}
-		case "chat_user_removed":
-			payload = &ChatUserRemoved{}
+		case "incoming_chat":
+			payload = &IncomingChat{}
 		case "incoming_event":
 			payload = &IncomingEvent{}
 		case "event_updated":
 			payload = &EventUpdated{}
 		case "incoming_rich_message_postback":
 			payload = &IncomingRichMessagePostback{}
+		case "chat_deactivated":
+			payload = &ChatDeactivated{}
 		case "chat_properties_updated":
 			payload = &ChatPropertiesUpdated{}
+		case "thread_properties_updated":
+			payload = &ThreadPropertiesUpdated{}
 		case "chat_properties_deleted":
 			payload = &ChatPropertiesDeleted{}
-		case "chat_thread_properties_deleted":
-			payload = &ChatThreadPropertiesDeleted{}
-		case "chat_thread_properties_updated":
-			payload = &ChatThreadPropertiesUpdated{}
+		case "thread_properties_deleted":
+			payload = &ThreadPropertiesDeleted{}
+		case "chat_user_added":
+			payload = &ChatUserAdded{}
+		case "chat_user_removed":
+			payload = &ChatUserRemoved{}
+		case "thread_tagged":
+			payload = &ThreadTagged{}
+		case "thread_untagged":
+			payload = &ThreadUntagged{}
+		case "agent_deleted":
+			payload = &AgentDeleted{}
+		case "events_marked_as_seen":
+			payload = &EventsMarkedAsSeen{}
+		case "access_granted":
+			payload = &AccessGranted{}
+		case "access_revoked":
+			payload = &AccessRevoked{}
+		case "access_set":
+			payload = &AccessSet{}
+		case "customer_created":
+			payload = &CustomerCreated{}
 		case "event_properties_updated":
 			payload = &EventPropertiesUpdated{}
 		case "event_properties_deleted":
 			payload = &EventPropertiesDeleted{}
-		case "chat_thread_tagged":
-			payload = &ChatThreadTagged{}
-		case "chat_thread_untagged":
-			payload = &ChatThreadUntagged{}
-		case "agent_status_changed":
-			payload = &AgentStatusChanged{}
-		case "agent_deleted":
-			payload = &AgentDeleted{}
-		case "customer_created":
-			payload = &CustomerCreated{}
-		case "events_marked_as_seen":
-			payload = &EventsMarkedAsSeen{}
-		case "follow_up_requested":
-			payload = &FollowUpRequested{}
+		case "routing_status_set":
+			payload = &RoutingStatusSet{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

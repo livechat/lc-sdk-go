@@ -46,7 +46,7 @@ var mockedResponses = map[string]string{
 	"send_event": `{
 		"event_id": "K600PKZON8"
 	}`,
-	"get_chats_summary": `{
+	"list_chats": `{
 		"chats_summary": [
 			{
 			  "id": "123",
@@ -95,21 +95,21 @@ var mockedResponses = map[string]string{
 			"threads": []
 		}
 	}`,
-	"close_thread": `{}`,
+	"deactivate_chat": `{}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
-	"send_rich_message_postback":    `{}`,
-	"send_sneak_peek":               `{}`,
-	"update_chat_properties":        `{}`,
-	"delete_chat_properties":        `{}`,
-	"update_chat_thread_properties": `{}`,
-	"delete_chat_thread_properties": `{}`,
-	"update_event_properties":       `{}`,
-	"delete_event_properties":       `{}`,
-	"update_customer":               `{}`,
-	"set_customer_fields":           `{}`,
-	"get_groups_status": `{
+	"send_rich_message_postback":  `{}`,
+	"send_sneak_peek":             `{}`,
+	"update_chat_properties":      `{}`,
+	"delete_chat_properties":      `{}`,
+	"update_thread_properties":    `{}`,
+	"delete_thread_properties":    `{}`,
+	"update_event_properties":     `{}`,
+	"delete_event_properties":     `{}`,
+	"update_customer":             `{}`,
+	"set_customer_session_fields": `{}`,
+	"list_group_statuses": `{
 		"groups_status": {
 			"1": "online",
 			"2": "offline",
@@ -152,7 +152,7 @@ var mockedResponses = map[string]string{
 			"type": "agent"
 		}
 	}`,
-	"get_url_details": `{
+	"get_url_info": `{
 		"title": "LiveChat | Live Chat Software and Help Desk Software",
 		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
 		"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
@@ -161,7 +161,17 @@ var mockedResponses = map[string]string{
 		"url": "https://livechatinc.com"
 	}`,
 	"mark_events_as_seen": `{}`,
-	"get_customer":        `{}`, //TODO - create some real structure here
+	"list_license_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
+	"list_group_properties": `{
+		"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string value"
+		}
+	}`,
+	"get_customer": `{}`, //TODO - create some real structure here
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -183,6 +193,15 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 
 		if req.URL.String() != "https://api.livechatinc.com/v3.2/customer/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
+			return createServerError("Invalid URL")
+		}
+
+		expectedMethod := "POST"
+		if method == "list_license_properties" || method == "list_group_properties" {
+			expectedMethod = "GET"
+		}
+		if expectedMethod != req.Method {
+			t.Errorf("Invalid method: %s for Customer API action: %s", req.Method, method)
 			return createServerError("Invalid URL")
 		}
 
@@ -322,23 +341,23 @@ func TestActivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
-func TestGetChatsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chats_summary"))
+func TestListChatsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_chats"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	chatsSummary, total, rErr := api.GetChatsSummary(0, 20)
+	chats, total, rErr := api.ListChats(0, 20)
 	if rErr != nil {
-		t.Errorf("GetChatsSummary failed: %v", rErr)
+		t.Errorf("ListChats failed: %v", rErr)
 	}
 
 	// TODO add better validation
 
-	if chatsSummary == nil {
-		t.Errorf("Invalid chats summary")
+	if chats == nil {
+		t.Errorf("Invalid chats")
 	}
 	if total != 1 {
 		t.Errorf("Invalid total chats: %v", total)
@@ -386,17 +405,17 @@ func TestGetChatThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
-func TestCloseThreadShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "close_thread"))
+func TestDeactivateChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CloseThread("stubChatID")
+	rErr := api.DeactivateChat("stubChatID")
 	if rErr != nil {
-		t.Errorf("CloseThread failed: %v", rErr)
+		t.Errorf("DeactivateChat failed: %v", rErr)
 	}
 }
 
@@ -474,31 +493,31 @@ func TestDeleteChatPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.
 	}
 }
 
-func TestUpdateChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_chat_thread_properties"))
+func TestUpdateThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateChatThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
+	rErr := api.UpdateThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
 	if rErr != nil {
-		t.Errorf("UpdateChatThreadProperties failed: %v", rErr)
+		t.Errorf("UpdateThreadProperties failed: %v", rErr)
 	}
 }
 
-func TestDeleteChatThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "delete_chat_thread_properties"))
+func TestDeleteThreadPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
 	if rErr != nil {
-		t.Errorf("DeleteChatThreadProperties failed: %v", rErr)
+		t.Errorf("DeleteThreadProperties failed: %v", rErr)
 	}
 }
 
@@ -538,37 +557,37 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
 }
 
-func TestSetCustomerFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "set_customer_fields"))
+func TestSetCustomerSessionFieldsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetCustomerFields(map[string]string{})
+	rErr := api.SetCustomerSessionFields([]map[string]string{})
 	if rErr != nil {
-		t.Errorf("SetCustomerFields failed: %v", rErr)
+		t.Errorf("SetCustomerSessionFields failed: %v", rErr)
 	}
 }
 
-func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_groups_status"))
+func TestListGroupStatusesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_group_statuses"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	groupsStatus, rErr := api.GetGroupsStatus([]int{1, 2, 3})
+	groupStatuses, rErr := api.ListGroupStatuses([]int{1, 2, 3})
 	if rErr != nil {
-		t.Errorf("GetGroupsStatus failed: %v", rErr)
+		t.Errorf("ListGroupStatuses failed: %v", rErr)
 	}
 
 	expectedStatus := map[int]customer.GroupStatus{
@@ -577,11 +596,11 @@ func TestGetGroupsStatusShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		3: customer.GroupStatusOnlineForQueue,
 	}
 
-	if len(groupsStatus) != 3 {
-		t.Errorf("Invalid size of groupsStatus map: %v, expected 3", len(groupsStatus))
+	if len(groupStatuses) != 3 {
+		t.Errorf("Invalid size of groupStatuses map: %v, expected 3", len(groupStatuses))
 	}
 
-	for group, status := range groupsStatus {
+	for group, status := range groupStatuses {
 		if status != expectedStatus[group] {
 			t.Errorf("Incorrect status: %v, for group: %v", status, group)
 		}
@@ -649,22 +668,22 @@ func TestGetPredictedAgentShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 	}
 }
 
-func TestGetURLDetailsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_url_details"))
+func TestGetURLInfoShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_url_info"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	details, rErr := api.GetURLDetails("http://totally.unsuspicious.url.com")
+	info, rErr := api.GetURLInfo("http://totally.unsuspicious.url.com")
 	if rErr != nil {
-		t.Errorf("GetURLDetails failed: %v", rErr)
+		t.Errorf("GetURLInfo failed: %v", rErr)
 	}
 	// TODO add better validation
 
-	if details == nil {
-		t.Errorf("Incorrect details")
+	if info == nil {
+		t.Errorf("Incorrect info")
 	}
 }
 
@@ -740,16 +759,16 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("ActivateChat", rErr, t)
 }
 
-func TestGetChatsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chats_summary"))
+func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "list_chats"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.GetChatsSummary(0, 20)
-	verifyErrorResponse("GetChatsSummary", rErr, t)
+	_, _, rErr := api.ListChats(0, 20)
+	verifyErrorResponse("ListChats", rErr, t)
 }
 
 func TestGetChatThreadsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -776,16 +795,16 @@ func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("GetChatThreads", rErr, t)
 }
 
-func TestCloseThreadShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "close_thread"))
+func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "deactivate_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.CloseThread("stubChatID")
-	verifyErrorResponse("CloseThread", rErr, t)
+	rErr := api.DeactivateChat("stubChatID")
+	verifyErrorResponse("DeactivateChat", rErr, t)
 }
 
 func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -848,28 +867,28 @@ func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("DeleteChatProperties", rErr, t)
 }
 
-func TestUpdateChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "update_chat_thread_properties"))
+func TestUpdateThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "update_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateChatThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
-	verifyErrorResponse("UpdateChatThreadProperties", rErr, t)
+	rErr := api.UpdateThreadProperties("stubChatID", "stubThreadID", objects.Properties{})
+	verifyErrorResponse("UpdateThreadProperties", rErr, t)
 }
 
-func TestDeleteChatThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_thread_properties"))
+func TestDeleteThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.DeleteChatThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
-	verifyErrorResponse("DeleteChatThreadProperties", rErr, t)
+	rErr := api.DeleteThreadProperties("stubChatID", "stubThreadID", map[string][]string{})
+	verifyErrorResponse("DeleteThreadProperties", rErr, t)
 }
 
 func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -904,32 +923,32 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", map[string]string{})
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
-func TestSetCustomerFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "set_customer_fields"))
+func TestSetCustomerSessionFieldsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "set_customer_session_fields"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetCustomerFields(map[string]string{})
-	verifyErrorResponse("SetCustomerFields", rErr, t)
+	rErr := api.SetCustomerSessionFields([]map[string]string{})
+	verifyErrorResponse("SetCustomerSessionFields", rErr, t)
 }
 
-func TestGetGroupsStatusShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_groups_status"))
+func TestListGroupStatusesShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "list_group_statuses"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetGroupsStatus([]int{1, 2, 3})
-	verifyErrorResponse("GetGroupsStatus", rErr, t)
+	_, rErr := api.ListGroupStatuses([]int{1, 2, 3})
+	verifyErrorResponse("ListGroupStatuses", rErr, t)
 }
 
 func TestCheckGoalsShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -968,16 +987,16 @@ func TestGetPredictedAgentShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("GetPredictedAgent", rErr, t)
 }
 
-func TestGetURLDetailsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_url_details"))
+func TestGetURLInfoShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_url_info"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetURLDetails("http://totally.unsuspicious.url.com")
-	verifyErrorResponse("GetURLDetails", rErr, t)
+	_, rErr := api.GetURLInfo("http://totally.unsuspicious.url.com")
+	verifyErrorResponse("GetURLInfo", rErr, t)
 }
 
 func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1002,4 +1021,48 @@ func TestGetCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	_, rErr := api.GetCustomer()
 	verifyErrorResponse("GetCustomer", rErr, t)
+}
+
+func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_license_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListLicenseProperties("", "")
+	if rErr != nil {
+		t.Errorf("ListLicenseProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid license properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid license property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
+}
+
+func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_group_properties"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListGroupProperties(0, "", "")
+	if rErr != nil {
+		t.Errorf("ListGroupProperties failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid group properties: %v", resp)
+	}
+
+	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
+		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/livechat/lc-sdk-go/authorization"
 	i "github.com/livechat/lc-sdk-go/internal"
+	"github.com/livechat/lc-sdk-go/objects"
 )
 
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.
@@ -48,13 +49,13 @@ func (a *API) UnregisterWebhook(id string) error {
 	}, &emptyResponse{})
 }
 
-// CreateBotAgent allows to create bot agent and returns its ID
-func (a *API) CreateBotAgent(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
-	var resp createBotAgentResponse
+// CreateBot allows to create bot and returns its ID
+func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) (string, error) {
+	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
 	}
-	err := a.Call("create_bot_agent", &createBotAgentRequest{
+	err := a.Call("create_bot", &createBotRequest{
 		Name:                 name,
 		Avatar:               avatar,
 		Status:               status,
@@ -67,14 +68,14 @@ func (a *API) CreateBotAgent(name, avatar string, status BotStatus, maxChats uin
 	return resp.BotID, err
 }
 
-// UpdateBotAgent allows to update bot agent's properties
-func (a *API) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
+// UpdateBot allows to update bot
+func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*BotGroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
-	return a.Call("update_bot_agent", &updateBotAgentRequest{
+	return a.Call("update_bot", &updateBotRequest{
 		BotID: id,
-		createBotAgentRequest: &createBotAgentRequest{
+		createBotRequest: &createBotRequest{
 			Name:                 name,
 			Avatar:               avatar,
 			Status:               status,
@@ -86,42 +87,42 @@ func (a *API) UpdateBotAgent(id, name, avatar string, status BotStatus, maxChats
 	}, &emptyResponse{})
 }
 
-// RemoveBotAgent removes bot with given ID
-func (a *API) RemoveBotAgent(id string) error {
-	return a.Call("remove_bot_agent", &removeBotAgentRequest{
+// DeleteBot deletes bot with given ID
+func (a *API) DeleteBot(id string) error {
+	return a.Call("delete_bot", &deleteBotRequest{
 		BotID: id,
 	}, &emptyResponse{})
 }
 
-// GetBotAgents returns list of bot agents (all or caller's only, depending on getAll parameter)
-func (a *API) GetBotAgents(getAll bool) ([]*BotAgent, error) {
-	var resp getBotAgentsResponse
-	err := a.Call("get_bot_agents", &getBotAgentsRequest{
+// ListBots returns list of bots (all or caller's only, depending on getAll parameter)
+func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
+	var resp listBotsResponse
+	err := a.Call("list_bots", &listBotsRequest{
 		All: getAll,
 	}, &resp)
 
 	return resp.BotAgents, err
 }
 
-// GetBotAgentDetails returns detailed properties of bot agent
-func (a *API) GetBotAgentDetails(id string) (*BotAgentDetails, error) {
-	var resp getBotAgentDetailsResponse
-	err := a.Call("get_bot_agent_details", &getBotAgentDetailsRequest{
+// GetBot returns bot
+func (a *API) GetBot(id string) (*BotAgentDetails, error) {
+	var resp getBotResponse
+	err := a.Call("get_bot", &getBotRequest{
 		BotID: id,
 	}, &resp)
 
 	return resp.BotAgent, err
 }
 
-// CreateProperties allows to create properties
-func (a *API) CreateProperties(properties map[string]*PropertyConfig) error {
-	return a.Call("create_properties", properties, &emptyResponse{})
+// RegisterProperties allows to create properties
+func (a *API) RegisterProperties(properties map[string]*PropertyConfig) error {
+	return a.Call("register_properties", properties, &emptyResponse{})
 }
 
-// GetPropertyConfigs return list of properties along with their configuration
-func (a *API) GetPropertyConfigs(getAll bool) (map[string]*PropertyConfig, error) {
-	var resp getPropertyConfigsResponse
-	err := a.Call("get_property_configs", &getPropertyConfigsRequest{
+// ListRegisteredProperties return list of properties along with their configuration
+func (a *API) ListRegisteredProperties(getAll bool) (map[string]*PropertyConfig, error) {
+	var resp listRegisteredPropertiesResponse
+	err := a.Call("list_registered_properties", &listRegisteredPropertiesRequest{
 		All: getAll,
 	}, &resp)
 
@@ -145,4 +146,25 @@ func validateBotGroupsAssignment(groups []*BotGroupConfig) error {
 	}
 
 	return nil
+}
+
+// ListLicenseProperties returns the properties set within a license.
+func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
+		NamespacePrefix: namespacePrefix,
+		NamePrefix:      namePrefix,
+	}, &resp)
+	return resp, err
+}
+
+// ListGroupProperties returns the properties set within a group.
+func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix string) (objects.Properties, error) {
+	var resp objects.Properties
+	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
+		GroupID:         groupID,
+		NamespacePrefix: namespacePrefix,
+		NamePrefix:      namePrefix,
+	}, &resp)
+	return resp, err
 }

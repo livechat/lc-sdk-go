@@ -33,12 +33,12 @@ type activateChatResponse struct {
 	EventIDs []string `json:"event_ids"`
 }
 
-type getChatsSummaryRequest struct {
+type listChatsRequest struct {
 	Limit  uint `json:"limit,omitempty"`
 	Offset uint `json:"offset,omitempty"`
 }
 
-type getChatsSummaryResponse struct {
+type listChatsResponse struct {
 	Chats      []objects.Chat `json:"chats_summary"`
 	TotalChats uint           `json:"total_chats"`
 }
@@ -63,7 +63,7 @@ type getChatThreadsResponse struct {
 	Chat objects.Chat `json:"chat"`
 }
 
-type closeThreadRequest struct {
+type deactivateChatRequest struct {
 	ChatID string `json:"chat_id"`
 }
 
@@ -94,13 +94,13 @@ type deleteChatPropertiesRequest struct {
 	Properties map[string][]string `json:"properties"`
 }
 
-type updateChatThreadPropertiesRequest struct {
+type updateThreadPropertiesRequest struct {
 	ChatID     string             `json:"chat_id"`
 	ThreadID   string             `json:"thread_id"`
 	Properties objects.Properties `json:"properties"`
 }
 
-type deleteChatThreadPropertiesRequest struct {
+type deleteThreadPropertiesRequest struct {
 	ChatID     string              `json:"chat_id"`
 	ThreadID   string              `json:"thread_id"`
 	Properties map[string][]string `json:"properties"`
@@ -121,22 +121,22 @@ type deleteEventPropertiesRequest struct {
 }
 
 type updateCustomerRequest struct {
-	Name   string            `json:"name,omitempty"`
-	Email  string            `json:"email,omitempty"`
-	Avatar string            `json:"avatar,omitempty"`
-	Fields map[string]string `json:"fields,omitempty"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
-type setCustomerFieldsRequest struct {
-	Fields map[string]string `json:"fields"`
+type setCustomerSessionFieldsRequest struct {
+	SessionFields []map[string]string `json:"session_fields"`
 }
 
-type getGroupsStatusRequest struct {
+type listGroupStatusesRequest struct {
 	All    bool  `json:"all,omitempty"`
 	Groups []int `json:"groups,omitempty"`
 }
 
-type getGroupsStatusResponse struct {
+type listGroupStatusesResponse struct {
 	Status map[int]string `json:"groups_status"`
 }
 
@@ -156,7 +156,7 @@ type getFormResponse struct {
 	Enabled bool  `json:"enabled"`
 }
 
-type getURLDetailsRequest struct {
+type getURLInfoRequest struct {
 	URL string `json:"url"`
 }
 
@@ -166,3 +166,14 @@ type markEventsAsSeenRequest struct {
 }
 
 type emptyResponse struct{}
+
+type listLicensePropertiesRequest struct {
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name,omitempty"`
+}
+
+type listGroupPropertiesRequest struct {
+	GroupID   uint   `json:"group_id"`
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name,omitempty"`
+}

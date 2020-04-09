@@ -48,7 +48,7 @@ type SurveyFilter struct {
 	AnswerID string `json:"answer_id"`
 }
 
-// NewArchivesFilters creates empty structure to aggregate filters for GetArchives method
+// NewArchivesFilters creates empty structure to aggregate filters for ListArchives method
 func NewArchivesFilters() *archivesFilters {
 	return &archivesFilters{}
 }
@@ -187,7 +187,7 @@ type DateRangeFilter struct {
 	EQ  string `json:"eq,omitempty"`
 }
 
-// NewCustomersFilters creates empty structure to aggregate filters for customers in GetCustomers method
+// NewCustomersFilters creates empty structure to aggregate filters for customers in ListCustomers method
 func NewCustomersFilters() *customersFilters {
 	return &customersFilters{}
 }
@@ -269,7 +269,7 @@ type chatsFilters struct {
 	Properties    PropertiesFilters `json:"properties,omitempty"`
 }
 
-// NewChatsFilters creates empty structure to aggregate filters for Chats in GetChatsSummary method
+// NewChatsFilters creates empty structure to aggregate filters for Chats in ListChats method
 // By default filters include also active chats
 func NewChatsFilters() *chatsFilters {
 	return &chatsFilters{

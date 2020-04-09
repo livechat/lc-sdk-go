@@ -6,12 +6,12 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
-type getChatsSummaryRequest struct {
-	Filters    *chatsFilters      `json:"filters,omitempty"`
-	Pagination *paginationRequest `json:"pagination,omitempty"`
+type listChatsRequest struct {
+	Filters *chatsFilters `json:"filters,omitempty"`
+	*hashedPaginationRequest
 }
 
-type getChatsSummaryResponse struct {
+type listChatsResponse struct {
 	hashedPaginationResponse
 	ChatsSummary []objects.ChatSummary `json:"chats_summary"`
 	FoundChats   uint                  `json:"found_chats"`
@@ -37,12 +37,12 @@ type getChatThreadsResponse struct {
 	Chat objects.Chat `json:"chat"`
 }
 
-type getArchivesRequest struct {
+type listArchivesRequest struct {
 	Filters    *archivesFilters   `json:"filters,omitempty"`
 	Pagination *paginationRequest `json:"pagination,omitempty"`
 }
 
-type getArchivesResponse struct {
+type listArchivesResponse struct {
 	Chats      []objects.Chat     `json:"chats"`
 	Pagination paginationResponse `json:"pagination"`
 }
@@ -68,7 +68,7 @@ type activateChatResponse struct {
 	EventIDs []string `json:"event_ids"`
 }
 
-type closeThreadRequest struct {
+type deactivateChatRequest struct {
 	ChatID string `json:"chat_id"`
 }
 
@@ -127,13 +127,13 @@ type deleteChatPropertiesRequest struct {
 	Properties map[string][]string `json:"properties"`
 }
 
-type updateChatThreadPropertiesRequest struct {
+type updateThreadPropertiesRequest struct {
 	ChatID     string             `json:"chat_id"`
 	ThreadID   string             `json:"thread_id"`
 	Properties objects.Properties `json:"properties"`
 }
 
-type deleteChatThreadPropertiesRequest struct {
+type deleteThreadPropertiesRequest struct {
 	ChatID     string              `json:"chat_id"`
 	ThreadID   string              `json:"thread_id"`
 	Properties map[string][]string `json:"properties"`
@@ -154,30 +154,37 @@ type deleteEventPropertiesRequest struct {
 }
 
 // used for both tagging and untagging
-type changeChatThreadTagRequest struct {
+type changeThreadTagRequest struct {
 	ChatID   string `json:"chat_id"`
 	ThreadID string `json:"thread_id"`
 	Tag      string `json:"tag"`
 }
 
 type getCustomersRequest struct {
-	PageID  string            `json:"page_id,omitempty"`
-	Limit   uint              `json:"limit,omitempty"`
-	Order   string            `json:"order,omitempty"`
-	Filters *customersFilters `json:"filters,omitempty"`
+	CustomerID string `json:"customer_id"`
 }
 
 type getCustomersResponse struct {
+}
+
+type listCustomersRequest struct {
+	PageID    string            `json:"page_id,omitempty"`
+	Limit     uint              `json:"limit,omitempty"`
+	SortOrder string            `json:"sort_order,omitempty"`
+	Filters   *customersFilters `json:"filters,omitempty"`
+}
+
+type listCustomersResponse struct {
 	hashedPaginationResponse
 	Customers      []objects.Customer `json:"customers"`
 	TotalCustomers uint               `json:"total_customers"`
 }
 
 type createCustomerRequest struct {
-	Name   string            `json:"name,omitempty"`
-	Email  string            `json:"email,omitempty"`
-	Avatar string            `json:"avatar,omitempty"`
-	Fields map[string]string `json:"fields,omitempty"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
 type createCustomerResponse struct {
@@ -185,15 +192,11 @@ type createCustomerResponse struct {
 }
 
 type updateCustomerRequest struct {
-	CustomerID string            `json:"customer_id"`
-	Name       string            `json:"name,omitempty"`
-	Email      string            `json:"email,omitempty"`
-	Avatar     string            `json:"avatar,omitempty"`
-	Fields     map[string]string `json:"fields,omitempty"`
-}
-
-type updateCustomerResponse struct {
-	Customer objects.Customer `json:"customer"`
+	CustomerID    string              `json:"customer_id"`
+	Name          string              `json:"name,omitempty"`
+	Email         string              `json:"email,omitempty"`
+	Avatar        string              `json:"avatar,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
 type banCustomerRequest struct {
@@ -218,17 +221,17 @@ type sendTypingIndicatorRequest struct {
 }
 
 type multicastRequest struct {
-	Scopes  MulticastScopes `json:"scopes"`
-	Content json.RawMessage `json:"content"`
-	Type    string          `json:"type,omitempty"`
+	Recipients MulticastRecipients `json:"recipients"`
+	Content    json.RawMessage     `json:"content"`
+	Type       string              `json:"type,omitempty"`
 }
 
 type emptyResponse struct{}
 
 type hashedPaginationRequest struct {
-	PageID string `json:"page_id,omitempty"`
-	Limit  uint   `json:"limit,omitempty"`
-	Order  string `json:"order,omitempty"`
+	PageID    string `json:"page_id,omitempty"`
+	Limit     uint   `json:"limit,omitempty"`
+	SortOrder string `json:"sort_order,omitempty"`
 }
 
 type hashedPaginationResponse struct {
@@ -244,4 +247,8 @@ type paginationRequest struct {
 type paginationResponse struct {
 	Page  uint `json:"page,omitempty"`
 	Total uint `json:"total,omitempty"`
+}
+
+type listAgentsForTransferRequest struct {
+	ChatID string `json:"chat_id"`
 }

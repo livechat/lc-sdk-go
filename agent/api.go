@@ -27,14 +27,15 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 	return &API{api}, nil
 }
 
-// GetChatsSummary returns chats summary.
-func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
-	var resp getChatsSummaryResponse
-	err = a.Call("get_chats_summary", &getChatsSummaryRequest{
+// ListChats returns chats list.
+func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
+	var resp listChatsResponse
+	err = a.Call("list_chats", &listChatsRequest{
 		Filters: filters,
-		Pagination: &paginationRequest{
-			Page:  page,
-			Limit: limit,
+		hashedPaginationRequest: &hashedPaginationRequest{
+			SortOrder: sortOrder,
+			PageID:    pageID,
+			Limit:     limit,
 		},
 	}, &resp)
 
@@ -42,14 +43,14 @@ func (a *API) GetChatsSummary(filters *chatsFilters, page, limit uint) (summary 
 }
 
 // GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID, order, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
+func (a *API) GetChatThreadsSummary(chatID, sortOrder, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
 	var resp getChatThreadsSummaryResponse
 	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
 		ChatID: chatID,
 		hashedPaginationRequest: &hashedPaginationRequest{
-			Order:  order,
-			Limit:  limit,
-			PageID: pageID,
+			SortOrder: sortOrder,
+			Limit:     limit,
+			PageID:    pageID,
 		},
 	}, &resp)
 
@@ -67,10 +68,10 @@ func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, 
 	return resp.Chat, err
 }
 
-// GetArchives returns archived chats.
-func (a *API) GetArchives(filters *archivesFilters, page, limit uint) (chats []objects.Chat, currentPage, totalPages uint, err error) {
-	var resp getArchivesResponse
-	err = a.Call("get_archives", &getArchivesRequest{
+// ListArchives returns archived chats.
+func (a *API) ListArchives(filters *archivesFilters, page, limit uint) (chats []objects.Chat, currentPage, totalPages uint, err error) {
+	var resp listArchivesResponse
+	err = a.Call("list_archives", &listArchivesRequest{
 		Filters: filters,
 		Pagination: &paginationRequest{
 			Page:  page,
@@ -115,10 +116,10 @@ func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (threadID 
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// CloseThread closes active thread for given chat. If no thread is active, then this
+// DeactivateChat deactivates active thread for given chat. If no thread is active, then this
 // method is a no-op.
-func (a *API) CloseThread(chatID string) error {
-	return a.Call("close_thread", &closeThreadRequest{
+func (a *API) DeactivateChat(chatID string) error {
+	return a.Call("deactivate_chat", &deactivateChatRequest{
 		ChatID: chatID,
 	}, &emptyResponse{})
 }
@@ -243,18 +244,18 @@ func (a *API) DeleteChatProperties(chatID string, properties map[string][]string
 	}, &emptyResponse{})
 }
 
-// UpdateChatThreadProperties updates given chat thread's properties.
-func (a *API) UpdateChatThreadProperties(chatID, threadID string, properties objects.Properties) error {
-	return a.Call("update_chat_thread_properties", &updateChatThreadPropertiesRequest{
+// UpdateThreadProperties updates given thread's properties.
+func (a *API) UpdateThreadProperties(chatID, threadID string, properties objects.Properties) error {
+	return a.Call("update_thread_properties", &updateThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
 
-// DeleteChatThreadProperties deletes given chat thread's properties.
-func (a *API) DeleteChatThreadProperties(chatID, threadID string, properties map[string][]string) error {
-	return a.Call("delete_chat_thread_properties", &deleteChatThreadPropertiesRequest{
+// DeleteThreadProperties deletes given thread's properties.
+func (a *API) DeleteThreadProperties(chatID, threadID string, properties map[string][]string) error {
+	return a.Call("delete_thread_properties", &deleteThreadPropertiesRequest{
 		ChatID:     chatID,
 		ThreadID:   threadID,
 		Properties: properties,
@@ -281,62 +282,69 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 	}, &emptyResponse{})
 }
 
-// TagChatThread adds given tag to chat thread.
-func (a *API) TagChatThread(chatID, threadID, tag string) error {
-	return a.Call("tag_chat_thread", &changeChatThreadTagRequest{
+// TagThread adds given tag to thread.
+func (a *API) TagThread(chatID, threadID, tag string) error {
+	return a.Call("tag_thread", &changeThreadTagRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		Tag:      tag,
 	}, &emptyResponse{})
 }
 
-// UntagChatThread removes given tag from chat thread.
-func (a *API) UntagChatThread(chatID, threadID, tag string) error {
-	return a.Call("untag_chat_thread", &changeChatThreadTagRequest{
+// UntagThread removes given tag from thread.
+func (a *API) UntagThread(chatID, threadID, tag string) error {
+	return a.Call("untag_thread", &changeThreadTagRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		Tag:      tag,
 	}, &emptyResponse{})
 }
 
-// GetCustomers returns the list of Customers.
-func (a *API) GetCustomers(limit uint, pageID, order string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
-	var resp getCustomersResponse
-	err = a.Call("get_customers", &getCustomersRequest{
-		PageID:  pageID,
-		Limit:   limit,
-		Order:   order,
-		Filters: filters,
+// GetCustomer returns Customer.
+func (a *API) GetCustomer(customerID string) (customer objects.Customer, err error) {
+	var resp objects.Customer
+	err = a.Call("get_customer", &getCustomersRequest{
+		CustomerID: customerID,
+	}, &resp)
+
+	return resp, err
+}
+
+// ListCustomers returns the list of Customers.
+func (a *API) ListCustomers(limit uint, pageID, sortOrder string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
+	var resp listCustomersResponse
+	err = a.Call("list_customers", &listCustomersRequest{
+		PageID:    pageID,
+		Limit:     limit,
+		SortOrder: sortOrder,
+		Filters:   filters,
 	}, &resp)
 
 	return resp.Customers, resp.TotalCustomers, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // CreateCustomer creates new Customer.
-func (a *API) CreateCustomer(name, email, avatar string, fields map[string]string) (string, error) {
+func (a *API) CreateCustomer(name, email, avatar string, sessionFields []map[string]string) (string, error) {
 	var resp createCustomerResponse
 	err := a.Call("create_customer", &createCustomerRequest{
-		Name:   name,
-		Email:  email,
-		Avatar: avatar,
-		Fields: fields,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatar,
+		SessionFields: sessionFields,
 	}, &resp)
 
 	return resp.CustomerID, err
 }
 
 // UpdateCustomer updates customer's info.
-func (a *API) UpdateCustomer(customerID, name, email, avatar string, fields map[string]string) (objects.Customer, error) {
-	var resp updateCustomerResponse
-	err := a.Call("update_customer", &updateCustomerRequest{
-		CustomerID: customerID,
-		Name:       name,
-		Email:      email,
-		Avatar:     avatar,
-		Fields:     fields,
-	}, &resp)
-
-	return resp.Customer, err
+func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) error {
+	return a.Call("update_customer", &updateCustomerRequest{
+		CustomerID:    customerID,
+		Name:          name,
+		Email:         email,
+		Avatar:        avatar,
+		SessionFields: sessionFields,
+	}, &emptyResponse{})
 }
 
 // BanCustomer bans customer for specific period of time (expressed in days).
@@ -375,10 +383,19 @@ func (a *API) SendTypingIndicator(chatID, recipients string, isTyping bool) erro
 }
 
 // Multicast method serves for the chat-unrelated communication. Messages sent using multicast are not being saved.
-func (a *API) Multicast(scopes MulticastScopes, content json.RawMessage, multicastType string) error {
+func (a *API) Multicast(recipients MulticastRecipients, content json.RawMessage, multicastType string) error {
 	return a.Call("multicast", &multicastRequest{
-		Scopes:  scopes,
-		Content: content,
-		Type:    multicastType,
+		Recipients: recipients,
+		Content:    content,
+		Type:       multicastType,
 	}, &emptyResponse{})
+}
+
+// ListAgentsForTransfer returns the Agents you can transfer a given chat to.
+func (a *API) ListAgentsForTransfer(chatID string) (AgentsForTransfer, error) {
+	var resp AgentsForTransfer
+	err := a.Call("list_agents_for_transfer", &listAgentsForTransferRequest{
+		ChatID: chatID,
+	}, &resp)
+	return resp, err
 }

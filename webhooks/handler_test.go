@@ -12,36 +12,34 @@ import (
 )
 
 var verifiers = map[string]webhooks.Handler{
-	"incoming_chat_thread":           incomingChatThread,
-	"thread_closed":                  threadClosed,
-	"chat_deactivated":               chatDeactivated,
-	"access_granted":                 accessGranted,
-	"access_revoked":                 accessRevoked,
-	"access_set":                     accessSet,
-	"chat_user_added":                chatUserAdded,
-	"chat_user_removed":              chatUserRemoved,
+	"incoming_chat":                  incomingChat,
 	"incoming_event":                 incomingEvent,
 	"event_updated":                  eventUpdated,
 	"incoming_rich_message_postback": incomingRichMessagePostback,
+	"chat_deactivated":               chatDeactivated,
 	"chat_properties_updated":        chatPropertiesUpdated,
+	"thread_properties_updated":      threadPropertiesUpdated,
 	"chat_properties_deleted":        chatPropertiesDeleted,
-	"chat_thread_properties_updated": chatThreadPropertiesUpdated,
-	"chat_thread_properties_deleted": chatThreadPropertiesDeleted,
+	"thread_properties_deleted":      threadPropertiesDeleted,
+	"chat_user_added":                chatUserAdded,
+	"chat_user_removed":              chatUserRemoved,
+	"thread_tagged":                  threadTagged,
+	"thread_untagged":                threadUntagged,
+	"agent_deleted":                  agentDeleted,
+	"events_marked_as_seen":          eventsMarkedAsSeen,
+	"access_granted":                 accessGranted,
+	"access_revoked":                 accessRevoked,
+	"access_set":                     accessSet,
+	"customer_created":               customerCreated,
 	"event_properties_updated":       eventPropertiesUpdated,
 	"event_properties_deleted":       eventPropertiesDeleted,
-	"chat_thread_tagged":             chatThreadTagged,
-	"chat_thread_untagged":           chatThreadUntagged,
-	"agent_status_changed":           agentStatusChanged,
-	"agent_deleted":                  agentDeleted,
-	"customer_created":               customerCreated,
-	"events_marked_as_seen":          eventsMarkedAsSeen,
-	"follow_up_requested":            followUpRequested,
+	"routing_status_set":             routingStatusSet,
 }
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
 	cfg := webhooks.NewConfiguration()
 	h := webhooks.NewWebhookHandler(cfg)
-	action := "incoming_chat_thread"
+	action := "incoming_chat"
 	payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
 	if err != nil {
 		t.Errorf("Missing test payload for action %v", action)
@@ -57,7 +55,7 @@ func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
 }
 
 func TestRejectWebhooksIfFormatIsInvalid(t *testing.T) {
-	action := "incoming_chat_thread"
+	action := "incoming_chat"
 	payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
 	if err != nil {
 		t.Errorf("Missing test payload for action %v", action)
@@ -76,7 +74,7 @@ func TestRejectWebhooksIfFormatIsInvalid(t *testing.T) {
 }
 
 func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
-	action := "incoming_chat_thread"
+	action := "incoming_chat"
 	payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
 	if err != nil {
 		t.Errorf("Missing test payload for action %v", action)
@@ -101,7 +99,7 @@ func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
 
 func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 	verifier := func(*webhooks.Webhook) error { return nil }
-	action := "incoming_chat_thread"
+	action := "incoming_chat"
 	cfg := webhooks.NewConfiguration().WithAction(action, verifier, "other_dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
 	payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
