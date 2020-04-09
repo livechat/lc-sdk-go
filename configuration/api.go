@@ -119,10 +119,10 @@ func (a *API) CreateProperties(properties map[string]*PropertyConfig) error {
 	return a.Call("create_properties", properties, &emptyResponse{})
 }
 
-// GetPropertyConfigs return list of properties along with their configuration
-func (a *API) GetPropertyConfigs(getAll bool) (map[string]*PropertyConfig, error) {
-	var resp getPropertyConfigsResponse
-	err := a.Call("get_property_configs", &getPropertyConfigsRequest{
+// ListRegisteredProperties return list of properties along with their configuration
+func (a *API) ListRegisteredProperties(getAll bool) (map[string]*PropertyConfig, error) {
+	var resp listRegisteredPropertiesResponse
+	err := a.Call("list_registered_properties", &listRegisteredPropertiesRequest{
 		All: getAll,
 	}, &resp)
 

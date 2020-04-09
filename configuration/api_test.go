@@ -147,7 +147,7 @@ var mockedResponses = map[string]string{
 			}
 		}
 	}`,
-	"get_property_configs": `{
+	"list_registered_properties": `{
 		"58737b5829e65621a45d598aa6f2ed8e": {
 			"greeting": {
 				"type": "string",
@@ -443,16 +443,16 @@ func TestCreatePropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 }
 
 func TestGetPropertyConfigsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_property_configs"))
+	client := NewTestClient(createMockedResponder(t, "list_registered_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetPropertyConfigs(true)
+	resp, rErr := api.ListRegisteredProperties(true)
 	if rErr != nil {
-		t.Errorf("GetPropertyConfigs failed: %v", rErr)
+		t.Errorf("ListRegisteredProperties failed: %v", rErr)
 	}
 
 	if _, exists := resp["58737b5829e65621a45d598aa6f2ed8e"]; !exists || len(resp) != 1 {

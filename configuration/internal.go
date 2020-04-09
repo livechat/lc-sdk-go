@@ -51,11 +51,11 @@ type getBotResponse struct {
 
 type createPropertiesRequest map[string]*PropertyConfig
 
-type getPropertyConfigsRequest struct {
+type listRegisteredPropertiesRequest struct {
 	All bool `json:"all"`
 }
 
-type getPropertyConfigsResponse map[string]*PropertyConfig
+type listRegisteredPropertiesResponse map[string]*PropertyConfig
 
 type getGroupRequest struct {
 	ID int `json:"id"`
