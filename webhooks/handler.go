@@ -128,8 +128,6 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &AccessSet{}
 		case "customer_created":
 			payload = &CustomerCreated{}
-		case "follow_up_requested":
-			payload = &FollowUpRequested{}
 		case "event_properties_updated":
 			payload = &EventPropertiesUpdated{}
 		case "event_properties_deleted":

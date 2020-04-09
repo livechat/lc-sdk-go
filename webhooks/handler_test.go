@@ -31,7 +31,6 @@ var verifiers = map[string]webhooks.Handler{
 	"access_revoked":                 accessRevoked,
 	"access_set":                     accessSet,
 	"customer_created":               customerCreated,
-	"follow_up_requested":            followUpRequested,
 	"event_properties_updated":       eventPropertiesUpdated,
 	"event_properties_deleted":       eventPropertiesDeleted,
 	"routing_status_set":             routingStatusSet,

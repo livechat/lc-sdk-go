@@ -37,7 +37,6 @@ const (
 	AccessRevoked               WebhookAction = "access_revoked"
 	AccessSet                   WebhookAction = "access_set"
 	CustomerCreated             WebhookAction = "customer_created"
-	FollowUpRequested           WebhookAction = "follow_up_requested"
 	EventPropertiesUpdated      WebhookAction = "event_properties_updated"
 	EventPropertiesDeleted      WebhookAction = "event_properties_deleted"
 	RoutingStatusSet            WebhookAction = "routing_status_set"

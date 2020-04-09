@@ -151,13 +151,6 @@ type AccessSet struct {
 // CustomerCreated represents payload of customer_created webhook.
 type CustomerCreated objects.Customer
 
-// FollowUpRequested represents payload of follow_up_requested webhook.
-type FollowUpRequested struct {
-	ChatID     string `json:"chat_id"`
-	ThreadID   string `json:"thread_id"`
-	CustomerID string `json:"customer_id"`
-}
-
 // EventPropertiesUpdated represents payload of event_properties_updated webhook.
 type EventPropertiesUpdated struct {
 	ChatID     string             `json:"chat_id"`

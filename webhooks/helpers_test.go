@@ -537,20 +537,3 @@ func routingStatusSet(wh *webhooks.Webhook) error {
 	}
 	return nil
 }
-
-func followUpRequested(wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.FollowUpRequested)
-	if !ok {
-		return fmt.Errorf("invalid payload type: %T", payload)
-	}
-
-	var errors string
-	propEq("ChatID", payload.ChatID, "PS0X0L086G", &errors)
-	propEq("ThreadID", payload.ThreadID, "PZ070E0W1B", &errors)
-	propEq("CustomerID", payload.CustomerID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &errors)
-
-	if errors != "" {
-		return fmt.Errorf(errors)
-	}
-	return nil
-}
