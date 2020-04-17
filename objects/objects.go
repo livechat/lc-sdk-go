@@ -13,9 +13,7 @@ import (
 
 func unmarshalOptionalRawField(source json.RawMessage, target interface{}) error {
 	if source != nil {
-		if err := json.Unmarshal(source, target); err != nil {
-			return err
-		}
+		return json.Unmarshal(source, target)
 	}
 	return nil
 }
