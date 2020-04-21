@@ -11,6 +11,13 @@ import (
 	"time"
 )
 
+func unmarshalOptionalRawField(source json.RawMessage, target interface{}) error {
+	if source != nil {
+		return json.Unmarshal(source, target)
+	}
+	return nil
+}
+
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.
 type Properties map[string]map[string]interface{}
 
@@ -371,8 +378,8 @@ type File struct {
 	Event
 	ContentType string `json:"content_type"`
 	URL         string `json:"url"`
-	Width       int    `json:"width,omitempty"`
-	Height      int    `json:"height,omitempty"`
+	Width       int    `json:"width"`
+	Height      int    `json:"height"`
 	Name        string `json:"name"`
 }
 
@@ -390,10 +397,10 @@ func (e *Event) File() *File {
 	if err := json.Unmarshal(e.URL, &f.URL); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(e.Width, &f.Width); err != nil {
+	if err := unmarshalOptionalRawField(e.Width, &f.Width); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(e.Height, &f.Height); err != nil {
+	if err := unmarshalOptionalRawField(e.Height, &f.Height); err != nil {
 		return nil
 	}
 	if err := json.Unmarshal(e.Name, &f.Name); err != nil {
