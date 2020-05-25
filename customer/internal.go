@@ -34,33 +34,34 @@ type activateChatResponse struct {
 }
 
 type listChatsRequest struct {
-	Limit  uint `json:"limit,omitempty"`
-	Offset uint `json:"offset,omitempty"`
+	*hashedPaginationRequest
 }
 
 type listChatsResponse struct {
-	Chats      []objects.Chat `json:"chats_summary"`
-	TotalChats uint           `json:"total_chats"`
+	hashedPaginationResponse
+	ChatsSummary []objects.ChatSummary `json:"chats_summary"`
+	TotalChats   uint                  `json:"total_chats"`
 }
 
-type getChatThreadsSummaryRequest struct {
-	ChatID string `json:"chat_id"`
-	Limit  uint   `json:"limit,omitempty"`
-	Offset uint   `json:"offset,omitempty"`
+type getChatRequest struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id,omitempty"`
 }
 
-type getChatThreadsSummaryResponse struct {
-	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
-	TotalThreads   uint                    `json:"total_threads"`
-}
-
-type getChatThreadsRequest struct {
-	ChatID    string   `json:"chat_id"`
-	ThreadIDs []string `json:"thread_ids,omitempty"`
-}
-
-type getChatThreadsResponse struct {
+type getChatResponse struct {
 	Chat objects.Chat `json:"chat"`
+}
+
+type listThreadsRequest struct {
+	*hashedPaginationRequest
+	ChatID         string `json:"chat_id"`
+	MinEventsCount uint   `json:"min_events_count,omitempty"`
+}
+
+type listThreadsResponse struct {
+	hashedPaginationResponse
+	Threads      []objects.Thread `json:"threads"`
+	FoundThreads uint             `json:"found_threads"`
 }
 
 type deactivateChatRequest struct {
@@ -132,8 +133,8 @@ type setCustomerSessionFieldsRequest struct {
 }
 
 type listGroupStatusesRequest struct {
-	All    bool  `json:"all,omitempty"`
-	Groups []int `json:"groups,omitempty"`
+	All      bool  `json:"all,omitempty"`
+	GroupIDs []int `json:"group_ids,omitempty"`
 }
 
 type listGroupStatusesResponse struct {
@@ -176,4 +177,24 @@ type listGroupPropertiesRequest struct {
 	GroupID   uint   `json:"group_id"`
 	Namespace string `json:"namespace,omitempty"`
 	Name      string `json:"name,omitempty"`
+}
+
+type acceptGreetingRequest struct {
+	GreetingID int    `json:"greeting_id"`
+	UniqueID   string `json:"unique_id"`
+}
+
+type cancelGreetingRequest struct {
+	UniqueID string `json:"unique_id"`
+}
+
+type hashedPaginationRequest struct {
+	PageID    string `json:"page_id,omitempty"`
+	Limit     uint   `json:"limit,omitempty"`
+	SortOrder string `json:"sort_order,omitempty"`
+}
+
+type hashedPaginationResponse struct {
+	PreviousPageID string `json:"previous_page_id,omitempty"`
+	NextPageID     string `json:"next_page_id,omitempty"`
 }

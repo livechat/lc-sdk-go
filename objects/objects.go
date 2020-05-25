@@ -7,7 +7,6 @@ package objects
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"time"
 )
 
@@ -80,26 +79,6 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	return &c
-}
-
-// The Time type is a helper type to convert string time into golang time representation.
-type Time struct {
-	time.Time
-}
-
-// MarshalJSON implements json.Marshaler interface for Time.
-func (t Time) MarshalJSON() ([]byte, error) {
-	return []byte(strconv.FormatInt(t.Unix(), 10)), nil
-}
-
-// UnmarshalJSON implements json.Unmarshaler interface for Time.
-func (t *Time) UnmarshalJSON(s []byte) (err error) {
-	q, err := strconv.ParseInt(string(s), 10, 64)
-	if err != nil {
-		return err
-	}
-	*t = Time{Time: time.Unix(q, 0)}
-	return
 }
 
 // Visit contains information about particular customer's visit.
@@ -189,14 +168,15 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 // Thread represents LiveChat chat thread
 type Thread struct {
 	ID               string     `json:"id"`
-	Timestamp        Time       `json:"timestamp"`
 	Active           bool       `json:"active"`
 	UserIDs          []string   `json:"user_ids"`
 	RestrictedAccess bool       `json:"restricted_access"`
-	Order            int        `json:"order"`
 	Properties       Properties `json:"properties"`
 	Access           Access     `json:"access"`
 	Events           []*Event   `json:"events"`
+	PreviousThreadID string     `json:"previous_thread_id"`
+	NextThreadID     string     `json:"next_thread_id"`
+	CreatedAt        time.Time  `json:"created_at"`
 }
 
 // Access represents LiveChat chat and thread access
@@ -228,21 +208,29 @@ type Customer struct {
 	SessionFields              []map[string]string `json:"session_fields"`
 }
 
-// ThreadSummary represents a short summary of a thread.
+// ThreadSummary represents a short summary of a thread
 type ThreadSummary struct {
-	ID          string `json:"id"`
-	Order       int32  `json:"order"`
-	TotalEvents uint   `json:"total_events"`
+	ID         string     `json:"id"`
+	UserIDs    []string   `json:"user_ids"`
+	Properties Properties `json:"properties,omitempty"`
+	Active     bool       `json:"active"`
+	Access     Access     `json:"access,omitempty"`
+	Tags       []string   `json:"tags,omitempty"`
+	CreatedAt  time.Time  `json:"created_at"`
 }
 
 // ChatSummary represents a short summary of a chat
 type ChatSummary struct {
-	ID                string         `json:"id"`
-	LastEventPerType  interface{}    `json:"last_event_per_type,omitempty"`
-	Users             []interface{}  `json:"users"`
+	ID               string `json:"id"`
+	LastEventPerType map[string]struct {
+		ThreadID        string    `json:"thread_id"`
+		ThreadCreatedAt time.Time `json:"thread_created_at"`
+		Event           Event     `json:"event"`
+	} `json:"last_event_per_type,omitempty"`
+	Users             []*User        `json:"users"`
 	LastThreadSummary *ThreadSummary `json:"last_thread_summary,omitempty"`
 	Properties        Properties     `json:"properties,omitempty"`
-	Access            interface{}    `json:"access,omitempty"`
+	Access            Access         `json:"access,omitempty"`
 	Order             uint64         `json:"order,omitempty"`
 	IsFollowed        bool           `json:"is_followed"`
 }
@@ -270,16 +258,16 @@ func (chat *InitialChat) Validate() error {
 // ValidateEvent checks if given interface resolves into supported event type
 func ValidateEvent(e interface{}) error {
 	switch v := e.(type) {
-	case *File:
 	case *Event:
+	case *File:
 	case *Message:
-	case *SystemMessage:
 	case *RichMessage:
-	case File:
+	case *SystemMessage:
 	case Event:
+	case File:
 	case Message:
-	case SystemMessage:
 	case RichMessage:
+	case SystemMessage:
 	default:
 		return fmt.Errorf("event type %T not supported", v)
 	}

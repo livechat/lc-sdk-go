@@ -29,7 +29,7 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) *propertyFilterTy
 // Archives filters
 
 type archivesFilters struct {
-	AgentIDs   []string            `json:"agent_ids,omitempty"`
+	Agents     *propertyFilterType `json:"agents,omitempty"`
 	GroupIDs   []uint              `json:"group_ids,omitempty"`
 	DateFrom   string              `json:"date_from,omitempty"`
 	DateTo     string              `json:"date_to,omitempty"`
@@ -40,6 +40,11 @@ type archivesFilters struct {
 	Surveys    []SurveyFilter      `json:"surveys,omitempty"`
 	ThreadIDs  []string            `json:"thread_ids,omitempty"`
 	Query      string              `json:"query,omitempty"`
+	Events     *eventsFilter       `json:"events,omitempty"`
+}
+
+type eventsFilter struct {
+	Types []string `json:"types,omitempty"`
 }
 
 // SurveyFilter represents structure to match surveys when getting Archives
@@ -53,9 +58,10 @@ func NewArchivesFilters() *archivesFilters {
 	return &archivesFilters{}
 }
 
-// ByAgents extends archives filter with list of agent IDs to match
-func (af *archivesFilters) ByAgents(agentIDs []string) *archivesFilters {
-	af.AgentIDs = agentIDs
+// ByAgents extends archives filter with agents specific property filter
+// See NewPropertyFilterType definition for details of filter creation
+func (af *archivesFilters) ByAgents(includes bool, vals ...interface{}) *archivesFilters {
+	af.Agents = NewPropertyFilterType(includes, vals...)
 	return af
 }
 
@@ -122,6 +128,12 @@ func (af *archivesFilters) BySales(includes bool, vals ...interface{}) *archives
 // See NewPropertyFilterType definition for details of filter creation
 func (af *archivesFilters) ByGoals(includes bool, vals ...interface{}) *archivesFilters {
 	af.Goals = NewPropertyFilterType(includes, vals...)
+	return af
+}
+
+// ByEventTypes extends archives filter with event.types to match
+func (af *archivesFilters) ByEventTypes(types ...string) *archivesFilters {
+	af.Events = &eventsFilter{Types: types}
 	return af
 }
 
@@ -264,9 +276,10 @@ func (cf *customersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) 
 
 // Chats Filters
 type chatsFilters struct {
-	IncludeActive bool              `json:"include_active,omitempty"`
-	GroupIDs      []uint            `json:"group_ids,omitempty"`
-	Properties    PropertiesFilters `json:"properties,omitempty"`
+	IncludeActive              bool              `json:"include_active,omitempty"`
+	IncludeChatsWithoutThreads bool              `json:"include_chats_without_threads,omitempty"`
+	GroupIDs                   []uint            `json:"group_ids,omitempty"`
+	Properties                 PropertiesFilters `json:"properties,omitempty"`
 }
 
 // NewChatsFilters creates empty structure to aggregate filters for Chats in ListChats method
@@ -280,6 +293,12 @@ func NewChatsFilters() *chatsFilters {
 // WithoutActiveChats extends chat filters to not include active chats
 func (cf *chatsFilters) WithoutActiveChats() *chatsFilters {
 	cf.IncludeActive = false
+	return cf
+}
+
+// WithoutActiveChats extends chat filters to not include active chats
+func (cf *chatsFilters) WithChatsWithoutThreads() *chatsFilters {
+	cf.IncludeChatsWithoutThreads = true
 	return cf
 }
 

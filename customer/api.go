@@ -75,7 +75,7 @@ func (a *API) SendSystemMessage(chatID, text, messageType string, textVars map[s
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
-// Supported event types are: event, message, system_message and file.
+// Supported event types are: event, file, message, rich_message and system_message.
 func (a *API) SendEvent(chatID string, e interface{}, attachToLastThread bool) (string, error) {
 	if err := objects.ValidateEvent(e); err != nil {
 		return "", err
@@ -109,38 +109,44 @@ func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (t
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// ListChats returns chats list.
-func (a *API) ListChats(offset, limit uint) (chats []objects.Chat, total uint, err error) {
+// ListChats returns chat summaries list.
+func (a *API) ListChats(sortOrder, pageID string, limit uint) (summary []objects.ChatSummary, total uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
-		Limit:  limit,
-		Offset: offset,
+		hashedPaginationRequest: &hashedPaginationRequest{
+			SortOrder: sortOrder,
+			PageID:    pageID,
+			Limit:     limit,
+		},
 	}, &resp)
 
-	return resp.Chats, resp.TotalChats, err
+	return resp.ChatsSummary, resp.TotalChats, resp.PreviousPageID, resp.NextPageID, err
 }
 
-// GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID string, offset, limit uint) (threads []objects.ThreadSummary, totak uint, err error) {
-	var resp getChatThreadsSummaryResponse
-	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
-		ChatID: chatID,
-		Limit:  limit,
-		Offset: offset,
-	}, &resp)
-
-	return resp.ThreadsSummary, resp.TotalThreads, err
-}
-
-// GetChatThreads returns given threads, or all if no threads are provided, for given chat.
-func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, error) {
-	var resp getChatThreadsResponse
-	err := a.Call("get_chat_threads", &getChatThreadsRequest{
-		ChatID:    chatID,
-		ThreadIDs: threadIDs,
+// GetChat returns given thread for given chat.
+func (a *API) GetChat(chatID string, threadID string) (objects.Chat, error) {
+	var resp getChatResponse
+	err := a.Call("get_chat", &getChatRequest{
+		ChatID:   chatID,
+		ThreadID: threadID,
 	}, &resp)
 
 	return resp.Chat, err
+}
+
+// ListThreads returns threads list.
+func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCount uint) (summary []objects.Thread, found uint, previousPage, nextPage string, err error) {
+	var resp listThreadsResponse
+	err = a.Call("list_threads", &listThreadsRequest{
+		ChatID: chatID,
+		hashedPaginationRequest: &hashedPaginationRequest{
+			SortOrder: sortOrder,
+			PageID:    pageID,
+			Limit:     limit,
+		},
+	}, &resp)
+
+	return resp.Threads, resp.FoundThreads, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // DeactivateChat deactivates active thread for given chat. If no thread is active, then this
@@ -247,12 +253,12 @@ func (a *API) SetCustomerSessionFields(sessionFields []map[string]string) error 
 //
 // Possible values are: GroupStatusOnline, GroupStatusOffline and GroupStatusOnlineForQueue.
 // GroupStatusUnknown should never be returned.
-func (a *API) ListGroupStatuses(groups []int) (map[int]GroupStatus, error) {
+func (a *API) ListGroupStatuses(groupIDs []int) (map[int]GroupStatus, error) {
 	req := &listGroupStatusesRequest{}
-	if len(groups) == 0 {
+	if len(groupIDs) == 0 {
 		req.All = true
 	} else {
-		req.Groups = groups
+		req.GroupIDs = groupIDs
 	}
 	var resp listGroupStatusesResponse
 	err := a.Call("list_group_statuses", req, &resp)
@@ -343,4 +349,19 @@ func (a *API) ListGroupProperties(groupID uint, namespace, name string) (objects
 		Name:      name,
 	}, &resp)
 	return resp, err
+}
+
+// AcceptGreeting marks an incoming greeting as seen.
+func (a *API) AcceptGreeting(greetingID int, uniqueID string) error {
+	return a.Call("accept_greeting", &acceptGreetingRequest{
+		GreetingID: greetingID,
+		UniqueID:   uniqueID,
+	}, &emptyResponse{})
+}
+
+// CancelGreeting cancels a greeting (an invitation to the chat).
+func (a *API) CancelGreeting(uniqueID string) error {
+	return a.Call("cancel_greeting", &cancelGreetingRequest{
+		UniqueID: uniqueID,
+	}, &emptyResponse{})
 }

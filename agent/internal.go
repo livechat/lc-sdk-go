@@ -17,24 +17,25 @@ type listChatsResponse struct {
 	FoundChats   uint                  `json:"found_chats"`
 }
 
-type getChatThreadsSummaryRequest struct {
-	ChatID string `json:"chat_id"`
-	*hashedPaginationRequest
+type getChatRequest struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id,omitempty"`
 }
 
-type getChatThreadsSummaryResponse struct {
-	hashedPaginationResponse
-	ThreadsSummary []objects.ThreadSummary `json:"threads_summary"`
-	FoundThreads   uint                    `json:"found_threads"`
-}
-
-type getChatThreadsRequest struct {
-	ChatID    string   `json:"chat_id"`
-	ThreadIDs []string `json:"thread_ids,omitempty"`
-}
-
-type getChatThreadsResponse struct {
+type getChatResponse struct {
 	Chat objects.Chat `json:"chat"`
+}
+
+type listThreadsRequest struct {
+	*hashedPaginationRequest
+	ChatID         string `json:"chat_id"`
+	MinEventsCount uint   `json:"min_events_count,omitempty"`
+}
+
+type listThreadsResponse struct {
+	hashedPaginationResponse
+	Threads      []objects.Thread `json:"threads"`
+	FoundThreads uint             `json:"found_threads"`
 }
 
 type listArchivesRequest struct {
@@ -80,11 +81,10 @@ type unfollowChatRequest struct {
 	ChatID string `json:"chat_id"`
 }
 
-// used to grant, revoke and set access
-type modifyAccessRequest struct {
-	Resource string         `json:"resource"`
-	ID       string         `json:"id"`
-	Access   objects.Access `json:"access"`
+// used to grant, revoke and set chat access
+type modifyChatAccessRequest struct {
+	ID     string         `json:"id"`
+	Access objects.Access `json:"access"`
 }
 
 type transferChatRequest struct {
@@ -95,9 +95,10 @@ type transferChatRequest struct {
 
 // used to add and remove user from chat
 type changeChatUsersRequest struct {
-	ChatID   string `json:"chat_id"`
-	UserID   string `json:"user_id"`
-	UserType string `json:"user_type"` //todo - should be enum?
+	ChatID              string `json:"chat_id"`
+	UserID              string `json:"user_id"`
+	UserType            string `json:"user_type"` //todo - should be enum?
+	RequireActiveThread bool   `json:"require_active_thread"`
 }
 
 type sendEventRequest struct {
@@ -204,7 +205,7 @@ type banCustomerRequest struct {
 	Ban        ban    `json:"ban"`
 }
 
-type updateAgentRequest struct {
+type setRoutingStatusRequest struct {
 	AgentID       string `json:"agent_id,omitempty"`
 	RoutingStatus string `json:"routing_status,omitempty"`
 }
