@@ -54,7 +54,7 @@ var mockedResponses = map[string]string{
 				"id": "K600PKZON8",
 				"created_at": "2020-05-07T07:11:28.288340Z",
 				"user_ids": ["b5657aff34dd32e198160d54666df9d8"],
-				"properites": {},
+				"properties": {},
 				"tags": ["bug_report"]
 			},
 			"users": [],
@@ -111,7 +111,7 @@ var mockedResponses = map[string]string{
       "previous_thread_id": "K600PKZOM8",
       "next_thread_id": "K600PKZOO8"
     }],
-		"found_threads": 1,
+    "found_threads": 1,
     "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
     "previous_page_id": "MTUxNzM5ODEzMTQ5Nw=="
 	}`,

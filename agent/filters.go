@@ -296,7 +296,7 @@ func (cf *chatsFilters) WithoutActiveChats() *chatsFilters {
 	return cf
 }
 
-// WithoutActiveChats extends chat filters to not include active chats
+// WithChatsWithoutThreads extends chat filters to include chats without threads
 func (cf *chatsFilters) WithChatsWithoutThreads() *chatsFilters {
 	cf.IncludeChatsWithoutThreads = true
 	return cf

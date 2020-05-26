@@ -88,7 +88,7 @@ var mockedResponses = map[string]string{
             "url": "http://myservice.com/webhooks",
             "secret_key": "JSauw0Aks8l-asAa",
             "actions": [{
-                "name": "incoming_chatss",
+                "name": "incoming_chats",
                 "filters": {
                   "chat_properties": {
                      "source": {
