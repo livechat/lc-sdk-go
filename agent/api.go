@@ -357,10 +357,10 @@ func (a *API) BanCustomer(customerID string, days uint) error {
 }
 
 // SetRoutingStatus changes status of an agent or a bot.
-func (a *API) SetRoutingStatus(agentID, routingStatus string) error {
+func (a *API) SetRoutingStatus(agentID, status string) error {
 	return a.Call("set_routing_status", &setRoutingStatusRequest{
-		AgentID:       agentID,
-		RoutingStatus: routingStatus,
+		AgentID: agentID,
+		Status:  status,
 	}, &emptyResponse{})
 }
 

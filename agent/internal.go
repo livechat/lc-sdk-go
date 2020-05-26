@@ -206,8 +206,8 @@ type banCustomerRequest struct {
 }
 
 type setRoutingStatusRequest struct {
-	AgentID       string `json:"agent_id,omitempty"`
-	RoutingStatus string `json:"routing_status,omitempty"`
+	AgentID string `json:"agent_id,omitempty"`
+	Status  string `json:"status,omitempty"`
 }
 
 type markEventsAsSeenRequest struct {
