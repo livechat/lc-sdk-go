@@ -47,46 +47,47 @@ var mockedResponses = map[string]string{
 		"event_id": "K600PKZON8"
 	}`,
 	"list_chats": `{
-		"chats_summary": [
-			{
-			  "id": "123",
-			  "order": 343544565,
-			  "last_thread_id": "xyz",
-			  "users": [],
-			  "properties": {},
-			  "access": {},
-			  "last_event_per_type": {
+		"chats_summary": [{
+			"id": "PJ0MRSHTDG",
+			"last_thread_id": "K600PKZON8",
+			"last_thread_summary": {
+				"id": "K600PKZON8",
+				"created_at": "2020-05-07T07:11:28.288340Z",
+				"user_ids": ["b5657aff34dd32e198160d54666df9d8"],
+				"properties": {},
+				"tags": ["bug_report"]
+			},
+			"users": [],
+			"properties": {},
+			"access": {},
+			"last_event_per_type": {
 				"message": {
-				  "thread_id": "K600PKZON8",
-				  "thread_order": 3,
-				  "event": {}
+					"thread_id": "K600PKZON8",
+					"thread_created_at": "2020-05-07T07:11:28.288340Z",
+					"event": {
+						"id": "K600PKZON8_1",
+						"created_at": "2020-05-07T07:11:28.288340Z",
+						"type": "message",
+						"properties": {
+							"lc2": {
+								"welcome_message": true
+							}
+						},
+						"text": "Hello. What can I do for you?",
+						"author_id": "b5657aff34dd32e198160d54666df9d8"
+					}
 				},
 				"system_message": {
-				  "thread_id": "K600PKZON8",
-				  "thread_order": 3,
-				  "event": {}
+					"thread_id": "K600PKZON8",
+					"thread_created_at": "2020-05-07T07:11:28.288340Z",
+					"event": {}
 				}
-			  }
 			}
-		],
-		"total_chats": 1
+		}],
+		"total_chats": 1,
+		"previous_page_id": "MTUxNzM5ODEzMTQ5Ng=="
 	}`,
-	`get_chat_threads_summary`: `{
-		"threads_summary": [
-			{
-				"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-				"order": 2,
-				"total_events": 1
-			},
-			{
-				"id": "b0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
-				"order": 1,
-				"total_events": 0
-			}
-		],
-		"total_threads": 2
-	}`,
-	"get_chat_threads": `{
+	"get_chat": `{
 		"chat": {
 			"id": "PJ0MRSHTDG",
 			"users": [],
@@ -94,6 +95,34 @@ var mockedResponses = map[string]string{
 			"access": {},
 			"threads": []
 		}
+	}`,
+	"list_threads": `{
+    "threads": [{
+      "id": "K600PKZON8",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "smith@example.com"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "recipients": "all",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "smith@example.com"
+      }],
+      "properties": {},
+      "access": {
+        "group_ids": [0]
+      },
+			"created_at": "2019-12-17T07:57:41.512000Z",
+      "previous_thread_id": "K600PKZOM8",
+      "next_thread_id": "K600PKZOO8"
+    }],
+    "found_threads": 1,
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
+    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw=="
 	}`,
 	"deactivate_chat": `{}`,
 	"upload_file": `{
@@ -122,22 +151,45 @@ var mockedResponses = map[string]string{
 			"id": "156630109416307809",
 			"fields": [
 			  {
-				"id": "15663010941630615",
-				"type": "header",
-				"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+					"id": "15663010941630615",
+					"type": "header",
+					"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
 			  },
 			  {
-				"id": "156630109416307759",
-				"type": "name",
-				"label": "Name:",
-				"required": false
+					"id": "156630109416307759",
+					"type": "name",
+					"label": "Name:",
+					"required": false
 			  },
 			  {
-				"id": "15663010941630515",
-				"type": "email",
-				"label": "E-mail:",
-				"required": false
-			  }
+					"id": "15663010941630515",
+					"type": "email",
+					"label": "E-mail:",
+					"required": false
+				},
+				{
+					"id": "157986144052009331",
+					"type": "group_chooser",
+					"label": "Choose a department:",
+					"required": true,
+					"options": [
+						{
+							"id": "0",
+							"group_id": 1,
+							"label": "Marketing"
+						},
+						{
+							"id": "1",
+							"group_id": 2,
+							"label": "Sales"
+						},
+						{
+							"id": "2",
+							"group_id": 0,
+							"label": "General"
+						}
+					]
+				}
 			]
 		},
 		"enabled": true
@@ -171,7 +223,9 @@ var mockedResponses = map[string]string{
 				"string_property": "string value"
 		}
 	}`,
-	"get_customer": `{}`, //TODO - create some real structure here
+	"get_customer":    `{}`, //TODO - create some real structure here
+	"accept_greeting": `{}`,
+	"cancel_greeting": `{}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -301,6 +355,24 @@ func TestSendEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 }
 
+func TestSendMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "send_event"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	eventID, rErr := api.SendMessage("stubChatID", "Hello World", customer.All)
+	if rErr != nil {
+		t.Errorf("SendMessage failed: %v", rErr)
+	}
+
+	if eventID != "K600PKZON8" {
+		t.Errorf("Invalid eventID: %v", eventID)
+	}
+}
+
 func TestSendSystemMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_event"))
 
@@ -349,59 +421,85 @@ func TestListChatsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chats, total, rErr := api.ListChats(0, 20)
+	chats, total, prevPage, nextPage, rErr := api.ListChats("", "", 20)
 	if rErr != nil {
 		t.Errorf("ListChats failed: %v", rErr)
 	}
 
 	// TODO add better validation
 
-	if chats == nil {
+	if len(chats) != 1 {
 		t.Errorf("Invalid chats")
+	}
+	if chats[0].ID != "PJ0MRSHTDG" {
+		t.Errorf("Invalid chat id: %v", chats[0].ID)
+	}
+	if chats[0].LastThreadSummary.ID != "K600PKZON8" {
+		t.Errorf("Invalid last thread summary")
+	}
+	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
+		t.Errorf("Invalid last event per type")
+	}
+	e := chats[0].LastEventPerType["message"].Event
+	if e.Message().Text != "Hello. What can I do for you?" {
+		t.Errorf("Invalid last message event")
 	}
 	if total != 1 {
 		t.Errorf("Invalid total chats: %v", total)
 	}
+	if prevPage != "MTUxNzM5ODEzMTQ5Ng==" {
+		t.Errorf("Invalid previous page ID: %v", prevPage)
+	}
+	if nextPage != "" {
+		t.Errorf("Invalid next page ID: %v", nextPage)
+	}
 }
 
-func TestGetChatThreadsSummaryShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chat_threads_summary"))
+func TestGetChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	threadsSummary, total, rErr := api.GetChatThreadsSummary("stubChatID", 0, 20)
+	chat, rErr := api.GetChat("stubChatID", "stubThreadID")
 	if rErr != nil {
-		t.Errorf("GetChatThreadsSummary failed: %v", rErr)
-	}
-
-	// TODO add better validation
-
-	if threadsSummary == nil {
-		t.Errorf("Invalid threads summary")
-	}
-	if total != 2 {
-		t.Errorf("Invalid total chats: %v", total)
-	}
-}
-
-func TestGetChatThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chat_threads"))
-
-	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	chat, rErr := api.GetChatThreads("stubChatID", "stubThreadID")
-	if rErr != nil {
-		t.Errorf("GetChatThreads failed: %v", rErr)
+		t.Errorf("GetChat failed: %v", rErr)
 	}
 
 	if chat.ID != "PJ0MRSHTDG" {
 		t.Errorf("Received chat.ID invalid: %v", chat.ID)
+	}
+}
+
+func TestListThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_threads"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	threads, found, prevPage, nextPage, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	if rErr != nil {
+		t.Errorf("ListThreads failed: %v", rErr)
+	}
+
+	if len(threads) != 1 {
+		t.Errorf("Received invalid threads length: %v", len(threads))
+	}
+
+	if found != 1 {
+		t.Errorf("Received invalid total threads: %v", found)
+	}
+
+	if prevPage != "MTUxNzM5ODEzMTQ5Nw==" {
+		t.Errorf("Invalid previous page ID: %v", prevPage)
+	}
+
+	if nextPage != "MTUxNzM5ODEzMTQ5Ng==" {
+		t.Errorf("Invalid next page ID: %v", nextPage)
 	}
 }
 
@@ -643,8 +741,12 @@ func TestGetFormShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("Invalid form id: %v", form.ID)
 	}
 
-	if len(form.Fields) != 3 {
+	if len(form.Fields) != 4 {
 		t.Errorf("Invalid length of form fields array: %v", len(form.Fields))
+	}
+
+	if len(form.Fields[3].Options) != 3 {
+		t.Errorf("Invalid length of form group_chooser field options array: %v", len(form.Fields[3].Options))
 	}
 }
 
@@ -767,32 +869,32 @@ func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.ListChats(0, 20)
+	_, _, _, _, rErr := api.ListChats("", "", 20)
 	verifyErrorResponse("ListChats", rErr, t)
 }
 
-func TestGetChatThreadsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads_summary"))
+func TestGetChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_chat"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.GetChatThreadsSummary("stubChatID", 0, 20)
-	verifyErrorResponse("GetChatThreadsSummary", rErr, t)
+	_, rErr := api.GetChat("stubChatID", "stubThreadID")
+	verifyErrorResponse("GetChat", rErr, t)
 }
 
-func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads"))
+func TestListThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "list_threads"))
 
 	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetChatThreads("stubChatID", "stubThreadID")
-	verifyErrorResponse("GetChatThreads", rErr, t)
+	_, _, _, _, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	verifyErrorResponse("ListThreads", rErr, t)
 }
 
 func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1065,4 +1167,55 @@ func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T
 	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
 		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
 	}
+}
+
+func TestAcceptGreetingShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "accept_greeting"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.AcceptGreeting(1337, "foo")
+	if rErr != nil {
+		t.Errorf("AcceptGreeting failed: %v", rErr)
+	}
+}
+
+func TestAcceptGreetingShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "accept_greeting"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.AcceptGreeting(1337, "foo")
+	verifyErrorResponse("AcceptGreeting", rErr, t)
+}
+
+func TestCancelGreetingShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "cancel_greeting"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.CancelGreeting("foo")
+	if rErr != nil {
+		t.Errorf("CancelGreeting failed: %v", rErr)
+	}
+}
+func TestCancelGreetingShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "cancel_greeting"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.CancelGreeting("foo")
+	verifyErrorResponse("CancelGreeting", rErr, t)
 }

@@ -67,14 +67,15 @@ func TestPropertyFilterTypeExcludeValues(t *testing.T) {
 
 func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 	af := agent.NewArchivesFilters()
-	af.ByAgents([]string{"a"}).
+	af.ByAgents(true, "a").
 		ByGroups([]uint{1}).
 		ByQuery("query").
 		FromDate("11-09-2001").
-		ToDate("02-04-2137")
+		ToDate("02-04-2137").
+		ByEventTypes("filled_form", "file")
 
-	if af.AgentIDs[0] != "a" {
-		t.Errorf("ArchivesFilters.AgentIDs invalid: %v", af.AgentIDs)
+	if af.Agents.Values[0] != "a" {
+		t.Errorf("ArchivesFilters.Agents invalid: %v", af.Agents)
 	}
 
 	if af.GroupIDs[0] != 1 {
@@ -91,6 +92,10 @@ func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 
 	if af.DateTo != "02-04-2137" {
 		t.Errorf("ArchivesFilters.DateTo invalid: %v", af.DateTo)
+	}
+
+	if af.Events.Types[0] != "filled_form" || af.Events.Types[1] != "file" {
+		t.Errorf("ArchivesFilters.Events.Types invalid: %v", af.Events.Types)
 	}
 }
 

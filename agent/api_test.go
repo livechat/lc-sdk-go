@@ -47,49 +47,75 @@ var mockedResponses = map[string]string{
 		"event_id": "K600PKZON8"
 	}`,
 	"list_chats": `{
-		"chats_summary": [
-			{
-			  "id": "123",
-			  "order": 343544565,
-			  "last_thread_id": "xyz",
-			  "users": [],
-			  "properties": {},
-			  "access": {},
-			  "last_event_per_type": {
+		"chats_summary": [{
+			"id": "PJ0MRSHTDG",
+			"last_thread_id": "K600PKZON8",
+			"last_thread_summary": {
+				"id": "K600PKZON8",
+				"created_at": "2020-05-07T07:11:28.288340Z",
+				"user_ids": ["b5657aff34dd32e198160d54666df9d8"],
+				"properties": {},
+				"tags": ["bug_report"]
+			},
+			"users": [],
+			"properties": {},
+			"access": {},
+			"last_event_per_type": {
 				"message": {
-				  "thread_id": "K600PKZON8",
-				  "thread_order": 3,
-				  "event": {}
+					"thread_id": "K600PKZON8",
+					"thread_created_at": "2020-05-07T07:11:28.288340Z",
+					"event": {
+						"id": "K600PKZON8_1",
+						"created_at": "2020-05-07T07:11:28.288340Z",
+						"type": "message",
+						"properties": {
+							"lc2": {
+								"welcome_message": true
+							}
+						},
+						"text": "Hello. What can I do for you?",
+						"author_id": "b5657aff34dd32e198160d54666df9d8"
+					}
 				},
 				"system_message": {
-				  "thread_id": "K600PKZON8",
-				  "thread_order": 3,
-				  "event": {}
+					"thread_id": "K600PKZON8",
+					"thread_created_at": "2020-05-07T07:11:28.288340Z",
+					"event": {}
 				}
-			  }
 			}
-		],
+		}],
 		"found_chats": 1,
-		"previous_page_id": "prevpagehash"
+		"previous_page_id": "MTUxNzM5ODEzMTQ5Ng=="
 	}`,
-	`get_chat_threads_summary`: `{
-		"threads_summary": [
-			{
-				"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-				"order": 2,
-				"total_events": 1
-			},
-			{
-				"id": "b0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
-				"order": 1,
-				"total_events": 0
-			}
-		],
-		"found_threads": 2,
-		"previous_page_id": "prevpagehash"
-
+	"list_threads": `{
+    "threads": [{
+      "id": "K600PKZON8",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "smith@example.com"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "recipients": "all",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "smith@example.com"
+      }],
+      "properties": {},
+      "access": {
+        "group_ids": [0]
+      },
+			"created_at": "2019-12-17T07:57:41.512000Z",
+      "previous_thread_id": "K600PKZOM8",
+      "next_thread_id": "K600PKZOO8"
+    }],
+    "found_threads": 1,
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
+    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw=="
 	}`,
-	"get_chat_threads": `{
+	"get_chat": `{
 		"chat": {
 			"id": "PJ0MRSHTDG",
 			"users": [],
@@ -116,9 +142,9 @@ var mockedResponses = map[string]string{
 	"deactivate_chat":       `{}`,
 	"follow_chat":           `{}`,
 	"unfollow_chat":         `{}`,
-	"grant_access":          `{}`,
-	"revoke_access":         `{}`,
-	"set_access":            `{}`,
+	"grant_chat_access":     `{}`,
+	"revoke_chat_access":    `{}`,
+	"set_chat_access":       `{}`,
 	"add_user_to_chat":      `{}`,
 	"remove_user_from_chat": `{}`,
 	"tag_thread":            `{}`,
@@ -195,12 +221,10 @@ var mockedResponses = map[string]string{
 	"create_customer": `{
 		"customer_id": "mister_customer"
 	}`,
-	"update_customer": `{
-		"customer": {}
-	}`,
+	"update_customer":       `{}`,
 	"ban_customer":          `{}`,
 	"mark_events_as_seen":   `{}`,
-	"update_agent":          `{}`,
+	"set_routing_status":    `{}`,
 	"send_typing_indicator": `{}`,
 	"multicast":             `{}`,
 	"transfer_chat":         `{}`,
@@ -372,13 +396,26 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 
 	// TODO add better validation
 
-	if chats == nil {
+	if len(chats) != 1 {
 		t.Errorf("Invalid chats")
+	}
+	if chats[0].ID != "PJ0MRSHTDG" {
+		t.Errorf("Invalid chat id: %v", chats[0].ID)
+	}
+	if chats[0].LastThreadSummary.ID != "K600PKZON8" {
+		t.Errorf("Invalid last thread summary")
+	}
+	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
+		t.Errorf("Invalid last event per type")
+	}
+	e := chats[0].LastEventPerType["message"].Event
+	if e.Message().Text != "Hello. What can I do for you?" {
+		t.Errorf("Invalid last message event")
 	}
 	if found != 1 {
 		t.Errorf("Invalid total chats: %v", found)
 	}
-	if prevPage != "prevpagehash" {
+	if prevPage != "MTUxNzM5ODEzMTQ5Ng==" {
 		t.Errorf("Invalid previous page ID: %v", prevPage)
 	}
 	if nextPage != "" {
@@ -386,50 +423,51 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetChatThreadsSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chat_threads_summary"))
+func TestGetChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_chat"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	threadsSummary, found, prevPage, nextPage, rErr := api.GetChatThreadsSummary("stubChatID", "asc", "pageid", 20)
+	chat, rErr := api.GetChat("stubChatID", "stubThreadID")
 	if rErr != nil {
-		t.Errorf("GetChatThreadsSummary failed: %v", rErr)
-	}
-
-	// TODO add better validation
-
-	if threadsSummary == nil {
-		t.Errorf("Invalid threads summary")
-	}
-	if found != 2 {
-		t.Errorf("Invalid found threads: %v", found)
-	}
-	if prevPage != "prevpagehash" {
-		t.Errorf("Invalid previous page ID: %v", prevPage)
-	}
-	if nextPage != "" {
-		t.Errorf("Invalid next page ID: %v", nextPage)
-	}
-}
-
-func TestGetChatThreadsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_chat_threads"))
-
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	chat, rErr := api.GetChatThreads("stubChatID", "stubThreadID")
-	if rErr != nil {
-		t.Errorf("GetChatThreads failed: %v", rErr)
+		t.Errorf("GetChat failed: %v", rErr)
 	}
 
 	if chat.ID != "PJ0MRSHTDG" {
 		t.Errorf("Received chat.ID invalid: %v", chat.ID)
+	}
+}
+
+func TestListThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_threads"))
+
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	threads, found, prevPage, nextPage, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	if rErr != nil {
+		t.Errorf("ListThreads failed: %v", rErr)
+	}
+
+	if len(threads) != 1 {
+		t.Errorf("Received invalid threads length: %v", len(threads))
+	}
+
+	if found != 1 {
+		t.Errorf("Received invalid total threads: %v", found)
+	}
+
+	if prevPage != "MTUxNzM5ODEzMTQ5Nw==" {
+		t.Errorf("Invalid previous page ID: %v", prevPage)
+	}
+
+	if nextPage != "MTUxNzM5ODEzMTQ5Ng==" {
+		t.Errorf("Invalid next page ID: %v", nextPage)
 	}
 }
 
@@ -517,45 +555,45 @@ func TestUploadFileShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGrantAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "grant_access"))
+func TestGrantChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "grant_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.GrantAccess("resource", "id", objects.Access{})
+	rErr := api.GrantChatAccess("id", objects.Access{})
 	if rErr != nil {
-		t.Errorf("GrantAccess failed: %v", rErr)
+		t.Errorf("GrantChatAccess failed: %v", rErr)
 	}
 }
 
-func TestRevokeAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "revoke_access"))
+func TestRevokeChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "revoke_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RevokeAccess("resource", "id", objects.Access{})
+	rErr := api.RevokeChatAccess("id", objects.Access{})
 	if rErr != nil {
-		t.Errorf("RevokeAccess failed: %v", rErr)
+		t.Errorf("RevokeChatAccess failed: %v", rErr)
 	}
 }
 
-func TestSetAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "set_access"))
+func TestSetChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "set_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetAccess("resource", "id", objects.Access{})
+	rErr := api.SetChatAccess("id", objects.Access{})
 	if rErr != nil {
-		t.Errorf("SetAccess failed: %v", rErr)
+		t.Errorf("SetChatAccess failed: %v", rErr)
 	}
 }
 
@@ -567,7 +605,7 @@ func TestAddUserToChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.AddUserToChat("chat", "user", "agent")
+	rErr := api.AddUserToChat("chat", "user", "agent", false)
 	if rErr != nil {
 		t.Errorf("AddUserToChat failed: %v", rErr)
 	}
@@ -823,17 +861,17 @@ func TestBanCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestUpdateAgentShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "update_agent"))
+func TestSetRoutingStatusShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "set_routing_status"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateAgent("some_agent", "accepting chats")
+	rErr := api.SetRoutingStatus("some_agent", "accepting chats")
 	if rErr != nil {
-		t.Errorf("UpdateAgent failed: %v", rErr)
+		t.Errorf("SetRoutingStatus failed: %v", rErr)
 	}
 }
 
@@ -945,28 +983,28 @@ func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("ListChats", rErr, t)
 }
 
-func TestGetChatThreadsSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads_summary"))
+func TestGetChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_chat"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.GetChatThreadsSummary("stubChatID", "asc", "pageid", 20)
-	verifyErrorResponse("GetChatThreadsSummary", rErr, t)
+	_, rErr := api.GetChat("stubChatID", "stubThreadID")
+	verifyErrorResponse("GetChat", rErr, t)
 }
 
-func TestGetChatThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "get_chat_threads"))
+func TestListThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "list_threads"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, rErr := api.GetChatThreads("stubChatID", "stubThreadID")
-	verifyErrorResponse("GetChatThreads", rErr, t)
+	_, _, _, _, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	verifyErrorResponse("ListThreads", rErr, t)
 }
 
 func TestListArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1030,40 +1068,40 @@ func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
 
 }
 
-func TestGrantAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "grant_access"))
+func TestGrantChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "grant_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.GrantAccess("resource", "id", objects.Access{})
-	verifyErrorResponse("GrantAccess", rErr, t)
+	rErr := api.GrantChatAccess("id", objects.Access{})
+	verifyErrorResponse("GrantChatAccess", rErr, t)
 }
 
-func TestRevokeAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "revoke_access"))
+func TestRevokeChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "revoke_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RevokeAccess("resource", "id", objects.Access{})
-	verifyErrorResponse("RevokeAccess", rErr, t)
+	rErr := api.RevokeChatAccess("id", objects.Access{})
+	verifyErrorResponse("RevokeChatAccess", rErr, t)
 }
 
-func TestSetAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "set_access"))
+func TestSetChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "set_chat_access"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.SetAccess("resource", "id", objects.Access{})
-	verifyErrorResponse("SetAccess", rErr, t)
+	rErr := api.SetChatAccess("id", objects.Access{})
+	verifyErrorResponse("SetChatAccess", rErr, t)
 }
 
 func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {
@@ -1074,7 +1112,7 @@ func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.AddUserToChat("chat", "user", "agent")
+	rErr := api.AddUserToChat("chat", "user", "agent", true)
 	verifyErrorResponse("AddUserToChat", rErr, t)
 }
 
@@ -1246,16 +1284,16 @@ func TestBanCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("BanCustomer", rErr, t)
 }
 
-func TestUpdateAgentShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "update_agent"))
+func TestSetRoutingStatusShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "set_routing_status"))
 
 	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateAgent("some_agent", "accepting chats")
-	verifyErrorResponse("UpdateAgent", rErr, t)
+	rErr := api.SetRoutingStatus("some_agent", "accepting chats")
+	verifyErrorResponse("SetRoutingStatus", rErr, t)
 }
 
 func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {

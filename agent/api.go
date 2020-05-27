@@ -27,7 +27,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 	return &API{api}, nil
 }
 
-// ListChats returns chats list.
+// ListChats returns chat summaries list.
 func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (summary []objects.ChatSummary, found uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
@@ -42,30 +42,31 @@ func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit u
 	return resp.ChatsSummary, resp.FoundChats, resp.PreviousPageID, resp.NextPageID, err
 }
 
-// GetChatThreadsSummary returns threads summary for given chat.
-func (a *API) GetChatThreadsSummary(chatID, sortOrder, pageID string, limit uint) (summary []objects.ThreadSummary, found uint, previousPage, nextPage string, err error) {
-	var resp getChatThreadsSummaryResponse
-	err = a.Call("get_chat_threads_summary", &getChatThreadsSummaryRequest{
-		ChatID: chatID,
-		hashedPaginationRequest: &hashedPaginationRequest{
-			SortOrder: sortOrder,
-			Limit:     limit,
-			PageID:    pageID,
-		},
-	}, &resp)
-
-	return resp.ThreadsSummary, resp.FoundThreads, resp.PreviousPageID, resp.NextPageID, err
-}
-
-// GetChatThreads returns given threads, or all if no threads are provided, for given chat.
-func (a *API) GetChatThreads(chatID string, threadIDs ...string) (objects.Chat, error) {
-	var resp getChatThreadsResponse
-	err := a.Call("get_chat_threads", &getChatThreadsRequest{
-		ChatID:    chatID,
-		ThreadIDs: threadIDs,
+// GetChat returns given thread for given chat.
+func (a *API) GetChat(chatID string, threadID string) (objects.Chat, error) {
+	var resp getChatResponse
+	err := a.Call("get_chat", &getChatRequest{
+		ChatID:   chatID,
+		ThreadID: threadID,
 	}, &resp)
 
 	return resp.Chat, err
+}
+
+// ListChats returns threads list.
+func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCount uint) (threads []objects.Thread, found uint, previousPage, nextPage string, err error) {
+	var resp listThreadsResponse
+	err = a.Call("list_threads", &listThreadsRequest{
+		ChatID: chatID,
+		hashedPaginationRequest: &hashedPaginationRequest{
+			SortOrder: sortOrder,
+			PageID:    pageID,
+			Limit:     limit,
+		},
+		MinEventsCount: minEventsCount,
+	}, &resp)
+
+	return resp.Threads, resp.FoundThreads, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // ListArchives returns archived chats.
@@ -138,30 +139,27 @@ func (a *API) UnfollowChat(chatID string) error {
 	}, &emptyResponse{})
 }
 
-// GrantAccess grants access to a new resource without overwriting the existing ones.
-func (a *API) GrantAccess(resource, id string, access objects.Access) error {
-	return a.Call("grant_access", &modifyAccessRequest{
-		Resource: resource,
-		ID:       id,
-		Access:   access,
+// GrantChatAccess grants access to a new chat without overwriting the existing ones.
+func (a *API) GrantChatAccess(id string, access objects.Access) error {
+	return a.Call("grant_chat_access", &modifyChatAccessRequest{
+		ID:     id,
+		Access: access,
 	}, &emptyResponse{})
 }
 
-// RevokeAccess removes access to given resource.
-func (a *API) RevokeAccess(resource, id string, access objects.Access) error {
-	return a.Call("revoke_access", &modifyAccessRequest{
-		Resource: resource,
-		ID:       id,
-		Access:   access,
+// RevokeChatAccess removes access to a chat.
+func (a *API) RevokeChatAccess(id string, access objects.Access) error {
+	return a.Call("revoke_chat_access", &modifyChatAccessRequest{
+		ID:     id,
+		Access: access,
 	}, &emptyResponse{})
 }
 
-// SetAccess gives access to a new resource overwriting the existing ones.
-func (a *API) SetAccess(resource, id string, access objects.Access) error {
-	return a.Call("set_access", &modifyAccessRequest{
-		Resource: resource,
-		ID:       id,
-		Access:   access,
+// SetChatAccess gives access to a new chat overwriting the existing ones.
+func (a *API) SetChatAccess(id string, access objects.Access) error {
+	return a.Call("set_chat_access", &modifyChatAccessRequest{
+		ID:     id,
+		Access: access,
 	}, &emptyResponse{})
 }
 
@@ -178,11 +176,12 @@ func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force b
 }
 
 // AddUserToChat adds user to the chat. You can't add more than one customer type user to the chat.
-func (a *API) AddUserToChat(chatID, userID, userType string) error {
+func (a *API) AddUserToChat(chatID, userID, userType string, requireActiveThread bool) error {
 	return a.Call("add_user_to_chat", &changeChatUsersRequest{
-		ChatID:   chatID,
-		UserID:   userID,
-		UserType: userType,
+		ChatID:              chatID,
+		UserID:              userID,
+		UserType:            userType,
+		RequireActiveThread: requireActiveThread,
 	}, &emptyResponse{})
 }
 
@@ -357,11 +356,11 @@ func (a *API) BanCustomer(customerID string, days uint) error {
 	}, &emptyResponse{})
 }
 
-// UpdateAgent updates agent's info.
-func (a *API) UpdateAgent(agentID, routingStatus string) error {
-	return a.Call("update_agent", &updateAgentRequest{
-		AgentID:       agentID,
-		RoutingStatus: routingStatus,
+// SetRoutingStatus changes status of an agent or a bot.
+func (a *API) SetRoutingStatus(agentID, status string) error {
+	return a.Call("set_routing_status", &setRoutingStatusRequest{
+		AgentID: agentID,
+		Status:  status,
 	}, &emptyResponse{})
 }
 

@@ -82,12 +82,10 @@ func incomingChat(wh *webhooks.Webhook) error {
 	propEq("Chat.Threads.length", len(chat.Threads), 1, &errors)
 	thread := chat.Threads[0]
 	propEq("Thread.ID", thread.ID, "PZ070E0W1B", &errors)
-	propEq("Thread.Timestamp", thread.Timestamp.String(), "2019-10-11 11:40:59 +0200 CEST", &errors)
 	propEq("Thread.Active", thread.Active, true, &errors)
 	propEq("Thread.UserIDs[0]", thread.UserIDs[0], "345f8235-d60d-433e-63c5-7f813a6ffe25", &errors)
 	propEq("Thread.UserIDs[1]", thread.UserIDs[1], "l.wojciechowski@livechatinc.com", &errors)
 	propEq("Thread.RestrictedAccess", thread.RestrictedAccess, false, &errors)
-	propEq("Thread.Order", thread.Order, 18, &errors)
 	propEq("Thread.Properties.routing.continuous", thread.Properties["routing"]["continuous"], false, &errors)
 	propEq("Thread.Properties.routing.idle", thread.Properties["routing"]["idle"], false, &errors)
 	propEq("Thread.Properties.routing.referrer", thread.Properties["routing"]["referrer"], "", &errors)
@@ -95,6 +93,9 @@ func incomingChat(wh *webhooks.Webhook) error {
 	propEq("Thread.Properties.routing.unassigned", thread.Properties["routing"]["unassigned"], false, &errors)
 	propEq("Thread.Access.GroupIDs", thread.Access.GroupIDs[0], 0, &errors)
 	propEq("Thread.Events.length", len(thread.Events), 2, &errors)
+	propEq("Thread.PreviousThreadID", thread.PreviousThreadID, "K600PKZOM8", &errors)
+	propEq("Thread.NextThreadID", thread.NextThreadID, "K600PKZOO8", &errors)
+	propEq("Thread.CreatedAt", thread.CreatedAt.String(), "2020-05-07 07:11:28.28834 +0000 UTC", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)

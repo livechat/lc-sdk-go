@@ -8,6 +8,11 @@ type Form struct {
 		Type     string `json:"type"`
 		Label    string `json:"label"`
 		Required bool   `json:"required"`
+		Options  []struct {
+			ID    string `json:"id"`
+			Type  int    `json:"group_id"`
+			Label string `json:"label"`
+		} `json:"options"`
 	} `json:"fields"`
 }
 
