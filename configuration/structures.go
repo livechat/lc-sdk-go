@@ -62,9 +62,9 @@ type BotAgentDetails struct {
 	Application          struct {
 		ClientID string `json:"client_id"`
 	} `json:"application"`
-	MaxChatsCount uint              `json:"max_chats_count"`
-	Groups        []*BotGroupConfig `json:"groups"`
-	Webhooks      *BotWebhooks      `json:"webhooks"`
+	MaxChatsCount uint           `json:"max_chats_count"`
+	Groups        []*GroupConfig `json:"groups"`
+	Webhooks      *BotWebhooks   `json:"webhooks"`
 }
 
 // BotWebhooks represents webhooks configuration for bot agent
@@ -74,8 +74,8 @@ type BotWebhooks struct {
 	Actions   []*BotWebhookAction `json:"actions"`
 }
 
-// BotGroupConfig defines bot's priority and membership in group
-type BotGroupConfig struct {
+// GroupConfig defines bot's priority and membership in group
+type GroupConfig struct {
 	ID       uint          `json:"id"`
 	Priority GroupPriority `json:"priority"`
 }
@@ -117,4 +117,47 @@ type Group struct {
 	LanguageCode    string                   `json:"language_code"`
 	AgentPriorities map[string]GroupPriority `json:"agent_priorities"`
 	RoutingStatus   string                   `json:"routing_status"`
+}
+
+// Agent defines basic Agent information
+type Agent struct {
+	ID                 string        `json:"id"`
+	Name               string        `json:"name,omitempty"`
+	Role               string        `json:"role,omitempty"`
+	AvatarPath         string        `json:"avatar_path,omitempty"`
+	JobTitle           string        `json:"job_title,omitempty"`
+	Mobile             string        `json:"mobile,omitempty"`
+	MaxChatsCount      uint          `json:"max_chats_count,omitempty"`
+	AwaitingApproval   bool          `json:"awaiting_approval,omitempty"`
+	Groups             []GroupConfig `json:"groups,omitempty"`
+	WorkScheduler      WorkScheduler `json:"work_scheduler,omitempty"`
+	Notifications      []string      `json:"notifications,omitempty"`
+	EmailSubscriptions []string      `json:"email_subscriptions,omitempty"`
+}
+
+// WorkScheduler represents work schedule data
+type WorkScheduler map[Weekday]WorkSchedulerDay
+
+// WorkSchedulerDay represents single day work schedule
+type WorkSchedulerDay struct {
+	Start string `json:"start"`
+	End   string `json:"end"`
+}
+
+// Weekday represents allowed weekday names for work scheduler
+type Weekday string
+
+const (
+	Monday    Weekday = "monday"
+	Tuesday   Weekday = "tuesday"
+	Wednesday Weekday = "wednesday"
+	Thursday  Weekday = "thursday"
+	Friday    Weekday = "friday"
+	Saturday  Weekday = "saturday"
+	Sunday    Weekday = "sunday"
+)
+
+// AgentsFilters defines set of filters for getting agents
+type AgentsFilters struct {
+	GroupIDs []int32 `json:"group_ids"`
 }

@@ -11,13 +11,13 @@ type unregisterWebhookRequest struct {
 type listRegisteredWebhooksResponse []RegisteredWebhook
 
 type createBotRequest struct {
-	Name                 string            `json:"name"`
-	Status               BotStatus         `json:"status"`
-	Avatar               string            `json:"string,omitempty"`
-	DefaultGroupPriority GroupPriority     `json:"default_group_priority,omitempty"`
-	MaxChatsCount        *uint             `json:"max_chats_count,omitempty"`
-	Groups               []*BotGroupConfig `json:"groups,omitempty"`
-	Webhooks             *BotWebhooks      `json:"webhooks,omitempty"`
+	Name                 string         `json:"name"`
+	Status               BotStatus      `json:"status"`
+	Avatar               string         `json:"string,omitempty"`
+	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
+	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
+	Groups               []*GroupConfig `json:"groups,omitempty"`
+	Webhooks             *BotWebhooks   `json:"webhooks,omitempty"`
 }
 
 type createBotResponse struct {
@@ -75,3 +75,64 @@ type listGroupPropertiesRequest struct {
 	NamespacePrefix string `json:"namespace_prefix,omitempty"`
 	NamePrefix      string `json:"name_prefix,omitempty"`
 }
+
+type createAgentResponse struct {
+	ID string `json:"id"`
+}
+
+type getAgentRequest struct {
+	ID     string   `json:"id"`
+	Fields []string `json:"fields,omitempty"`
+}
+
+type getAgentResponse *Agent
+
+type listAgentsRequest struct {
+	Filters AgentsFilters `json:"filters,omitempty"`
+	Fields  []string      `json:"fields,omitempty"`
+}
+
+type listAgentsResponse []*Agent
+
+type deleteAgentRequest struct {
+	ID string `json:"id"`
+}
+
+type suspendAgentRequest struct {
+	ID string `json:"id"`
+}
+
+type unsuspendAgentRequest struct {
+	ID string `json:"id"`
+}
+
+type approveAgentRequest struct {
+	ID string `json:"id"`
+}
+
+type createGroupRequest struct {
+	Name            string                   `json:"name"`
+	LanguageCode    string                   `json:"language_code,omitempty"`
+	AgentPriorities map[string]GroupPriority `json:"agent_priorities"`
+}
+
+type createGroupResponse struct {
+	ID int32 `json:"id"`
+}
+
+type updateGroupRequest struct {
+	ID              int32                    `json:"id"`
+	Name            string                   `json:"name,omitempty"`
+	LanguageCode    string                   `json:"language_code,omitempty"`
+	AgentPriorities map[string]GroupPriority `json:"agent_priorities,omitempty"`
+}
+
+type deleteGroupRequest struct {
+	ID int32 `json:"id"`
+}
+
+type listGroupsRequest struct {
+	Fields []string `json:"fields,omitempty"`
+}
+
+type listGroupsResponse []*Group

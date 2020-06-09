@@ -324,7 +324,7 @@ func TestCreateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -342,7 +342,7 @@ func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
+	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
 	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
@@ -357,7 +357,7 @@ func TestUpdateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.BotGroupConfig{}, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
 		t.Errorf("UpdateBot failed: %v", rErr)
 	}
@@ -371,7 +371,7 @@ func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	groups := []*configuration.BotGroupConfig{&configuration.BotGroupConfig{Priority: "supervisor"}}
+	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
 	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
