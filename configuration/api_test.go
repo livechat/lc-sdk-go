@@ -210,6 +210,41 @@ var mockedResponses = map[string]string{
 				"string_property": "string value"
 		}
 	}`,
+	"create_agent": `{
+		"id": "smith@example.com"
+	}`,
+	"get_agent": `{
+		"id": "smith@example.com",
+		"name": "Agent Smith",
+		"avatar_path": "https://domain.com/avatar.image.jpg",
+		"role": "administrator",
+		"login_status": "accepting chats"
+	}`,
+	"list_agents": `[
+		{
+			"id": "smith@example.com",
+			"job_title": "Support Hero",
+			"max_chats_count": 5,
+			"summaries": [
+				"daily_summary",
+				"weekly_summary"
+			]
+		},
+		{
+			"id": "adam@example.com",
+			"job_title": "Support Hero (Newbie)",
+			"max_chats_count": 2,
+			"summaries": [
+				"weekly_summary"
+			]
+		}
+	]`,
+	"update_agent":               `{}`,
+	"delete_agent":               `{}`,
+	"suspend_agent":              `{}`,
+	"unsuspend_agent":            `{}`,
+	"request_agent_unsuspension": `{}`,
+	"approve_agent":              `{}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -302,7 +337,7 @@ func TestListRegisteredWebhooksShouldReturnDataReceivedFromConfApi(t *testing.T)
 	}
 }
 
-func TestUnregisterWebhookShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestUnregisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "unregister_webhook"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -316,7 +351,7 @@ func TestUnregisterWebhookShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "create_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -349,7 +384,7 @@ func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 }
 
-func TestUpdateBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestUpdateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -378,7 +413,7 @@ func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 }
 
-func TestDeleteBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestDeleteBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -392,7 +427,7 @@ func TestDeleteBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestListBotsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListBotsShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_bots"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -410,7 +445,7 @@ func TestListBotsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGetBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestGetBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_bot"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -428,7 +463,7 @@ func TestGetBotShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestRegisterPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestRegisterPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "register_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -442,7 +477,7 @@ func TestRegisterPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestListRegisteredPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+func TestListRegisteredPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_registered_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -460,7 +495,7 @@ func TestListRegisteredPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing
 	}
 }
 
-func TestGetGroupShouldReturnDataReceivedFromConfigurationAPI(t *testing.T) {
+func TestGetGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_group"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -482,7 +517,7 @@ func TestGetGroupShouldReturnDataReceivedFromConfigurationAPI(t *testing.T) {
 	}
 }
 
-func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestListLicensePropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_license_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -504,7 +539,7 @@ func TestListLicensePropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing
 	}
 }
 
-func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+func TestListGroupPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_group_properties"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
@@ -523,5 +558,155 @@ func TestListGroupPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing.T
 
 	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
 		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
+	}
+}
+
+func TestCreateAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "create_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	agentID, rErr := api.CreateAgent(&configuration.Agent{ID: "smith@example.com", Name: "Agent Smith"})
+	if rErr != nil {
+		t.Errorf("CreateAgent failed: %v", rErr)
+	}
+
+	if agentID != "smith@example.com" {
+		t.Errorf("Invalid agent ID: %v", agentID)
+	}
+}
+
+func TestGetAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	agent, rErr := api.GetAgent("smith@example.com", []string{})
+	if rErr != nil {
+		t.Errorf("CreateAgent failed: %v", rErr)
+	}
+
+	if agent.ID != "smith@example.com" {
+		t.Errorf("Invalid agent ID: %v", agent.ID)
+	}
+
+	if agent.Name != "Agent Smith" {
+		t.Errorf("Invalid agent name: %v", agent.Name)
+	}
+}
+
+func TestListAgentsShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_agents"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	agents, rErr := api.ListAgents([]int32{0, 1}, []string{})
+	if rErr != nil {
+		t.Errorf("CreateAgent failed: %v", rErr)
+	}
+
+	if len(agents) != 2 {
+		t.Errorf("Invalid number of agents: %v", len(agents))
+	}
+
+	if agents[0].ID != "smith@example.com" {
+		t.Errorf("Invalid agent ID: %v", agents[0].ID)
+	}
+
+	if agents[1].ID != "adam@example.com" {
+		t.Errorf("Invalid agent name: %v", agents[1].ID)
+	}
+}
+
+func TestUpdateAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateAgent(&configuration.Agent{ID: "smith@example.com", JobTitle: "Virus"})
+	if rErr != nil {
+		t.Errorf("UpdateAgent failed: %v", rErr)
+	}
+}
+
+func TestDeleteAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.DeleteAgent("smith@example.com")
+	if rErr != nil {
+		t.Errorf("DeleteAgent failed: %v", rErr)
+	}
+}
+
+func TestSuspendAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "suspend_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.SuspendAgent("smith@example.com")
+	if rErr != nil {
+		t.Errorf("SuspendAgent failed: %v", rErr)
+	}
+}
+
+func TestUnsuspendAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "unsuspend_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UnsuspendAgent("smith@example.com")
+	if rErr != nil {
+		t.Errorf("UnsuspendAgent failed: %v", rErr)
+	}
+}
+
+func TestRequestAgentUnsuspensionShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "request_agent_unsuspension"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.RequestAgentUnsuspension()
+	if rErr != nil {
+		t.Errorf("RequestAgentUnsuspension failed: %v", rErr)
+	}
+}
+
+func TestApproveAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "approve_agent"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.ApproveAgent("smith@example.com")
+	if rErr != nil {
+		t.Errorf("ApproveAgent failed: %v", rErr)
 	}
 }

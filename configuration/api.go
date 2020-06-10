@@ -141,7 +141,7 @@ func (a *API) ListAgents(groupIDs []int32, fields []string) ([]*Agent, error) {
 			GroupIDs: groupIDs,
 		},
 		Fields: fields,
-	}, resp)
+	}, &resp)
 	return resp, err
 }
 
@@ -172,7 +172,7 @@ func (a *API) UnsuspendAgent(id string) error {
 }
 
 // RequestAgentUnsuspension sends a request to license owners and vice owners with an unsuspension request
-func (a *API) RequestAgentUnsuspension(id string) error {
+func (a *API) RequestAgentUnsuspension() error {
 	return a.Call("request_agent_unsuspension", nil, &emptyResponse{})
 }
 
