@@ -189,17 +189,6 @@ var mockedResponses = map[string]string{
 			}
 		}
 	}`,
-	"get_group": `{
-		"id": 1,
-		"name": "Sports shoes",
-		"language_code": "en",
-		"agent_priorities": {
-		  "agent1@example.com": "normal",
-		  "agent2@example.com": "normal",
-		  "agent3@example.com": "last"
-		},
-		"routing_status": "offline"
-	}`,
 	"list_license_properties": `{
 		"0805e283233042b37f460ed8fbf22160": {
 				"string_property": "string value"
@@ -245,6 +234,36 @@ var mockedResponses = map[string]string{
 	"unsuspend_agent":            `{}`,
 	"request_agent_unsuspension": `{}`,
 	"approve_agent":              `{}`,
+	"create_group": `{
+		"id": 19
+	}`,
+	"update_group": `{}`,
+	"delete_group": `{}`,
+	"list_groups": `[
+		{
+			"id": 0,
+			"name": "General",
+			"language_code": "en",
+			"routing_status": "offline"
+		},
+		{
+			"id": 19,
+			"name": "Sport shoes",
+			"language_code": "en",
+			"routing_status": "offline"
+		}
+	]`,
+	"get_group": `{
+		"id": 1,
+		"name": "Sports shoes",
+		"language_code": "en",
+		"agent_priorities": {
+		  "agent1@example.com": "normal",
+		  "agent2@example.com": "normal",
+		  "agent3@example.com": "last"
+		},
+		"routing_status": "offline"
+	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -495,28 +514,6 @@ func TestListRegisteredPropertiesShouldReturnDataReceivedFromConfApi(t *testing.
 	}
 }
 
-func TestGetGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_group"))
-
-	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	resp, rErr := api.GetGroup(1)
-	if rErr != nil {
-		t.Errorf("GetGroup failed: %v", rErr)
-	}
-
-	if resp.ID != 1 {
-		t.Errorf("Invalid group id: %v", resp.ID)
-	}
-
-	if resp.LanguageCode != "en" {
-		t.Errorf("Invalid group language: %v", resp.LanguageCode)
-	}
-}
-
 func TestListLicensePropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_license_properties"))
 
@@ -708,5 +705,99 @@ func TestApproveAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	rErr := api.ApproveAgent("smith@example.com")
 	if rErr != nil {
 		t.Errorf("ApproveAgent failed: %v", rErr)
+	}
+}
+
+func TestCreateGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "create_group"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	groupID, rErr := api.CreateGroup("name", "en", map[string]configuration.GroupPriority{})
+	if rErr != nil {
+		t.Errorf("GetGroup failed: %v", rErr)
+	}
+
+	if groupID != 19 {
+		t.Errorf("Invalid group id: %v", groupID)
+	}
+}
+
+func TestUpdateGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_group"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.UpdateGroup(11, "name", "en", map[string]configuration.GroupPriority{})
+	if rErr != nil {
+		t.Errorf("UpdateGroup failed: %v", rErr)
+	}
+}
+
+func TestDeleteGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_group"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.DeleteGroup(11)
+	if rErr != nil {
+		t.Errorf("DeleteGroup failed: %v", rErr)
+	}
+}
+
+func TestListGroupsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_groups"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	groups, rErr := api.ListGroups([]string{})
+	if rErr != nil {
+		t.Errorf("DeleteGroup failed: %v", rErr)
+	}
+
+	if len(groups) != 2 {
+		t.Errorf("Invalid groups length: %v", len(groups))
+	}
+
+	if groups[0].ID != 0 {
+		t.Errorf("Invalid group ID: %v", groups[0].ID)
+	}
+
+	if groups[1].ID != 19 {
+		t.Errorf("Invalid group ID: %v", groups[1].ID)
+	}
+}
+
+func TestGetGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_group"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.GetGroup(1)
+	if rErr != nil {
+		t.Errorf("GetGroup failed: %v", rErr)
+	}
+
+	if resp.ID != 1 {
+		t.Errorf("Invalid group id: %v", resp.ID)
+	}
+
+	if resp.LanguageCode != "en" {
+		t.Errorf("Invalid group language: %v", resp.LanguageCode)
 	}
 }
