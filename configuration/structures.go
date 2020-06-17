@@ -121,7 +121,12 @@ type Group struct {
 
 // Agent defines basic Agent information
 type Agent struct {
-	ID                 string        `json:"id"`
+	ID string `json:"id"`
+	*AgentFields
+}
+
+// Agent defines set of configurable Agent fields
+type AgentFields struct {
 	Name               string        `json:"name,omitempty"`
 	Role               string        `json:"role,omitempty"`
 	AvatarPath         string        `json:"avatar_path,omitempty"`

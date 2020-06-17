@@ -566,7 +566,7 @@ func TestCreateAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	agentID, rErr := api.CreateAgent(&configuration.Agent{ID: "smith@example.com", Name: "Agent Smith"})
+	agentID, rErr := api.CreateAgent("smith@example.com", &configuration.AgentFields{Name: "Agent Smith"})
 	if rErr != nil {
 		t.Errorf("CreateAgent failed: %v", rErr)
 	}
@@ -632,7 +632,7 @@ func TestUpdateAgentShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateAgent(&configuration.Agent{ID: "smith@example.com", JobTitle: "Virus"})
+	rErr := api.UpdateAgent("smith@example.com", &configuration.AgentFields{JobTitle: "Virus"})
 	if rErr != nil {
 		t.Errorf("UpdateAgent failed: %v", rErr)
 	}

@@ -26,7 +26,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 	return &API{api}, nil
 }
 
-// RegisterWebhook allows to register specified webhook
+// RegisterWebhook allows to register specified webhook.
 func (a *API) RegisterWebhook(webhook *Webhook) (string, error) {
 	var resp registerWebhookResponse
 	err := a.Call("register_webhook", webhook, &resp)
@@ -34,7 +34,7 @@ func (a *API) RegisterWebhook(webhook *Webhook) (string, error) {
 	return resp.ID, err
 }
 
-// ListRegisteredWebhooks returns configurations of all registered webhooks
+// ListRegisteredWebhooks returns configurations of all registered webhooks.
 func (a *API) ListRegisteredWebhooks() ([]RegisteredWebhook, error) {
 	var resp listRegisteredWebhooksResponse
 	err := a.Call("list_registered_webhooks", nil, &resp)
@@ -42,14 +42,14 @@ func (a *API) ListRegisteredWebhooks() ([]RegisteredWebhook, error) {
 	return resp, err
 }
 
-// UnregisterWebhook removes webhook with given id from registered webhooks
+// UnregisterWebhook removes webhook with given id from registered webhooks.
 func (a *API) UnregisterWebhook(id string) error {
 	return a.Call("unregister_webhook", unregisterWebhookRequest{
 		ID: id,
 	}, &emptyResponse{})
 }
 
-// CreateBot allows to create bot and returns its ID
+// CreateBot allows to create bot and returns its ID.
 func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) (string, error) {
 	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
@@ -68,7 +68,7 @@ func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, de
 	return resp.BotID, err
 }
 
-// UpdateBot allows to update bot
+// UpdateBot allows to update bot.
 func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
@@ -87,14 +87,14 @@ func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint
 	}, &emptyResponse{})
 }
 
-// DeleteBot deletes bot with given ID
+// DeleteBot deletes bot with given ID.
 func (a *API) DeleteBot(id string) error {
 	return a.Call("delete_bot", &deleteBotRequest{
 		BotID: id,
 	}, &emptyResponse{})
 }
 
-// ListBots returns list of bots (all or caller's only, depending on getAll parameter)
+// ListBots returns list of bots (all or caller's only, depending on getAll parameter).
 func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
 	var resp listBotsResponse
 	err := a.Call("list_bots", &listBotsRequest{
@@ -104,7 +104,7 @@ func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
 	return resp.BotAgents, err
 }
 
-// GetBot returns bot
+// GetBot returns bot.
 func (a *API) GetBot(id string) (*BotAgentDetails, error) {
 	var resp getBotResponse
 	err := a.Call("get_bot", &getBotRequest{
@@ -114,15 +114,19 @@ func (a *API) GetBot(id string) (*BotAgentDetails, error) {
 	return resp.BotAgent, err
 }
 
-// CreateAgent creates a new Agent with specified parameters within a license
-func (a *API) CreateAgent(agent *Agent) (string, error) {
+// CreateAgent creates a new Agent with specified parameters within a license.
+func (a *API) CreateAgent(id string, fields *AgentFields) (string, error) {
 	var resp createAgentResponse
-	err := a.Call("create_agent", agent, &resp)
+	request := &Agent{
+		ID:          id,
+		AgentFields: fields,
+	}
+	err := a.Call("create_agent", request, &resp)
 
 	return resp.ID, err
 }
 
-// GetAgent returns the info about an Agent specified by id
+// GetAgent returns the info about an Agent specified by id (i.e. login).
 func (a *API) GetAgent(id string, fields []string) (*Agent, error) {
 	var resp getAgentResponse
 	err := a.Call("get_agent", &getAgentRequest{
@@ -136,35 +140,44 @@ func (a *API) GetAgent(id string, fields []string) (*Agent, error) {
 // ListAgents returns all Agents within a license.
 func (a *API) ListAgents(groupIDs []int32, fields []string) ([]*Agent, error) {
 	var resp listAgentsResponse
-	err := a.Call("list_agents", &listAgentsRequest{
-		Filters: AgentsFilters{
-			GroupIDs: groupIDs,
-		},
+	request := &listAgentsRequest{
 		Fields: fields,
-	}, &resp)
+	}
+
+	if len(groupIDs) > 0 {
+		request.Filters = AgentsFilters{
+			GroupIDs: groupIDs,
+		}
+	}
+
+	err := a.Call("list_agents", request, &resp)
 	return resp, err
 }
 
 // UpdateAgent updates the properties of an Agent specified by id.
-func (a *API) UpdateAgent(agent *Agent) error {
-	return a.Call("update_agent", agent, &emptyResponse{})
+func (a *API) UpdateAgent(id string, fields *AgentFields) error {
+	request := &Agent{
+		ID:          id,
+		AgentFields: fields,
+	}
+	return a.Call("update_agent", request, &emptyResponse{})
 }
 
-// DeleteAgent deletes an Agent specified by id
+// DeleteAgent deletes an Agent specified by id.
 func (a *API) DeleteAgent(id string) error {
 	return a.Call("delete_agent", &deleteAgentRequest{
 		ID: id,
 	}, &emptyResponse{})
 }
 
-// SuspendAgent suspends an Agent specified by id
+// SuspendAgent suspends an Agent specified by id.
 func (a *API) SuspendAgent(id string) error {
 	return a.Call("suspend_agent", &suspendAgentRequest{
 		ID: id,
 	}, &emptyResponse{})
 }
 
-// UnsuspendAgent unsuspends an Agent specified by id
+// UnsuspendAgent unsuspends an Agent specified by id.
 func (a *API) UnsuspendAgent(id string) error {
 	return a.Call("unsuspend_agent", &unsuspendAgentRequest{
 		ID: id,
