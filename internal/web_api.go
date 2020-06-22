@@ -16,21 +16,20 @@ import (
 
 const apiVersion = "3.2"
 
-// API provides the base client for making requests to Livechat Web APIs.
-type API struct {
-	httpClient    *http.Client
-	clientID      string
-	tokenGetter   authorization.TokenGetter
-	requestGetter RequestGetter
+type api struct {
+	httpClient           *http.Client
+	clientID             string
+	tokenGetter          authorization.TokenGetter
+	httpRequestGenerator HttpRequestGenerator
 }
 
-type RequestGetter func(*authorization.Token, string) (*http.Request, error)
+type HttpRequestGenerator func(*authorization.Token, string) (*http.Request, error)
 
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r RequestGetter) (*API, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r HttpRequestGenerator) (*api, error) {
 	if t == nil {
 		return nil, errors.New("cannot initialize api without TokenGetter")
 	}
@@ -41,16 +40,16 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		}
 	}
 
-	return &API{
-		tokenGetter:   t,
-		clientID:      clientID,
-		httpClient:    client,
-		requestGetter: r,
+	return &api{
+		tokenGetter:          t,
+		clientID:             clientID,
+		httpClient:           client,
+		httpRequestGenerator: r,
 	}, nil
 }
 
 // Call sends request to API with given action
-func (a *API) Call(action string, reqPayload interface{}, respPayload interface{}) error {
+func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}) error {
 	rawBody, err := json.Marshal(reqPayload)
 	if err != nil {
 		return err
@@ -60,9 +59,9 @@ func (a *API) Call(action string, reqPayload interface{}, respPayload interface{
 		return fmt.Errorf("couldn't get token")
 	}
 
-	req, err := a.requestGetter(token, action)
-	if token == nil {
-		return fmt.Errorf("couldn't get request")
+	req, err := a.httpRequestGenerator(token, action)
+	if err != nil {
+		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
 	req.Body = ioutil.NopCloser(bytes.NewReader(rawBody))
 
@@ -74,20 +73,20 @@ func (a *API) Call(action string, reqPayload interface{}, respPayload interface{
 	return a.send(req, respPayload)
 }
 
-type FileUploadAPI struct{ *API }
+type fileUploadAPI struct{ *api }
 
-func NewFileUploadAPI(t authorization.TokenGetter, client *http.Client, clientID string, r RequestGetter) (*FileUploadAPI, error) {
+func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HttpRequestGenerator) (*fileUploadAPI, error) {
 	api, err := NewAPI(t, client, clientID, r)
 	if err != nil {
 		return nil, err
 	}
-	return &FileUploadAPI{api}, nil
+	return &fileUploadAPI{api}, nil
 }
 
 // UploadFile uploads a file to LiveChat CDN.
 // Returned URL shall be used in call to SendFile or SendEvent or it'll become invalid
 // in about 24 hours.
-func (a *FileUploadAPI) UploadFile(filename string, file []byte) (string, error) {
+func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	w, err := writer.CreateFormFile("file", filename)
@@ -105,9 +104,9 @@ func (a *FileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 		return "", fmt.Errorf("couldn't get token")
 	}
 
-	req, err := a.requestGetter(token, "upload_file")
+	req, err := a.httpRequestGenerator(token, "upload_file")
 	if err != nil {
-		return "", fmt.Errorf("couldn't create new POST request: %v", err)
+		return "", fmt.Errorf("couldn't create new http request: %v", err)
 	}
 	req.Method = "POST"
 	req.Body = ioutil.NopCloser(body)
@@ -124,7 +123,7 @@ func (a *FileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	return resp.URL, err
 }
 
-func (a *API) send(req *http.Request, respPayload interface{}) error {
+func (a *api) send(req *http.Request, respPayload interface{}) error {
 	resp, err := a.httpClient.Do(req)
 	if err != nil {
 		return err
@@ -149,9 +148,9 @@ func (a *API) send(req *http.Request, respPayload interface{}) error {
 	return json.Unmarshal(bodyBytes, respPayload)
 }
 
-func DefaultRequestGetter(name string) RequestGetter {
+func DefaultHttpRequestGenerator(name string) HttpRequestGenerator {
 	return func(token *authorization.Token, action string) (*http.Request, error) {
-		url := fmt.Sprintf("https://api.livechatinc.com/v3.2/%s/action/%s", name, action)
+		url := fmt.Sprintf("https://api.livechatinc.com/v%s/%s/action/%s", apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)
 	}
 }

@@ -10,13 +10,18 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
+type customerAPI interface {
+	Call(string, interface{}, interface{}) error
+	UploadFile(string, []byte) (string, error)
+}
+
 // API provides the API operation methods for making requests to Customer Chat API via Web API.
 // See this package's package overview docs for details on the service.
 type API struct {
-	*i.FileUploadAPI
+	customerAPI
 }
 
-func CustomerRequestGetter(r i.RequestGetter) i.RequestGetter {
+func CustomerEndpointGenerator(r i.HttpRequestGenerator) i.HttpRequestGenerator {
 	return func(t *authorization.Token, a string) (*http.Request, error) {
 		req, err := r(t, a)
 		if err != nil {
@@ -38,7 +43,7 @@ func CustomerRequestGetter(r i.RequestGetter) i.RequestGetter {
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewFileUploadAPI(t, client, clientID, CustomerRequestGetter(i.DefaultRequestGetter("customer")))
+	api, err := i.NewAPIWithFileUpload(t, client, clientID, CustomerEndpointGenerator(i.DefaultHttpRequestGenerator("customer")))
 	if err != nil {
 		return nil, err
 	}
