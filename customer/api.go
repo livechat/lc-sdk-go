@@ -43,7 +43,7 @@ func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator 
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewAPIWithFileUpload(t, client, clientID, CustomerEndpointGenerator(i.DefaultHttpRequestGenerator("customer")))
+	api, err := i.NewAPIWithFileUpload(t, client, clientID, CustomerEndpointGenerator(i.DefaultHTTPRequestGenerator("customer")))
 	if err != nil {
 		return nil, err
 	}

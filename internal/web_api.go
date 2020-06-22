@@ -150,7 +150,8 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 	return json.Unmarshal(bodyBytes, respPayload)
 }
 
-func DefaultHttpRequestGenerator(name string) HTTPRequestGenerator {
+// DefaultHTTPRequestGenerator generates API request for given service in stable version.
+func DefaultHTTPRequestGenerator(name string) HTTPRequestGenerator {
 	return func(token *authorization.Token, action string) (*http.Request, error) {
 		url := fmt.Sprintf("https://api.livechatinc.com/v%s/%s/action/%s", apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)

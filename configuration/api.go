@@ -23,7 +23,7 @@ type API struct {
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewAPI(t, client, clientID, i.DefaultHttpRequestGenerator("configuration"))
+	api, err := i.NewAPI(t, client, clientID, i.DefaultHTTPRequestGenerator("configuration"))
 	if err != nil {
 		return nil, err
 	}
