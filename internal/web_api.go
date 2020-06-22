@@ -76,6 +76,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 
 type fileUploadAPI struct{ *api }
 
+// NewAPIWithFileUpload returns ready to use raw API client with file upload functionality.
 func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPRequestGenerator) (*fileUploadAPI, error) {
 	api, err := NewAPI(t, client, clientID, r)
 	if err != nil {
