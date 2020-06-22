@@ -46,7 +46,6 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	api.APIURL = h.cfg.APIURL
 
 	wh := &configuration.Webhook{
 		Action:      "incoming_event",

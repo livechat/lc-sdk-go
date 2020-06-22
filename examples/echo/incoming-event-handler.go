@@ -42,7 +42,6 @@ func (h *IncomingEventHandler) Handle(wh *webhooks.Webhook) error {
 	if err != nil {
 		return errors.New("agent-api initilization failed")
 	}
-	api.APIURL = h.cfg.APIURL
 
 	msg := &objects.Message{
 		Event: objects.Event{

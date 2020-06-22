@@ -54,7 +54,6 @@ Having troubles? Visit docs dedicated page for [creating LiveChat apps](https://
       "client_id": "27f41c8da685c81a890f9e5f8ce48387",
       "client_secret": "78384ec8f5e9f098a18c586ad8c14f72",
       "redirect_uri": "https://3c6129e3.ngrok.io/oauth",
-      "api_url": "https://api.livechatinc.com",
       "accounts_url": "https://accounts.livechatinc.com",
       "webhook_url": "https://3c6129e3.ngrok.io/webhook",
       "webhook_secret": "arbitrary_string"

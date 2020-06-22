@@ -13,14 +13,14 @@ import (
 // API provides the API operation methods for making requests to Agent Chat API via Web API.
 // See this package's package overview docs for details on the service.
 type API struct {
-	*i.API
+	*i.FileUploadAPI
 }
 
 // NewAPI returns ready to use Agent API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewAPI(t, client, clientID, "agent")
+	api, err := i.NewFileUploadAPI(t, client, clientID, i.DefaultRequestGetter("agent"))
 	if err != nil {
 		return nil, err
 	}
