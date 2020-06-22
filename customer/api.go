@@ -21,7 +21,7 @@ type API struct {
 	customerAPI
 }
 
-func CustomerEndpointGenerator(r i.HttpRequestGenerator) i.HttpRequestGenerator {
+func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator {
 	return func(t *authorization.Token, a string) (*http.Request, error) {
 		req, err := r(t, a)
 		if err != nil {

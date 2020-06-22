@@ -20,16 +20,17 @@ type api struct {
 	httpClient           *http.Client
 	clientID             string
 	tokenGetter          authorization.TokenGetter
-	httpRequestGenerator HttpRequestGenerator
+	httpRequestGenerator HTTPRequestGenerator
 }
 
-type HttpRequestGenerator func(*authorization.Token, string) (*http.Request, error)
+// HTTPRequestGenerator is called by each API method to generate api http url.
+type HTTPRequestGenerator func(*authorization.Token, string) (*http.Request, error)
 
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r HttpRequestGenerator) (*api, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPRequestGenerator) (*api, error) {
 	if t == nil {
 		return nil, errors.New("cannot initialize api without TokenGetter")
 	}
@@ -75,7 +76,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 
 type fileUploadAPI struct{ *api }
 
-func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HttpRequestGenerator) (*fileUploadAPI, error) {
+func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPRequestGenerator) (*fileUploadAPI, error) {
 	api, err := NewAPI(t, client, clientID, r)
 	if err != nil {
 		return nil, err
@@ -148,7 +149,7 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 	return json.Unmarshal(bodyBytes, respPayload)
 }
 
-func DefaultHttpRequestGenerator(name string) HttpRequestGenerator {
+func DefaultHttpRequestGenerator(name string) HTTPRequestGenerator {
 	return func(token *authorization.Token, action string) (*http.Request, error) {
 		url := fmt.Sprintf("https://api.livechatinc.com/v%s/%s/action/%s", apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)
