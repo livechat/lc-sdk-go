@@ -44,13 +44,13 @@ func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit u
 
 // GetChat returns given thread for given chat.
 func (a *API) GetChat(chatID string, threadID string) (objects.Chat, error) {
-	var resp getChatResponse
+	var resp objects.Chat
 	err := a.Call("get_chat", &getChatRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 	}, &resp)
 
-	return resp.Chat, err
+	return resp, err
 }
 
 // ListChats returns threads list.

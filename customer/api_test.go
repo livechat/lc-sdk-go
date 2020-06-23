@@ -88,14 +88,54 @@ var mockedResponses = map[string]string{
 		"previous_page_id": "MTUxNzM5ODEzMTQ5Ng=="
 	}`,
 	"get_chat": `{
-		"chat": {
-			"id": "PJ0MRSHTDG",
-			"users": [],
-			"properties": {},
-			"access": {},
-			"threads": []
+		"id": "PJ0MRSHTDG",
+		"thread": {
+		  "id": "K600PKZON8",
+		  "created_at": "2020-05-07T07:11:28.288340Z",
+		  "active": true,
+		  "user_ids": [
+			"b7eff798-f8df-4364-8059-649c35c9ed0c",
+			"b5657aff34dd32e198160d54666df9d8"
+		  ],
+		  "events": [{
+			"id": "Q20N9CKRX2_1",
+			"created_at": "2019-12-17T07:57:41.512000Z",
+			"type": "message",
+			"text": "Hello",
+			"author_id": "b5657aff34dd32e198160d54666df9d8"
+		  }],
+		  "properties": {
+			"0805e283233042b37f460ed8fbf22160": {
+			  "string_property": "string_value"
+			}
+		  },
+		  "access": {
+			"group_ids": [0]
+		  },
+		  "previous_thread_id": "K600PKZOM8",
+		  "next_thread_id": "K600PKZOO8"
+		},
+		"users": [{
+		  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		  "type": "customer",
+		  "present": true
+		}, {
+		  "id": "b5657aff34dd32e198160d54666df9d8",
+		  "name": "Agent Smith",
+		  "type": "agent",
+		  "present": true,
+		  "avatar": "https://example.com/avatar.jpg",
+		  "job_title": "Support Agent"
+		}],
+		"access": {
+		  "group_ids": [0]
+		},
+		"properties": {
+		  "0805e283233042b37f460ed8fbf22160": {
+			"string_property": "string_value"
+		  }
 		}
-	}`,
+	  }`,
 	"list_threads": `{
     "threads": [{
       "id": "K600PKZON8",

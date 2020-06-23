@@ -116,14 +116,61 @@ var mockedResponses = map[string]string{
     "previous_page_id": "MTUxNzM5ODEzMTQ5Nw=="
 	}`,
 	"get_chat": `{
-		"chat": {
-			"id": "PJ0MRSHTDG",
-			"users": [],
-			"properties": {},
-			"access": {},
-			"threads": []
-		}
-	}`,
+		"id": "PJ0MRSHTDG",
+		"thread": {
+		  "id": "K600PKZON8",
+		  "created_at": "2020-05-07T07:11:28.288340Z",
+		  "active": true,
+		  "user_ids": [
+			"b7eff798-f8df-4364-8059-649c35c9ed0c",
+			"smith@example.com"
+		  ],
+		  "events": [{
+			"id": "Q20N9CKRX2_1",
+			"created_at": "2019-12-17T07:57:41.512000Z",
+			"recipients": "all",
+			"type": "message",
+			"text": "Hello",
+			"author_id": "smith@example.com"
+		  }],
+		  "properties": {
+			"0805e283233042b37f460ed8fbf22160": {
+			  "string_property": "string_value"
+			}
+		  },
+		  "access": {
+			"group_ids": [0]
+		  },
+		  "previous_thread_id": "K600PKZOM8",
+		  "next_thread_id": "K600PKZOO8"
+		},
+		"users": [{
+		  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		  "type": "customer",
+		  "present": true,
+		  "created_at": "2019-12-17T08:53:20.693553+01:00",
+		  "statistics": {
+			"chats_count": 1
+		  },
+		  "agent_last_event_created_at": "2019-12-17T09:04:05.239000+01:00"
+		}, {
+		  "id": "smith@example.com",
+		  "name": "Agent Smith",
+		  "email": "smith@example.com",
+		  "type": "agent",
+		  "present": true,
+		  "avatar": "https://example.com/avatar.jpg"
+		}],
+		"properties": {
+		  "0805e283233042b37f460ed8fbf22160": {
+			"string_property": "string_value"
+		  }
+		},
+		"access": {
+		  "group_ids": [0]
+		},
+		"is_followed": true
+	  }`,
 	"list_archives": `{
 		"chats": [
 			{
