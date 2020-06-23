@@ -105,7 +105,9 @@ type Chat struct {
 	ID         string     `json:"id,omitempty"`
 	Properties Properties `json:"properties,omitempty"`
 	Access     Access     `json:"access,omitempty"`
+	Thread     Thread     `json:"thread,omitempty"`
 	Threads    []Thread   `json:"threads,omitempty"`
+	IsFollowed bool       `json:"is_followed,omitempty"`
 	Agents     map[string]*Agent
 	Customers  map[string]*Customer
 }
