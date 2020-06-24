@@ -9,17 +9,21 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
+type configurationAPI interface {
+	Call(string, interface{}, interface{}) error
+}
+
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.
 // See this package's package overview docs for details on the service.
 type API struct {
-	*i.API
+	configurationAPI
 }
 
 // NewAPI returns ready to use Configuration API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewAPI(t, client, clientID, "configuration")
+	api, err := i.NewAPI(t, client, clientID, i.DefaultHTTPRequestGenerator("configuration"))
 	if err != nil {
 		return nil, err
 	}

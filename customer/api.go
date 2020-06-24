@@ -1,6 +1,7 @@
 package customer
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,17 +10,40 @@ import (
 	"github.com/livechat/lc-sdk-go/objects"
 )
 
+type customerAPI interface {
+	Call(string, interface{}, interface{}) error
+	UploadFile(string, []byte) (string, error)
+}
+
 // API provides the API operation methods for making requests to Customer Chat API via Web API.
 // See this package's package overview docs for details on the service.
 type API struct {
-	*i.API
+	customerAPI
+}
+
+func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator {
+	return func(t *authorization.Token, a string) (*http.Request, error) {
+		req, err := r(t, a)
+		if err != nil {
+			return nil, err
+		}
+		if t.LicenseID != nil {
+			qs := req.URL.Query()
+			qs.Add("license_id", fmt.Sprintf("%v", *t.LicenseID))
+			req.URL.RawQuery = qs.Encode()
+		}
+		if a == "list_license_properties" || a == "list_group_properties" {
+			req.Method = "GET"
+		}
+		return req, nil
+	}
 }
 
 // NewAPI returns ready to use Customer API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
 func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (*API, error) {
-	api, err := i.NewAPI(t, client, clientID, "customer")
+	api, err := i.NewAPIWithFileUpload(t, client, clientID, CustomerEndpointGenerator(i.DefaultHTTPRequestGenerator("customer")))
 	if err != nil {
 		return nil, err
 	}

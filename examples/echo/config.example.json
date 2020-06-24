@@ -2,7 +2,6 @@
   "client_id": "",
   "client_secret": "",
   "redirect_uri": "",
-  "api_url": "",
   "accounts_url": "",
   "webhook_url": "",
   "webhook_secret": ""
