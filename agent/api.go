@@ -13,6 +13,7 @@ import (
 type agentAPI interface {
 	Call(string, interface{}, interface{}) error
 	UploadFile(string, []byte) (string, error)
+	SetCustomHost(string)
 }
 
 // API provides the API operation methods for making requests to Agent Chat API via Web API.

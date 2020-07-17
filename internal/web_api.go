@@ -21,10 +21,11 @@ type api struct {
 	clientID             string
 	tokenGetter          authorization.TokenGetter
 	httpRequestGenerator HTTPRequestGenerator
+	host                 string
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
-type HTTPRequestGenerator func(*authorization.Token, string) (*http.Request, error)
+type HTTPRequestGenerator func(*authorization.Token, string, string) (*http.Request, error)
 
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
@@ -45,6 +46,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		tokenGetter:          t,
 		clientID:             clientID,
 		httpClient:           client,
+		host:                 "https://api.livechatinc.com",
 		httpRequestGenerator: r,
 	}, nil
 }
@@ -60,7 +62,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		return fmt.Errorf("couldn't get token")
 	}
 
-	req, err := a.httpRequestGenerator(token, action)
+	req, err := a.httpRequestGenerator(token, a.host, action)
 	if err != nil {
 		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
@@ -106,7 +108,7 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 		return "", fmt.Errorf("couldn't get token")
 	}
 
-	req, err := a.httpRequestGenerator(token, "upload_file")
+	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
 	if err != nil {
 		return "", fmt.Errorf("couldn't create new http request: %v", err)
 	}
@@ -150,10 +152,14 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 	return json.Unmarshal(bodyBytes, respPayload)
 }
 
+func (a *api) SetCustomHost(host string) {
+	a.host = host
+}
+
 // DefaultHTTPRequestGenerator generates API request for given service in stable version.
 func DefaultHTTPRequestGenerator(name string) HTTPRequestGenerator {
-	return func(token *authorization.Token, action string) (*http.Request, error) {
-		url := fmt.Sprintf("https://api.livechatinc.com/v%s/%s/action/%s", apiVersion, name, action)
+	return func(token *authorization.Token, host, action string) (*http.Request, error) {
+		url := fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)
 	}
 }
