@@ -152,6 +152,7 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 	return json.Unmarshal(bodyBytes, respPayload)
 }
 
+// SetCustomHost allows to change API host address. This method is mostly for LiveChat internal testing and should not be used in production environments.
 func (a *api) SetCustomHost(host string) {
 	a.host = host
 }
