@@ -13,6 +13,7 @@ import (
 type customerAPI interface {
 	Call(string, interface{}, interface{}) error
 	UploadFile(string, []byte) (string, error)
+	SetCustomHost(string)
 }
 
 // API provides the API operation methods for making requests to Customer Chat API via Web API.
@@ -22,8 +23,8 @@ type API struct {
 }
 
 func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator {
-	return func(t *authorization.Token, a string) (*http.Request, error) {
-		req, err := r(t, a)
+	return func(t *authorization.Token, h, a string) (*http.Request, error) {
+		req, err := r(t, h, a)
 		if err != nil {
 			return nil, err
 		}

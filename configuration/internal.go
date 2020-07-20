@@ -58,7 +58,8 @@ type listRegisteredPropertiesRequest struct {
 type listRegisteredPropertiesResponse map[string]*PropertyConfig
 
 type getGroupRequest struct {
-	ID int `json:"id"`
+	ID     int      `json:"id"`
+	Fields []string `json:"fields,omitempty"`
 }
 
 type getGroupResponse *Group

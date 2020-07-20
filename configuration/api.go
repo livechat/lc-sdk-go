@@ -11,6 +11,7 @@ import (
 
 type configurationAPI interface {
 	Call(string, interface{}, interface{}) error
+	SetCustomHost(string)
 }
 
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.
@@ -255,10 +256,11 @@ func (a *API) ListGroups(fields []string) ([]*Group, error) {
 }
 
 // GetGroup returns details about a group specified by its id
-func (a *API) GetGroup(id int) (*Group, error) {
+func (a *API) GetGroup(id int, fields ...string) (*Group, error) {
 	var resp getGroupResponse
 	err := a.Call("get_group", &getGroupRequest{
-		ID: id,
+		ID:     id,
+		Fields: fields,
 	}, &resp)
 
 	return resp, err
