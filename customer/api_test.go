@@ -364,7 +364,18 @@ func TestStartChatShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatID, threadID, _, rErr := api.StartChat(&objects.InitialChat{}, true)
+	m := &objects.Message{
+		Postback: &objects.Postback{
+			ID:    "123",
+			Value: "abc",
+		},
+	}
+	ic := &objects.InitialChat{
+		Thread: &objects.InitialThread{
+			Events: []interface{}{m},
+		},
+	}
+	chatID, threadID, _, rErr := api.StartChat(ic, true)
 	if rErr != nil {
 		t.Errorf("StartChat failed: %v", rErr)
 	}
