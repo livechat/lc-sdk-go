@@ -293,6 +293,7 @@ type eventSpecific struct {
 	Name        json.RawMessage `json:"name"`
 	TemplateID  json.RawMessage `json:"template_id"`
 	Elements    json.RawMessage `json:"elements"`
+	Postback    json.RawMessage `json:"postback"`
 }
 
 // Event represents base of all LiveChat chat events.
@@ -334,10 +335,20 @@ func (e *Event) FilledForm() *FilledForm {
 	return &f
 }
 
+// Postback represents postback data in LiveChat message event.
+type Postback struct {
+	ID       string `json:"id"`
+	ThreadID string `json:"thread_id"`
+	EventID  string `json:"event_id"`
+	Type     string `json:"type,omitempty"`
+	Value    string `json:"value,omitempty"`
+}
+
 // Message represents LiveChat message event.
 type Message struct {
 	Event
-	Text string `json:"text,omitempty"`
+	Text     string    `json:"text,omitempty"`
+	Postback *Postback `json:"postback,omitempty"`
 }
 
 // Message function converts Event object to Message object if Event's Type is "message".
@@ -350,6 +361,9 @@ func (e *Event) Message() *Message {
 
 	m.Event = *e
 	if err := json.Unmarshal(e.Text, &m.Text); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.Postback, &m.Postback); err != nil {
 		return nil
 	}
 	return &m
