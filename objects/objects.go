@@ -401,11 +401,15 @@ func (e *Event) File() *File {
 	if err := json.Unmarshal(e.URL, &f.URL); err != nil {
 		return nil
 	}
-	if err := unmarshalOptionalRawField(e.Width, &f.Width); err != nil {
-		return nil
+	if len(e.Width) > 0 {
+		if err := unmarshalOptionalRawField(e.Width, &f.Width); err != nil {
+			return nil
+		}
 	}
-	if err := unmarshalOptionalRawField(e.Height, &f.Height); err != nil {
-		return nil
+	if len(e.Height) > 0 {
+		if err := unmarshalOptionalRawField(e.Height, &f.Height); err != nil {
+			return nil
+		}
 	}
 	if err := json.Unmarshal(e.Name, &f.Name); err != nil {
 		return nil
