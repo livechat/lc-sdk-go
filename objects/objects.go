@@ -363,7 +363,7 @@ func (e *Event) Message() *Message {
 	if err := json.Unmarshal(e.Text, &m.Text); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(e.Postback, &m.Postback); err != nil {
+	if err := unmarshalOptionalRawField(e.Postback, &m.Postback); err != nil {
 		return nil
 	}
 	return &m
