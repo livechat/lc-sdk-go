@@ -438,6 +438,8 @@ type RichMessageButton struct {
 	PostbackID string   `json:"postback_id"`
 	// Allowed values: compact, full, tall
 	WebviewHeight string `json:"webview_height"`
+	// Allowed values: new, current
+	Target string `json:"target,omitempty"`
 }
 
 // RichMessageImage represents image in LiveChat rich message
