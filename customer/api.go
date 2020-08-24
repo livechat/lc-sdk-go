@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/authorization"
-	i "github.com/livechat/lc-sdk-go/internal"
-	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/v2/authorization"
+	i "github.com/livechat/lc-sdk-go/v2/internal"
+	"github.com/livechat/lc-sdk-go/v2/objects"
 )
 
 type customerAPI interface {

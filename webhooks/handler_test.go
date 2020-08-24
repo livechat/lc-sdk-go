@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/webhooks"
+	"github.com/livechat/lc-sdk-go/v2/webhooks"
 )
 
 var verifiers = map[string]webhooks.Handler{

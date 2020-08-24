@@ -7,7 +7,7 @@ package webhooks
 import (
 	"encoding/json"
 
-	"github.com/livechat/lc-sdk-go/objects"
+	"github.com/livechat/lc-sdk-go/v2/objects"
 )
 
 // Webhook represents general webhook format.
