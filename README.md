@@ -1,13 +1,13 @@
 # LiveChat Go SDK
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/livechat/lc-sdk-go)](https://goreportcard.com/report/github.com/livechat/lc-sdk-go)
-[![GoDoc](https://godoc.org/github.com/livechat/lc-sdk-go?status.svg)](https://godoc.org/github.com/livechat/lc-sdk-go)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/livechat/lc-sdk-go/v2)](https://pkg.go.dev/github.com/livechat/lc-sdk-go/v2)
 
 This Software Development Kit written in [Go](https://go.dev/) helps developers build external backend apps that extend LiveChat features. The SDK makes it easy to use [Agent Chat API](https://developers.livechatinc.com/docs/messaging/agent-chat-api/), [Customer Chat API](https://developers.livechatinc.com/docs/messaging/customer-chat-api/) and [Configuration API](https://developers.livechatinc.com/docs/management/configuration-api/).
 
 ### Technical docs
 
-For technical documentation ([godoc](https://godoc.org/) format), please go to [LiveChat SDK Docs](https://godoc.org/github.com/livechat/lc-sdk-go/v2).
+For technical documentation ([PkgGoDev](https://pkg.go.dev/) format), please go to [LiveChat SDK Docs](https://pkg.go.dev/github.com/livechat/lc-sdk-go/v2).
 
 ### API protocol docs
 
