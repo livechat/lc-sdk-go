@@ -12,7 +12,6 @@ type listRegisteredWebhooksResponse []RegisteredWebhook
 
 type createBotRequest struct {
 	Name                 string         `json:"name"`
-	Status               BotStatus      `json:"status"`
 	Avatar               string         `json:"string,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
