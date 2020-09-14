@@ -55,6 +55,8 @@ func (a *API) UnregisterWebhook(id string) error {
 }
 
 // CreateBot allows to create bot and returns its ID.
+//
+// Deprecated: status is ignored, please use SetRoutingStatus method from agent package to set status.
 func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) (string, error) {
 	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
@@ -63,7 +65,6 @@ func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, de
 	err := a.Call("create_bot", &createBotRequest{
 		Name:                 name,
 		Avatar:               avatar,
-		Status:               status,
 		MaxChatsCount:        &maxChats,
 		DefaultGroupPriority: defaultPriority,
 		Groups:               groups,
@@ -74,6 +75,8 @@ func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, de
 }
 
 // UpdateBot allows to update bot.
+//
+// Deprecated: status is ignored, please use SetRoutingStatus method from agent package to set status.
 func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
@@ -83,7 +86,6 @@ func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint
 		createBotRequest: &createBotRequest{
 			Name:                 name,
 			Avatar:               avatar,
-			Status:               status,
 			MaxChatsCount:        &maxChats,
 			DefaultGroupPriority: defaultPriority,
 			Groups:               groups,
