@@ -371,6 +371,25 @@ func TestRejectAPICreationWithoutTokenGetter(t *testing.T) {
 	}
 }
 
+func TestAuthorIDHeader(t *testing.T) {
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		if xAuthorID := req.Header.Get("X-Author-Id"); xAuthorID != "my_bot" {
+			t.Errorf("Invalid X-Author-Id header: %s", xAuthorID)
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewReader(nil)),
+			Header:     make(http.Header),
+		}
+	})
+	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+	api.SetAuthorID("my_bot")
+	api.Call("", nil, nil)
+}
+
 func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "start_chat"))
 

@@ -22,6 +22,7 @@ type api struct {
 	tokenGetter          authorization.TokenGetter
 	httpRequestGenerator HTTPRequestGenerator
 	host                 string
+	customHeaders        http.Header
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
@@ -48,6 +49,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		httpClient:           client,
 		host:                 "https://api.livechatinc.com",
 		httpRequestGenerator: r,
+		customHeaders:        make(http.Header),
 	}, nil
 }
 
@@ -73,7 +75,19 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
 	req.Header.Set("X-Region", token.Region)
 
+	for key, val := range a.customHeaders {
+		if len(val) == 0 {
+			continue
+		}
+		req.Header.Set(key, val[0])
+	}
+
 	return a.send(req, respPayload)
+}
+
+// SetCustomHeader allows to set a custom header (e.g. X-Debug-Id or X-Author-Id) that will be sent in every request
+func (a *api) SetCustomHeader(key, val string) {
+	a.customHeaders.Set(key, val)
 }
 
 type fileUploadAPI struct{ *api }

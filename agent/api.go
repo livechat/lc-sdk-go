@@ -14,6 +14,7 @@ type agentAPI interface {
 	Call(string, interface{}, interface{}) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
+	SetCustomHeader(string, string)
 }
 
 // API provides the API operation methods for making requests to Agent Chat API via Web API.
@@ -31,6 +32,11 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 		return nil, err
 	}
 	return &API{api}, nil
+}
+
+// SetAuthorID provides a way to point the actual author of the action (e.g. send an event as a bot)
+func (a *API) SetAuthorID(authorID string) {
+	a.agentAPI.SetCustomHeader("X-Author-Id", authorID)
 }
 
 // ListChats returns chat summaries list.
