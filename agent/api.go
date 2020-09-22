@@ -177,13 +177,17 @@ func (a *API) SetChatAccess(id string, access objects.Access) error {
 
 // TransferChat transfers chat to agent or group.
 func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force bool) error {
-	return a.Call("transfer_chat", &transferChatRequest{
-		ChatID: chatID,
-		Target: &transferTarget{
+	var target *transferTarget
+	if targetType != "" || len(ids) > 0 {
+		target = &transferTarget{
 			Type: targetType,
 			IDs:  ids,
-		},
-		Force: force,
+		}
+	}
+	return a.Call("transfer_chat", &transferChatRequest{
+		ChatID: chatID,
+		Target: target,
+		Force:  force,
 	}, &emptyResponse{})
 }
 
