@@ -63,6 +63,9 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if token == nil {
 		return fmt.Errorf("couldn't get token")
 	}
+	if token.Type != authorization.BearerToken && token.Type != authorization.BasicToken {
+		return fmt.Errorf("unsupported token type")
+	}
 
 	req, err := a.httpRequestGenerator(token, a.host, action)
 	if err != nil {
@@ -71,7 +74,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	req.Body = ioutil.NopCloser(bytes.NewReader(rawBody))
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+	req.Header.Set("Authorization", fmt.Sprintf("%s %s", a.tokenTypeToString(token.Type), token.AccessToken))
 	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
 	req.Header.Set("X-Region", token.Region)
 
@@ -177,4 +180,11 @@ func DefaultHTTPRequestGenerator(name string) HTTPRequestGenerator {
 		url := fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)
 	}
+}
+
+func (a *api) tokenTypeToString(tokenType authorization.TokenType) string {
+	if tokenType == authorization.BasicToken {
+		return "Basic"
+	}
+	return "Bearer"
 }
