@@ -393,11 +393,6 @@ func createAuthorizationHeaderChecker(t *testing.T, method string, tokenType aut
 			return createServerError("Invalid Authorization")
 		}
 
-		// if tokenType != authorization.BearerToken && tokenType != authorization.BasicToken {
-		// 	t.Errorf("Invalid Authorization header: %s", authHeader)
-		// 	return createServerError("Invalid Authorization")
-		// }
-
 		return &http.Response{
 			StatusCode: 200,
 			Body:       ioutil.NopCloser(bytes.NewBufferString(mockedResponses[method])),
