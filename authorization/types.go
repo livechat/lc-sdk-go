@@ -1,10 +1,19 @@
 package authorization
 
-// TokenType represents Bearer or Basic authentication scheme.
+// TokenType represents authentication scheme.
 type TokenType int
 
-// Possible values of TokenType.
+// Supported values of TokenType.
 const (
 	BearerToken TokenType = iota
 	BasicToken
 )
+
+func (t TokenType) String() string {
+	if t == BasicToken {
+		return "Basic"
+	} else if t == BearerToken {
+		return "Bearer"
+	}
+	return "Unknown"
+}

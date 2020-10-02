@@ -27,25 +27,18 @@ func NewTestClient(fn roundTripFunc) *http.Client {
 }
 
 func stubBearerTokenGetter() *authorization.Token {
-	return stubGenericTokenGetter(authorization.BearerToken)
+	return stubTokenGetter(authorization.BearerToken)()
 }
 
-func stubBasicTokenGetter() *authorization.Token {
-	return stubGenericTokenGetter(authorization.BasicToken)
-}
-
-func stubInvalidTokenGetter() *authorization.Token {
-	invalidTokenType := 2020
-	return stubGenericTokenGetter(authorization.TokenType(invalidTokenType))
-}
-
-func stubGenericTokenGetter(tokenType authorization.TokenType) *authorization.Token {
-	licenseID := 12345
-	return &authorization.Token{
-		LicenseID:   &licenseID,
-		AccessToken: "access_token",
-		Region:      "region",
-		Type:        tokenType,
+func stubTokenGetter(tokenType authorization.TokenType) func() *authorization.Token {
+	return func() *authorization.Token {
+		licenseID := 12345
+		return &authorization.Token{
+			LicenseID:   &licenseID,
+			AccessToken: "access_token",
+			Region:      "region",
+			Type:        tokenType,
+		}
 	}
 }
 
@@ -360,42 +353,6 @@ func createMockedErrorResponder(t *testing.T, method string) func(req *http.Requ
 		return &http.Response{
 			StatusCode: 400,
 			Body:       ioutil.NopCloser(bytes.NewBufferString(responseError)),
-			Header:     make(http.Header),
-		}
-	}
-}
-
-func createAuthorizationHeaderChecker(t *testing.T, method string, tokenType authorization.TokenType) func(req *http.Request) *http.Response {
-	return func(req *http.Request) *http.Response {
-		createServerError := func(message string) *http.Response {
-			responseError := `{
-				"error": {
-					"type": "MOCK_SERVER_ERROR",
-					"message": "` + message + `"
-				}
-			}`
-
-			return &http.Response{
-				StatusCode: 400,
-				Body:       ioutil.NopCloser(bytes.NewBufferString(responseError)),
-				Header:     make(http.Header),
-			}
-		}
-		authHeader := req.Header.Get("Authorization")
-
-		if tokenType == authorization.BasicToken && authHeader != "Basic access_token" {
-			t.Errorf("Invalid Authorization header: %s", authHeader)
-			return createServerError("Invalid Authorization")
-		}
-
-		if tokenType == authorization.BearerToken && authHeader != "Bearer access_token" {
-			t.Errorf("Invalid Authorization header: %s", authHeader)
-			return createServerError("Invalid Authorization")
-		}
-
-		return &http.Response{
-			StatusCode: 200,
-			Body:       ioutil.NopCloser(bytes.NewBufferString(mockedResponses[method])),
 			Header:     make(http.Header),
 		}
 	}
@@ -1480,51 +1437,53 @@ func TestListAgentsForTransferShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 }
 
 func TestBasicAuthorizationScheme(t *testing.T) {
-	client := NewTestClient(createAuthorizationHeaderChecker(t, "list_agents_for_transfer", authorization.BasicToken))
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		if authHeader := req.Header.Get("Authorization"); authHeader != "Basic access_token" {
+			t.Errorf("Invalid Authorization header: %s", authHeader)
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewReader(nil)),
+			Header:     make(http.Header),
+		}
+	})
 
-	api, err := agent.NewAPI(stubBasicTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubTokenGetter(authorization.BasicToken), client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
-
-	resp, rErr := api.ListAgentsForTransfer("PJ0MRSHTDG")
-	if rErr != nil {
-		t.Errorf("ListAgentsForTransfer failed: %v", rErr)
-	}
-
-	if len(resp) != 2 {
-		t.Errorf("Invalid ListAgentsForTransfer response: %v", resp)
-	}
+	api.Call("", nil, nil)
 }
 
 func TestBearerAuthorizationScheme(t *testing.T) {
-	client := NewTestClient(createAuthorizationHeaderChecker(t, "list_agents_for_transfer", authorization.BearerToken))
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		if authHeader := req.Header.Get("Authorization"); authHeader !=
+			"Bearer access_token" {
+			t.Errorf("Invalid Authorization header: %s", authHeader)
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewReader(nil)),
+			Header:     make(http.Header),
+		}
+	})
 
 	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
-
-	resp, rErr := api.ListAgentsForTransfer("PJ0MRSHTDG")
-	if rErr != nil {
-		t.Errorf("ListAgentsForTransfer failed: %v", rErr)
-	}
-
-	if len(resp) != 2 {
-		t.Errorf("Invalid ListAgentsForTransfer response: %v", resp)
-	}
+	api.Call("", nil, nil)
 }
 
 func TestInvalidAuthorizationScheme(t *testing.T) {
-	client := NewTestClient(createAuthorizationHeaderChecker(t, "list_agents_for_transfer", authorization.TokenType(2020)))
+	client := NewTestClient(func(req *http.Request) *http.Response { return nil })
 
-	api, err := agent.NewAPI(stubInvalidTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubTokenGetter(authorization.TokenType(2020)), client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
-
-	_, rErr := api.ListAgentsForTransfer("PJ0MRSHTDG")
-	if rErr == nil {
-		t.Errorf("Every call must fail when wrong token type given")
+	err = api.Call("", nil, nil)
+	if err == nil {
+		t.Errorf("Err should not be nil")
 	}
 }

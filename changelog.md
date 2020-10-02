@@ -3,6 +3,4 @@
 
 ### [v2.1.0]
 
-Authorization
-
-* added TokenType to Token in order to enable authorization by PAT
+* Added Type to authorization.Token in order to support different authentication schemes (`Bearer` and `Basic`).
