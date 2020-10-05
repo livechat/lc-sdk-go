@@ -26,12 +26,19 @@ func NewTestClient(fn roundTripFunc) *http.Client {
 	}
 }
 
-func stubTokenGetter() *authorization.Token {
-	licenseID := 12345
-	return &authorization.Token{
-		LicenseID:   &licenseID,
-		AccessToken: "access_token",
-		Region:      "region",
+func stubBearerTokenGetter() *authorization.Token {
+	return stubTokenGetter(authorization.BearerToken)()
+}
+
+func stubTokenGetter(tokenType authorization.TokenType) func() *authorization.Token {
+	return func() *authorization.Token {
+		licenseID := 12345
+		return &authorization.Token{
+			LicenseID:   &licenseID,
+			AccessToken: "access_token",
+			Region:      "region",
+			Type:        tokenType,
+		}
 	}
 }
 
@@ -382,7 +389,7 @@ func TestAuthorIDHeader(t *testing.T) {
 			Header:     make(http.Header),
 		}
 	})
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -393,7 +400,7 @@ func TestAuthorIDHeader(t *testing.T) {
 func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "start_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -414,7 +421,7 @@ func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestSendEventShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_event"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -432,7 +439,7 @@ func TestSendEventShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "activate_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -450,7 +457,7 @@ func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_chats"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -492,7 +499,7 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestGetChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -510,7 +517,7 @@ func TestGetChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestListThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_threads"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -540,7 +547,7 @@ func TestListThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 func TestListArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_archives"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -564,7 +571,7 @@ func TestListArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestDeactivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "deactivate_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -578,7 +585,7 @@ func TestDeactivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestFollowChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "follow_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -592,7 +599,7 @@ func TestFollowChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestUnfollowChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "unfollow_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -606,7 +613,7 @@ func TestUnfollowChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestUploadFileShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "upload_file"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -624,7 +631,7 @@ func TestUploadFileShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestGrantChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "grant_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -638,7 +645,7 @@ func TestGrantChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestRevokeChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "revoke_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -652,7 +659,7 @@ func TestRevokeChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestSetChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "set_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -666,7 +673,7 @@ func TestSetChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestAddUserToChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "add_user_to_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -680,7 +687,7 @@ func TestAddUserToChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestRemoveUserFromChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "remove_user_from_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -694,7 +701,7 @@ func TestRemoveUserFromChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestSendRichMessagePostbackShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_rich_message_postback"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -708,7 +715,7 @@ func TestSendRichMessagePostbackShouldReturnDataReceivedFromAgentAPI(t *testing.
 func TestUpdateChatPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_chat_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -722,7 +729,7 @@ func TestUpdateChatPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) 
 func TestDeleteChatPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_chat_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -736,7 +743,7 @@ func TestDeleteChatPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) 
 func TestUpdateThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_thread_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -750,7 +757,7 @@ func TestUpdateThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T
 func TestDeleteThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_thread_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -764,7 +771,7 @@ func TestDeleteThreadPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T
 func TestUpdateEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_event_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -778,7 +785,7 @@ func TestUpdateEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 func TestDeleteEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "delete_event_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -792,7 +799,7 @@ func TestDeleteEventPropertiesShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 func TestTagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "tag_thread"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -806,7 +813,7 @@ func TestTagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestUntagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "untag_thread"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -820,7 +827,7 @@ func TestUntagThreadShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -858,7 +865,7 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_customers"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -885,7 +892,7 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestCreateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "create_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -902,7 +909,7 @@ func TestCreateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -916,7 +923,7 @@ func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestBanCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "ban_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -930,7 +937,7 @@ func TestBanCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestSetRoutingStatusShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "set_routing_status"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -944,7 +951,7 @@ func TestSetRoutingStatusShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestMarkEventsAsSeenShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "mark_events_as_seen"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -958,7 +965,7 @@ func TestMarkEventsAsSeenShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestSendTypingIndicatorShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_typing_indicator"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -972,7 +979,7 @@ func TestSendTypingIndicatorShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestMulticastShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "multicast"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -986,7 +993,7 @@ func TestMulticastShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestTransferChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "transfer_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1004,7 +1011,7 @@ func TestTransferChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "start_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1016,7 +1023,7 @@ func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "send_event"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1028,7 +1035,7 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "activate_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1040,7 +1047,7 @@ func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_chats"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1052,7 +1059,7 @@ func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestGetChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "get_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1064,7 +1071,7 @@ func TestGetChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestListThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_threads"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1076,7 +1083,7 @@ func TestListThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestListArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_archives"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1088,7 +1095,7 @@ func TestListArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "deactivate_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1100,7 +1107,7 @@ func TestDeactivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestFollowChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "follow_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1112,7 +1119,7 @@ func TestFollowChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUnfollowChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "unfollow_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1124,7 +1131,7 @@ func TestUnfollowChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "upload_file"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1137,7 +1144,7 @@ func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestGrantChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "grant_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1149,7 +1156,7 @@ func TestGrantChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestRevokeChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "revoke_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1161,7 +1168,7 @@ func TestRevokeChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestSetChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "set_chat_access"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1173,7 +1180,7 @@ func TestSetChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "add_user_to_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1185,7 +1192,7 @@ func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestRemoveUserFromChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "remove_user_from_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1198,7 +1205,7 @@ func TestRemoveUserFromChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestSendRichMessagePostbackShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "send_rich_message_postback"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1210,7 +1217,7 @@ func TestSendRichMessagePostbackShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUpdateChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_chat_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1222,7 +1229,7 @@ func TestUpdateChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "delete_chat_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1234,7 +1241,7 @@ func TestDeleteChatPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUpdateThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_thread_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1246,7 +1253,7 @@ func TestUpdateThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestDeleteThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "delete_thread_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1258,7 +1265,7 @@ func TestDeleteThreadPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_event_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1270,7 +1277,7 @@ func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "delete_event_properties"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1282,7 +1289,7 @@ func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestTagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "tag_thread"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1294,7 +1301,7 @@ func TestTagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUntagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "untag_thread"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1306,7 +1313,7 @@ func TestUntagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestListCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "list_customers"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1318,7 +1325,7 @@ func TestListCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestCreateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "create_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1329,7 +1336,7 @@ func TestCreateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1341,7 +1348,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestBanCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "ban_customer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1353,7 +1360,7 @@ func TestBanCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestSetRoutingStatusShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "set_routing_status"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1365,7 +1372,7 @@ func TestSetRoutingStatusShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "mark_events_as_seen"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1377,7 +1384,7 @@ func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestSendTypingIndicatorShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "send_typing_indicator"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1389,7 +1396,7 @@ func TestSendTypingIndicatorShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestMulticastShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "multicast"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1401,7 +1408,7 @@ func TestMulticastShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestTransferChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "transfer_chat"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1414,7 +1421,7 @@ func TestTransferChatShouldNotCrashOnErrorResponse(t *testing.T) {
 func TestListAgentsForTransferShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "list_agents_for_transfer"))
 
-	api, err := agent.NewAPI(stubTokenGetter, client, "client_id")
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
@@ -1426,5 +1433,57 @@ func TestListAgentsForTransferShouldReturnDataReceivedFromAgentAPI(t *testing.T)
 
 	if len(resp) != 2 {
 		t.Errorf("Invalid ListAgentsForTransfer response: %v", resp)
+	}
+}
+
+func TestBasicAuthorizationScheme(t *testing.T) {
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		if authHeader := req.Header.Get("Authorization"); authHeader != "Basic access_token" {
+			t.Errorf("Invalid Authorization header: %s", authHeader)
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewReader(nil)),
+			Header:     make(http.Header),
+		}
+	})
+
+	api, err := agent.NewAPI(stubTokenGetter(authorization.BasicToken), client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+	api.Call("", nil, nil)
+}
+
+func TestBearerAuthorizationScheme(t *testing.T) {
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		if authHeader := req.Header.Get("Authorization"); authHeader !=
+			"Bearer access_token" {
+			t.Errorf("Invalid Authorization header: %s", authHeader)
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewReader(nil)),
+			Header:     make(http.Header),
+		}
+	})
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+	api.Call("", nil, nil)
+}
+
+func TestInvalidAuthorizationScheme(t *testing.T) {
+	client := NewTestClient(func(req *http.Request) *http.Response { return nil })
+
+	api, err := agent.NewAPI(stubTokenGetter(authorization.TokenType(2020)), client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+	err = api.Call("", nil, nil)
+	if err == nil {
+		t.Errorf("Err should not be nil")
 	}
 }

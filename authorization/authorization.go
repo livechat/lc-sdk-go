@@ -8,6 +8,8 @@ type Token struct {
 	AccessToken string
 	// Region is a datacenter for LicenseID (`dal` or `fra`).
 	Region string
+	// Type specifies whether it is Bearer or Basic token type.
+	Type TokenType
 }
 
 // TokenGetter is called by each API method to obtain valid Token.
