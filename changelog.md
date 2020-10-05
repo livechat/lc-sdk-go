@@ -8,4 +8,12 @@
 * Added `Type` to `authorization.Token` in order to support different authentication schemes (`Bearer` and `Basic`).
 * Added possibility for chat transfer within the current group.
 * Fixed marshaling of `Avatar` in `CreateBot`.
-* Deprecated setting of `Status` via `CreateBot` and `UpdateBot` - use `SetRoutingStatus` instead.\
+* Deprecated setting of `Status` via `CreateBot` and `UpdateBot` - use `SetRoutingStatus` instead.
+
+### [v2.0.0]
+
+* Support LiveChat APIs v3.2.
+
+### [v1.0.0]
+
+* Support LiveChat APIs v3.1.
