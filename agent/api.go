@@ -326,13 +326,14 @@ func (a *API) GetCustomer(customerID string) (customer objects.Customer, err err
 }
 
 // ListCustomers returns the list of Customers.
-func (a *API) ListCustomers(limit uint, pageID, sortOrder string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
+func (a *API) ListCustomers(limit uint, pageID, sortOrder, sortBy string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
 	var resp listCustomersResponse
 	err = a.Call("list_customers", &listCustomersRequest{
 		PageID:    pageID,
 		Limit:     limit,
 		SortOrder: sortOrder,
 		Filters:   filters,
+		SortBy:    sortBy,
 	}, &resp)
 
 	return resp.Customers, resp.TotalCustomers, resp.PreviousPageID, resp.NextPageID, err

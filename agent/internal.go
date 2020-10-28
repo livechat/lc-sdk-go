@@ -173,6 +173,7 @@ type listCustomersRequest struct {
 	Limit     uint              `json:"limit,omitempty"`
 	SortOrder string            `json:"sort_order,omitempty"`
 	Filters   *customersFilters `json:"filters,omitempty"`
+	SortBy    string            `json:"sort_by,omitempty"`
 }
 
 type listCustomersResponse struct {
