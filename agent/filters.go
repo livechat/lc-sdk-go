@@ -140,16 +140,17 @@ func (af *archivesFilters) ByEventTypes(types ...string) *archivesFilters {
 // Customer filters
 
 type customersFilters struct {
-	Country                    *stringFilter    `json:"country,omitempty"`
-	Email                      *stringFilter    `json:"email,omitempty"`
-	Name                       *stringFilter    `json:"name,omitempty"`
-	CustomerID                 *stringFilter    `json:"customer_id,omitempty"`
-	ChatsCount                 *RangeFilter     `json:"chats_count,omitempty"`
-	ThreadsCount               *RangeFilter     `json:"threads_count,omitempty"`
-	VisitsCount                *RangeFilter     `json:"visits_count,omitempty"`
-	CreatedAt                  *DateRangeFilter `json:"created_at,omitempty"`
-	AgentLastEventCreatedAt    *DateRangeFilter `json:"agent_last_event_created_at,omitempty"`
-	CustomerLastEventCreatedAt *DateRangeFilter `json:"customer_last_event_created_at,omitempty"`
+	Country                      *stringFilter    `json:"country,omitempty"`
+	Email                        *stringFilter    `json:"email,omitempty"`
+	Name                         *stringFilter    `json:"name,omitempty"`
+	CustomerID                   *stringFilter    `json:"customer_id,omitempty"`
+	ChatsCount                   *RangeFilter     `json:"chats_count,omitempty"`
+	ThreadsCount                 *RangeFilter     `json:"threads_count,omitempty"`
+	VisitsCount                  *RangeFilter     `json:"visits_count,omitempty"`
+	CreatedAt                    *DateRangeFilter `json:"created_at,omitempty"`
+	AgentLastEventCreatedAt      *DateRangeFilter `json:"agent_last_event_created_at,omitempty"`
+	CustomerLastEventCreatedAt   *DateRangeFilter `json:"customer_last_event_created_at,omitempty"`
+	IncludeCustomersWithoutChats *bool            `json:"include_customers_without_chats,omitempty"`
 }
 
 type stringFilter struct {
@@ -271,6 +272,12 @@ func (cf *customersFilters) ByAgentsLastActivity(timeRange *DateRangeFilter) *cu
 // See DateRangeFilter definition for details of filter creation
 func (cf *customersFilters) ByCustomersLastActivity(timeRange *DateRangeFilter) *customersFilters {
 	cf.CustomerLastEventCreatedAt = timeRange
+	return cf
+}
+
+// WithIncludeCustomersWithoutChats allows to include or exclude customers without chats
+func (cf *customersFilters) WithIncludeCustomersWithoutChats(value bool) *customersFilters {
+	cf.IncludeCustomersWithoutChats = &value
 	return cf
 }
 
