@@ -870,7 +870,7 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	customers, total, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", agent.NewCustomersFilters())
+	customers, total, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
 	if rErr != nil {
 		t.Errorf("ListCustomers failed: %v", rErr)
 	}
@@ -1318,7 +1318,7 @@ func TestListCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.ListCustomers(100, "page", "asc", agent.NewCustomersFilters())
+	_, _, _, _, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
 	verifyErrorResponse("ListCustomers", rErr, t)
 }
 
