@@ -320,3 +320,26 @@ func (cf *chatsFilters) ByProperties(propsFilters PropertiesFilters) *chatsFilte
 	cf.Properties = propsFilters
 	return cf
 }
+
+// Threads Filters
+type threadsFilters struct {
+	From string `json:"from,omitempty"`
+	To   string `json:"to,omitempty"`
+}
+
+// NewThreadsFilters creates empty structure to aggregate filters for Threads in ListThreads method
+func NewThreadsFilters() *threadsFilters {
+	return &threadsFilters{}
+}
+
+// FromDate extends threads filter to exclude entries before given date
+func (tf *threadsFilters) FromDate(date string) *threadsFilters {
+	tf.From = date
+	return tf
+}
+
+// FromDate extends threads filter to exclude entries after given date
+func (tf *threadsFilters) ToDate(date string) *threadsFilters {
+	tf.To = date
+	return tf
+}
