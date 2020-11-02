@@ -86,12 +86,12 @@ func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 		t.Errorf("ArchivesFilters.Query invalid: %v", af.Query)
 	}
 
-	if af.DateFrom != "11-09-2001" {
-		t.Errorf("ArchivesFilters.DateFrom invalid: %v", af.DateFrom)
+	if af.From != "11-09-2001" {
+		t.Errorf("ArchivesFilters.From invalid: %v", af.From)
 	}
 
-	if af.DateTo != "02-04-2137" {
-		t.Errorf("ArchivesFilters.DateTo invalid: %v", af.DateTo)
+	if af.To != "02-04-2137" {
+		t.Errorf("ArchivesFilters.To invalid: %v", af.To)
 	}
 
 	if af.Events.Types[0] != "filled_form" || af.Events.Types[1] != "file" {
