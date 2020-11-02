@@ -286,3 +286,16 @@ func TestChatsFilters(t *testing.T) {
 		t.Errorf("ChatsFilters.GroupIDs invalid: %v", cf.GroupIDs)
 	}
 }
+
+func TestThreadsFilters(t *testing.T) {
+	tf := agent.NewThreadsFilters()
+
+	tf.FromDate("11-09-2001").ToDate("02-04-2137")
+	if tf.From != "11-09-2001" {
+		t.Errorf("ThreadsFilters.From invalid: %v", tf.From)
+	}
+
+	if tf.To != "02-04-2137" {
+		t.Errorf("ThreadsFilters.To invalid: %v", tf.To)
+	}
+}
