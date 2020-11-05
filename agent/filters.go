@@ -31,8 +31,8 @@ func NewPropertyFilterType(includes bool, vals ...interface{}) *propertyFilterTy
 type archivesFilters struct {
 	Agents     *propertyFilterType `json:"agents,omitempty"`
 	GroupIDs   []uint              `json:"group_ids,omitempty"`
-	DateFrom   string              `json:"date_from,omitempty"`
-	DateTo     string              `json:"date_to,omitempty"`
+	From       string              `json:"from,omitempty"`
+	To         string              `json:"to,omitempty"`
 	Properties PropertiesFilters   `json:"properties,omitempty"`
 	Tags       *propertyFilterType `json:"tags,omitempty"`
 	Sales      *propertyFilterType `json:"sales,omitempty"`
@@ -88,13 +88,13 @@ func (af *archivesFilters) ByQuery(query string) *archivesFilters {
 
 // FromDate extends archives filter to exclude entries before given date
 func (af *archivesFilters) FromDate(date string) *archivesFilters {
-	af.DateFrom = date
+	af.From = date
 	return af
 }
 
 // FromDate extends archives filter to exclude entries after given date
 func (af *archivesFilters) ToDate(date string) *archivesFilters {
-	af.DateTo = date
+	af.To = date
 	return af
 }
 
