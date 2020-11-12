@@ -89,25 +89,23 @@ type BotWebhookAction struct {
 
 // PropertyConfig defines configuration of a property
 type PropertyConfig struct {
-	Type        string               `json:"type"`
-	Locations   map[string]*Location `json:"locations"`
-	Description string               `json:"description,omitempty"`
-	Domain      []interface{}        `json:"domain,omitempty"`
-	Range       *struct {
+	Name          string                     `json:"name"`
+	OwnerClientID string                     `json:"owner_client_id"`
+	Type          string                     `json:"type"`
+	Access        map[string]*PropertyAccess `json:"access"`
+	Description   string                     `json:"description,omitempty"`
+	Domain        []interface{}              `json:"domain,omitempty"`
+	Range         *struct {
 		From int `json:"from"`
 		To   int `json:"to"`
 	} `json:"range,omitempty"`
-}
-
-// Location represents property location
-type Location struct {
-	Access map[string]*PropertyAccess `json:"access"`
+	PublicAccess []string `json:"public_access,omitempty"`
 }
 
 // PropertyAccess defines read/write rights of a property
 type PropertyAccess struct {
-	Read  bool `json:"read"`
-	Write bool `json:"write"`
+	Agent    []string `json:"agent"`
+	Customer []string `json:"customer"`
 }
 
 // Group defines basic group information

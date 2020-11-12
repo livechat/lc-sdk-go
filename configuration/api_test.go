@@ -105,88 +105,26 @@ var mockedResponses = map[string]string{
         }
     }
 	}`,
-	"register_properties": `{
-		"58737b5829e65621a45d598aa6f2ed8e": {
-			"greeting": {
-				"type": "string",
-				"locations": {
-					"chat": {
-						"access": {
-							"agent": {
-								"read": true,
-								"write": false
-							},
-							"customer": {
-								"read": true,
-								"write": true
-							}
-						}
-					}
+	"register_property":   `{}`,
+	"unregister_property": `{}`,
+	"publish_property":    `{}`,
+	"list_properties": `{
+		"dummy_property": {
+			"type": "string",
+			"description": "This is a dummy property",
+			"access": {
+				"chat": {
+					"agent": ["read", "write"],
+					"customer": ["read"]
 				},
-				"domain": [
-					"hello",
-					"hi"
-				]
-			},
-			"scoring": {
-				"type": "int",
-				"locations": {
-					"event": {
-						"access": {
-							"agent": {
-								"read": true,
-								"write": true
-							}
-						}
-					}
-				},
-				"range": {
-					"from": 0,
-					"to": 10
+				"group": {
+					"agent": ["write"]
 				}
-			}
-		}
-	}`,
-	"list_registered_properties": `{
-		"58737b5829e65621a45d598aa6f2ed8e": {
-			"greeting": {
-				"type": "string",
-				"locations": {
-					"chat": {
-						"access": {
-							"agent": {
-								"read": true,
-								"write": false
-							},
-							"customer": {
-								"read": true,
-								"write": true
-							}
-						}
-					}
-				},
-				"domain": [
-					"hello",
-					"hi"
-				]
 			},
-			"scoring": {
-				"type": "int",
-				"locations": {
-					"event": {
-						"access": {
-							"agent": {
-								"read": true,
-								"write": true
-							}
-						}
-					}
-				},
-				"range": {
-					"from": 0,
-					"to": 10
-				}
-			}
+			"domain": [
+				"hello",
+				"hi"
+			]
 		}
 	}`,
 	"list_license_properties": `{
@@ -482,34 +420,75 @@ func TestGetBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	}
 }
 
-func TestRegisterPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "register_properties"))
+func TestRegisterPropertyShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "register_property"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.RegisterProperties(map[string]*configuration.PropertyConfig{"foo": &configuration.PropertyConfig{Type: "string"}})
+	rErr := api.RegisterProperty(&configuration.PropertyConfig{
+		Name:          "dummy_property",
+		OwnerClientID: "dummy_client_id",
+		Type:          "int",
+		Domain:        []interface{}{2, 1, 3, 7},
+		Description:   "This is a dummy property",
+		Access: map[string]*configuration.PropertyAccess{
+			"chat": {
+				Agent:    []string{"read", "write"},
+				Customer: []string{"read"},
+			},
+		},
+	})
 	if rErr != nil {
-		t.Errorf("RegisterProperties failed: %v", rErr)
+		t.Errorf("RegisterProperty failed: %v", rErr)
 	}
 }
 
-func TestListRegisteredPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "list_registered_properties"))
+func TestUnregisterPropertyShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "unregister_property"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListRegisteredProperties(true)
+	rErr := api.UnregisterProperty("dummy_property", "dummy_client_id")
 	if rErr != nil {
-		t.Errorf("ListRegisteredProperties failed: %v", rErr)
+		t.Errorf("UnregisterProperty failed: %v", rErr)
+	}
+}
+
+func TestPublishPropertyShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "publish_property"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
 	}
 
-	if _, exists := resp["58737b5829e65621a45d598aa6f2ed8e"]; !exists || len(resp) != 1 {
+	rErr := api.PublishProperty("dummy_property", "dummy_client_id", true, false)
+	if rErr != nil {
+		t.Errorf("PublishProperty failed: %v", rErr)
+	}
+}
+
+func TestListPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListProperties("dummy_client_id")
+	if rErr != nil {
+		t.Errorf("ListProperties failed: %v", rErr)
+	}
+
+	_, exists := resp["dummy_property"]
+	if !exists || len(resp) != 1 {
 		t.Errorf("Invalid property configs: %v", resp)
 	}
 }

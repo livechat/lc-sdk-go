@@ -48,13 +48,22 @@ type getBotResponse struct {
 	BotAgent *BotAgentDetails `json:"bot_agent"`
 }
 
-type createPropertiesRequest map[string]*PropertyConfig
-
-type listRegisteredPropertiesRequest struct {
-	All bool `json:"all"`
+type unregisterPropertyRequest struct {
+	Name          string `json:"name"`
+	OwnerClientID string `json:"owner_client_id"`
 }
 
-type listRegisteredPropertiesResponse map[string]*PropertyConfig
+type publishPropertyRequest struct {
+	Name          string   `json:"name"`
+	OwnerClientID string   `json:"owner_client_id"`
+	AccessType    []string `json:"access_type"`
+}
+
+type listPropertiesRequest struct {
+	OwnerClientID string `json:"owner_client_id"`
+}
+
+type listPropertiesResponse map[string]*PropertyConfig
 
 type getGroupRequest struct {
 	ID     int      `json:"id"`

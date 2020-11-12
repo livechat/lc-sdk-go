@@ -203,16 +203,40 @@ func (a *API) ApproveAgent(id string) error {
 	}, &emptyResponse{})
 }
 
-// RegisterProperties allows to create properties
-func (a *API) RegisterProperties(properties map[string]*PropertyConfig) error {
-	return a.Call("register_properties", properties, &emptyResponse{})
+// RegisterProperty creates private property
+func (a *API) RegisterProperty(property *PropertyConfig) error {
+	return a.Call("register_property", property, &emptyResponse{})
 }
 
-// ListRegisteredProperties return list of properties along with their configuration
-func (a *API) ListRegisteredProperties(getAll bool) (map[string]*PropertyConfig, error) {
-	var resp listRegisteredPropertiesResponse
-	err := a.Call("list_registered_properties", &listRegisteredPropertiesRequest{
-		All: getAll,
+// UnregisterProperty removes private property
+func (a *API) UnregisterProperty(name, ownerClientID string) error {
+	return a.Call("unregister_property", &unregisterPropertyRequest{
+		Name:          name,
+		OwnerClientID: ownerClientID,
+	}, &emptyResponse{})
+}
+
+// PublishProperty publishes private property
+func (a *API) PublishProperty(name, ownerClientID string, read, write bool) error {
+	accessType := make([]string, 2)
+	if read {
+		accessType = append(accessType, "read")
+	}
+	if write {
+		accessType = append(accessType, "write")
+	}
+	return a.Call("publish_property", &publishPropertyRequest{
+		Name:          name,
+		OwnerClientID: ownerClientID,
+		AccessType:    accessType,
+	}, &emptyResponse{})
+}
+
+// ListProperties return list of properties for given owner_client_id along with their configuration
+func (a *API) ListProperties(ownerClientID string) (map[string]*PropertyConfig, error) {
+	var resp listPropertiesResponse
+	err := a.Call("list_properties", &listPropertiesRequest{
+		OwnerClientID: ownerClientID,
 	}, &resp)
 
 	return resp, err
