@@ -522,7 +522,7 @@ func TestListThreadsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	threads, found, prevPage, nextPage, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	threads, found, prevPage, nextPage, rErr := api.ListThreads("stubChatID", "", "", 20, 0, agent.NewThreadsFilters())
 	if rErr != nil {
 		t.Errorf("ListThreads failed: %v", rErr)
 	}
@@ -1076,7 +1076,7 @@ func TestListThreadsShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.ListThreads("stubChatID", "", "", 20, 0)
+	_, _, _, _, rErr := api.ListThreads("stubChatID", "", "", 20, 0, agent.NewThreadsFilters())
 	verifyErrorResponse("ListThreads", rErr, t)
 }
 

@@ -28,8 +28,9 @@ type getChatResponse struct {
 
 type listThreadsRequest struct {
 	*hashedPaginationRequest
-	ChatID         string `json:"chat_id"`
-	MinEventsCount uint   `json:"min_events_count,omitempty"`
+	ChatID         string          `json:"chat_id"`
+	MinEventsCount uint            `json:"min_events_count,omitempty"`
+	Filters        *threadsFilters `json:"filters,omitempty"`
 }
 
 type listThreadsResponse struct {

@@ -66,7 +66,7 @@ func (a *API) GetChat(chatID string, threadID string) (objects.Chat, error) {
 }
 
 // ListChats returns threads list.
-func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCount uint) (threads []objects.Thread, found uint, previousPage, nextPage string, err error) {
+func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCount uint, filters *threadsFilters) (threads []objects.Thread, found uint, previousPage, nextPage string, err error) {
 	var resp listThreadsResponse
 	err = a.Call("list_threads", &listThreadsRequest{
 		ChatID: chatID,
@@ -76,6 +76,7 @@ func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCoun
 			Limit:     limit,
 		},
 		MinEventsCount: minEventsCount,
+		Filters:        filters,
 	}, &resp)
 
 	return resp.Threads, resp.FoundThreads, resp.PreviousPageID, resp.NextPageID, err
