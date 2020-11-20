@@ -329,7 +329,7 @@ func (a *API) GetCustomer(customerID string) (customer objects.Customer, err err
 }
 
 // ListCustomers returns the list of Customers.
-func (a *API) ListCustomers(limit uint, pageID, sortOrder, sortBy string, filters *customersFilters) (customers []objects.Customer, total uint, previousPage, nextPage string, err error) {
+func (a *API) ListCustomers(limit uint, pageID, sortOrder, sortBy string, filters *customersFilters) (customers []objects.Customer, total uint, limited uint, previousPage, nextPage string, err error) {
 	var resp listCustomersResponse
 	err = a.Call("list_customers", &listCustomersRequest{
 		PageID:    pageID,
@@ -339,7 +339,7 @@ func (a *API) ListCustomers(limit uint, pageID, sortOrder, sortBy string, filter
 		SortBy:    sortBy,
 	}, &resp)
 
-	return resp.Customers, resp.TotalCustomers, resp.PreviousPageID, resp.NextPageID, err
+	return resp.Customers, resp.TotalCustomers, resp.LimitedCustomers, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // CreateCustomer creates new Customer.

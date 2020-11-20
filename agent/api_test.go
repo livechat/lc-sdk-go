@@ -270,6 +270,7 @@ var mockedResponses = map[string]string{
 	"list_customers": `{
 		"customers": [],
 		"total_customers": 0,
+		"limited_customers": 1,
 		"previous_page_id": "prevpagehash"
 	}`,
 	"create_customer": `{
@@ -870,7 +871,7 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	customers, total, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
+	customers, total, limit, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
 	if rErr != nil {
 		t.Errorf("ListCustomers failed: %v", rErr)
 	}
@@ -886,6 +887,9 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 	if nextPage != "" {
 		t.Errorf("Invalid next page ID: %v", nextPage)
+	}
+	if limit != 1 {
+		t.Errorf("Invalid limit: %v", total)
 	}
 }
 
@@ -1318,7 +1322,7 @@ func TestListCustomersShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, _, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
+	_, _, _, _, _, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
 	verifyErrorResponse("ListCustomers", rErr, t)
 }
 
