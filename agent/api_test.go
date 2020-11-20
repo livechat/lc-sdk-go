@@ -871,7 +871,7 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	customers, total, limit, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
+	customers, total, limited, prevPage, nextPage, rErr := api.ListCustomers(100, "page", "asc", "", agent.NewCustomersFilters())
 	if rErr != nil {
 		t.Errorf("ListCustomers failed: %v", rErr)
 	}
@@ -888,8 +888,8 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	if nextPage != "" {
 		t.Errorf("Invalid next page ID: %v", nextPage)
 	}
-	if limit != 1 {
-		t.Errorf("Invalid limit: %v", total)
+	if limited != 1 {
+		t.Errorf("Invalid limited customers amount: %v", total)
 	}
 }
 
