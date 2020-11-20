@@ -53,10 +53,11 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *API) StartChat(initialChat *objects.InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
+func (a *API) StartChat(initialChat *objects.InitialChat, continuous, active bool) (chatID, threadID string, eventIDs []string, err error) {
 	req := &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
+		Active:     active,
 	}
 
 	if err := initialChat.Validate(); err != nil {
@@ -116,19 +117,20 @@ func (a *API) SendEvent(chatID string, e interface{}, attachToLastThread bool) (
 	return resp.EventID, err
 }
 
-// ActivateChat activates chat initialChat.ID with access, properties and initial thread
+// ResumeChat resumes chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *API) ActivateChat(initialChat *objects.InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
-	var resp activateChatResponse
+func (a *API) ResumeChat(initialChat *objects.InitialChat, continuous, active bool) (threadID string, eventIDs []string, err error) {
+	var resp resumeChatResponse
 
 	if err := initialChat.Validate(); err != nil {
 		return "", nil, err
 	}
 
-	err = a.Call("activate_chat", &activateChatRequest{
+	err = a.Call("resume_chat", &resumeChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
+		Active:     active,
 	}, &resp)
 
 	return resp.ThreadID, resp.EventIDs, err

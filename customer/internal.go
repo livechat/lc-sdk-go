@@ -5,6 +5,7 @@ import "github.com/livechat/lc-sdk-go/v2/objects"
 type startChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat,omitempty"`
 	Continuous bool                 `json:"continuous,omitempty"`
+	Active     bool                 `json:"active"`
 }
 
 type startChatResponse struct {
@@ -23,12 +24,13 @@ type sendEventResponse struct {
 	EventID string `json:"event_id"`
 }
 
-type activateChatRequest struct {
+type resumeChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat"`
 	Continuous bool                 `json:"continuous,omitempty"`
+	Active     bool                 `json:"active"`
 }
 
-type activateChatResponse struct {
+type resumeChatResponse struct {
 	ThreadID string   `json:"thread_id"`
 	EventIDs []string `json:"event_ids"`
 }

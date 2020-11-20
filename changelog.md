@@ -1,5 +1,9 @@
 # Changelog
 
+### [Current Changes]
+* Add `active` parameter to `ResumeChat` and `StartChat`.
+* Renamed `ActivateChat` to `ResumeChat`.
+* Support LiveChat APIs v3.3.
 
 ### [v2.1.0]
 

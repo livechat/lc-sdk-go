@@ -237,7 +237,7 @@ type ChatSummary struct {
 	IsFollowed        bool           `json:"is_followed"`
 }
 
-// InitialChat represents initial chat used in StartChat or ActivateChat.
+// InitialChat represents initial chat used in StartChat or ResumeChat.
 type InitialChat struct {
 	ID         string         `json:"id"`
 	Access     *Access        `json:"access,omitempty"`
@@ -277,7 +277,7 @@ func ValidateEvent(e interface{}) error {
 	return nil
 }
 
-// InitialThread represents initial chat thread used in StartChat or ActivateChat.
+// InitialThread represents initial chat thread used in StartChat or ResumeChat.
 type InitialThread struct {
 	Events     []interface{} `json:"events,omitempty"`
 	Properties Properties    `json:"properties,omitempty"`

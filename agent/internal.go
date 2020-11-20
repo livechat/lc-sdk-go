@@ -52,6 +52,7 @@ type listArchivesResponse struct {
 type startChatRequest struct {
 	Chat       *InitialChat `json:"chat,omitempty"`
 	Continuous bool         `json:"continuous,omitempty"`
+	Active     bool         `json:"active"`
 }
 
 type startChatResponse struct {
@@ -60,12 +61,13 @@ type startChatResponse struct {
 	EventIDs []string `json:"event_ids,omitempty"`
 }
 
-type activateChatRequest struct {
+type resumeChatRequest struct {
 	Chat       *InitialChat `json:"chat"`
 	Continuous bool         `json:"continuous,omitempty"`
+	Active     bool         `json:"active"`
 }
 
-type activateChatResponse struct {
+type resumeChatResponse struct {
 	ThreadID string   `json:"thread_id"`
 	EventIDs []string `json:"event_ids"`
 }

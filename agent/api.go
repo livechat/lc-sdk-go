@@ -98,7 +98,7 @@ func (a *API) ListArchives(filters *archivesFilters, page, limit uint) (chats []
 
 // StartChat starts new chat with access, properties and initial thread as defined in initialChat.
 // It returns respectively chat ID, thread ID and initial event IDs (except for server-generated events).
-func (a *API) StartChat(initialChat *InitialChat, continuous bool) (chatID, threadID string, eventIDs []string, err error) {
+func (a *API) StartChat(initialChat *InitialChat, continuous, active bool) (chatID, threadID string, eventIDs []string, err error) {
 	var resp startChatResponse
 
 	if err := initialChat.Validate(); err != nil {
@@ -108,23 +108,25 @@ func (a *API) StartChat(initialChat *InitialChat, continuous bool) (chatID, thre
 	err = a.Call("start_chat", &startChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
+		Active:     active,
 	}, &resp)
 	return resp.ChatID, resp.ThreadID, resp.EventIDs, err
 }
 
-// ActivateChat activates chat initialChat.ID with access, properties and initial thread
+// ResumeChat resumes chat initialChat.ID with access, properties and initial thread
 // as defined in initialChat.
 // It returns respectively thread ID and initial event IDs (except for server-generated events).
-func (a *API) ActivateChat(initialChat *InitialChat, continuous bool) (threadID string, eventIDs []string, err error) {
-	var resp activateChatResponse
+func (a *API) ResumeChat(initialChat *InitialChat, continuous, active bool) (threadID string, eventIDs []string, err error) {
+	var resp resumeChatResponse
 
 	if err := initialChat.Validate(); err != nil {
 		return "", nil, err
 	}
 
-	err = a.Call("activate_chat", &activateChatRequest{
+	err = a.Call("resume_chat", &resumeChatRequest{
 		Chat:       initialChat,
 		Continuous: continuous,
+		Active:     active,
 	}, &resp)
 
 	return resp.ThreadID, resp.EventIDs, err

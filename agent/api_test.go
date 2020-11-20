@@ -47,7 +47,7 @@ var mockedResponses = map[string]string{
 		"chat_id": "PJ0MRSHTDG",
 		"thread_id": "PGDGHT5G"
 	}`,
-	"activate_chat": `{
+	"resume_chat": `{
 		"thread_id": "PGDGHT5G"
 	}`,
 	"send_event": `{
@@ -311,7 +311,7 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.2/agent/action/"+method {
+		if req.URL.String() != "https://api.livechatinc.com/v3.3/agent/action/"+method {
 			t.Errorf("Invalid URL for Agent API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
@@ -405,7 +405,7 @@ func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	chatID, threadID, _, rErr := api.StartChat(&agent.InitialChat{}, true)
+	chatID, threadID, _, rErr := api.StartChat(&agent.InitialChat{}, true, true)
 	if rErr != nil {
 		t.Errorf("StartChat failed: %v", rErr)
 	}
@@ -436,17 +436,17 @@ func TestSendEventShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestActivateChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "activate_chat"))
+func TestResumeChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "resume_chat"))
 
 	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	threadID, _, rErr := api.ActivateChat(&agent.InitialChat{}, true)
+	threadID, _, rErr := api.ResumeChat(&agent.InitialChat{}, true, true)
 	if rErr != nil {
-		t.Errorf("ActivateChat failed: %v", rErr)
+		t.Errorf("ResumeChat failed: %v", rErr)
 	}
 
 	if threadID != "PGDGHT5G" {
@@ -1016,7 +1016,7 @@ func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, _, rErr := api.StartChat(&agent.InitialChat{}, true)
+	_, _, _, rErr := api.StartChat(&agent.InitialChat{}, true, true)
 	verifyErrorResponse("StartChat", rErr, t)
 }
 
@@ -1032,16 +1032,16 @@ func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("SendEvent", rErr, t)
 }
 
-func TestActivateChatShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "activate_chat"))
+func TestResumeChatShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "resume_chat"))
 
 	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	_, _, rErr := api.ActivateChat(&agent.InitialChat{}, true)
-	verifyErrorResponse("ActivateChat", rErr, t)
+	_, _, rErr := api.ResumeChat(&agent.InitialChat{}, true, true)
+	verifyErrorResponse("ResumeChat", rErr, t)
 }
 
 func TestListChatsShouldNotCrashOnErrorResponse(t *testing.T) {
