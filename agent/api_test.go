@@ -889,7 +889,7 @@ func TestListCustomersShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("Invalid next page ID: %v", nextPage)
 	}
 	if limited != 1 {
-		t.Errorf("Invalid limited customers amount: %v", total)
+		t.Errorf("Invalid limited customers amount: %v", limited)
 	}
 }
 

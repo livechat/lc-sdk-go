@@ -183,7 +183,7 @@ type listCustomersResponse struct {
 	hashedPaginationResponse
 	Customers        []objects.Customer `json:"customers"`
 	TotalCustomers   uint               `json:"total_customers"`
-	LimitedCustomers uint               `json:"limited_customers,omitempty"`
+	LimitedCustomers uint               `json:"limited_customers"`
 }
 
 type createCustomerRequest struct {
