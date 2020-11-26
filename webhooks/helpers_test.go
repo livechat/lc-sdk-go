@@ -1,6 +1,7 @@
 package webhooks_test
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -13,7 +14,7 @@ func propEq(propertyName string, actual, expected interface{}, validationAccumul
 	}
 }
 
-func incomingChat(wh *webhooks.Webhook) error {
+func incomingChat(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.IncomingChat)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -103,7 +104,7 @@ func incomingChat(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func incomingEvent(wh *webhooks.Webhook) error {
+func incomingEvent(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.IncomingEvent)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -128,7 +129,7 @@ func incomingEvent(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func eventUpdated(wh *webhooks.Webhook) error {
+func eventUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.EventUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -153,7 +154,7 @@ func eventUpdated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func incomingRichMessagePostback(wh *webhooks.Webhook) error {
+func incomingRichMessagePostback(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.IncomingRichMessagePostback)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -173,7 +174,7 @@ func incomingRichMessagePostback(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatDeactivated(wh *webhooks.Webhook) error {
+func chatDeactivated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ChatDeactivated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -190,7 +191,7 @@ func chatDeactivated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatPropertiesUpdated(wh *webhooks.Webhook) error {
+func chatPropertiesUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ChatPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -208,7 +209,7 @@ func chatPropertiesUpdated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func threadPropertiesUpdated(wh *webhooks.Webhook) error {
+func threadPropertiesUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ThreadPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -227,7 +228,7 @@ func threadPropertiesUpdated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatPropertiesDeleted(wh *webhooks.Webhook) error {
+func chatPropertiesDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ChatPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -245,7 +246,7 @@ func chatPropertiesDeleted(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func threadPropertiesDeleted(wh *webhooks.Webhook) error {
+func threadPropertiesDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ThreadPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -264,7 +265,7 @@ func threadPropertiesDeleted(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatUserAdded(wh *webhooks.Webhook) error {
+func chatUserAdded(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ChatUserAdded)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -318,7 +319,7 @@ func chatUserAdded(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatUserRemoved(wh *webhooks.Webhook) error {
+func chatUserRemoved(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ChatUserRemoved)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -335,7 +336,7 @@ func chatUserRemoved(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func threadTagged(wh *webhooks.Webhook) error {
+func threadTagged(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ThreadTagged)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -352,7 +353,7 @@ func threadTagged(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func threadUntagged(wh *webhooks.Webhook) error {
+func threadUntagged(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.ThreadUntagged)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -369,7 +370,7 @@ func threadUntagged(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func agentDeleted(wh *webhooks.Webhook) error {
+func agentDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AgentDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -384,7 +385,7 @@ func agentDeleted(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func eventsMarkedAsSeen(wh *webhooks.Webhook) error {
+func eventsMarkedAsSeen(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.EventsMarkedAsSeen)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -401,7 +402,7 @@ func eventsMarkedAsSeen(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessGranted(wh *webhooks.Webhook) error {
+func accessGranted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AccessGranted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -419,7 +420,7 @@ func accessGranted(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessRevoked(wh *webhooks.Webhook) error {
+func accessRevoked(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AccessRevoked)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -438,7 +439,7 @@ func accessRevoked(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessSet(wh *webhooks.Webhook) error {
+func accessSet(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AccessSet)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -456,7 +457,7 @@ func accessSet(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func customerCreated(wh *webhooks.Webhook) error {
+func customerCreated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.CustomerCreated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -483,7 +484,7 @@ func customerCreated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func eventPropertiesDeleted(wh *webhooks.Webhook) error {
+func eventPropertiesDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.EventPropertiesDeleted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -503,7 +504,7 @@ func eventPropertiesDeleted(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func eventPropertiesUpdated(wh *webhooks.Webhook) error {
+func eventPropertiesUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.EventPropertiesUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
@@ -523,7 +524,7 @@ func eventPropertiesUpdated(wh *webhooks.Webhook) error {
 	return nil
 }
 
-func routingStatusSet(wh *webhooks.Webhook) error {
+func routingStatusSet(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.RoutingStatusSet)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", payload)

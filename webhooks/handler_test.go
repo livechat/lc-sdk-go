@@ -2,6 +2,7 @@ package webhooks_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -98,7 +99,7 @@ func TestErrorHappensWithCustomErrorHandler(t *testing.T) {
 }
 
 func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
-	verifier := func(*webhooks.Webhook) error { return nil }
+	verifier := func(context.Context, *webhooks.Webhook) error { return nil }
 	action := "incoming_chat"
 	cfg := webhooks.NewConfiguration().WithAction(action, verifier, "other_dummy_key")
 	h := webhooks.NewWebhookHandler(cfg)
@@ -118,13 +119,13 @@ func TestRejectWebhooksIfSecretKeyDoesntMatch(t *testing.T) {
 
 func TestPayloadParsingOK(t *testing.T) {
 	withLicenseCheck := func(verifier webhooks.Handler) webhooks.Handler {
-		return func(wh *webhooks.Webhook) error {
+		return func(ctx context.Context, wh *webhooks.Webhook) error {
 			var errors string
 			propEq("LicenseID", wh.LicenseID, 21377312, &errors)
 			if errors != "" {
 				return fmt.Errorf(errors)
 			}
-			return verifier(wh)
+			return verifier(ctx, wh)
 		}
 	}
 	testAction := func(action string, verifier webhooks.Handler) error {
@@ -149,5 +150,37 @@ func TestPayloadParsingOK(t *testing.T) {
 			t.Errorf("Payload incorrectly parsed for %v, error: %v", action, stepError)
 			return
 		}
+	}
+}
+
+func TestHandlerContextForwardsRequestContext(t *testing.T) {
+	verifier := func(ctx context.Context, wh *webhooks.Webhook) error {
+		rawVal := ctx.Value("dummy-key")
+		val, ok := rawVal.(string)
+		if !ok {
+			t.Errorf("invalid type of 'dummy-key' in wh ctx: %T", rawVal)
+			return nil
+		}
+		if val != "dummy-value" {
+			t.Errorf("invalid value of 'dummy-key' in wh ctx: %v", val)
+			return nil
+		}
+		return nil
+	}
+	action := "incoming_chat"
+	cfg := webhooks.NewConfiguration().WithAction(action, verifier, "")
+	h := webhooks.NewWebhookHandler(cfg)
+	payload, err := ioutil.ReadFile("./testdata/" + action + ".json")
+	if err != nil {
+		t.Errorf("Missing test payload for action %v", action)
+		return
+	}
+	req := httptest.NewRequest("POST", "https://example.com", bytes.NewBuffer(payload))
+	req = req.WithContext(context.WithValue(context.Background(), "dummy-key", "dummy-value"))
+	resp := httptest.NewRecorder()
+	h(resp, req)
+	if resp.Code != http.StatusOK {
+		t.Errorf("invalid code: %v", resp.Code)
+		return
 	}
 }
