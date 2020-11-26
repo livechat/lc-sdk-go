@@ -1,6 +1,7 @@
 package webhooks
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -21,7 +22,7 @@ type Configuration struct {
 
 type actionConfiguration struct {
 	secretKey string
-	handle    Handler
+	handle    HandlerContext
 }
 
 // The Handler type is used to define webhook processors.
@@ -29,6 +30,12 @@ type actionConfiguration struct {
 // It can be used with WebhookHandler, in which case WebhookHandler will
 // pass a webhook body with a payload field decoded (ie. one of webhooks structures).
 type Handler func(*Webhook) error
+
+// The HandlerContext type is used to define webhook processors.
+//
+// It can be used with WebhookHandler, in which case WebhookHandler will
+// pass a webhook body with a payload field decoded (ie. one of webhooks structures).
+type HandlerContext func(context.Context, *Webhook) error
 
 // NewConfiguration creates basic WebhookHandler configuration that
 // processes no webhooks and uses http.Error to handle webhook processing
@@ -46,6 +53,19 @@ func NewConfiguration() *Configuration {
 // Otherwise, webhook's secret is strictly validated. In case of any mismatch between expected and actual secret key,
 // webhook processing is stopped and error is returned.
 func (cfg *Configuration) WithAction(action string, handler Handler, secretKey string) *Configuration {
+	cfg.actions[action] = &actionConfiguration{
+		handle:    func(ctx context.Context, wh *Webhook) error { return handler(wh) },
+		secretKey: secretKey,
+	}
+	return cfg
+}
+
+// WithActionContext allows to attach custom webhook HandlerContext for given webhook action.
+//
+// If secretKey is an empty string, then no validation of webhook's secret is performed.
+// Otherwise, webhook's secret is strictly validated. In case of any mismatch between expected and actual secret key,
+// webhook processing is stopped and error is returned.
+func (cfg *Configuration) WithActionContext(action string, handler HandlerContext, secretKey string) *Configuration {
 	cfg.actions[action] = &actionConfiguration{
 		handle:    handler,
 		secretKey: secretKey,
@@ -145,7 +165,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 		}
 		wh.Payload = payload
 
-		if err = acfg.handle(&wh); err != nil {
+		if err = acfg.handle(r.Context(), &wh); err != nil {
 			cfg.handleError(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}
