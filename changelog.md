@@ -1,5 +1,9 @@
 # Changelog
 
+### [v2.2.0]
+
+* Fixed date filters in `ListArchives`.
+* Added `HandlerContext` and `WithActionContext` methods that pass http request's context to webhook handlers.
 
 ### [v2.1.0]
 
