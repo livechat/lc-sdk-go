@@ -1,6 +1,7 @@
 package webhooks
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -28,7 +29,7 @@ type actionConfiguration struct {
 //
 // It can be used with WebhookHandler, in which case WebhookHandler will
 // pass a webhook body with a payload field decoded (ie. one of webhooks structures).
-type Handler func(*Webhook) error
+type Handler func(context.Context, *Webhook) error
 
 // NewConfiguration creates basic WebhookHandler configuration that
 // processes no webhooks and uses http.Error to handle webhook processing
@@ -145,7 +146,7 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 		}
 		wh.Payload = payload
 
-		if err = acfg.handle(&wh); err != nil {
+		if err = acfg.handle(r.Context(), &wh); err != nil {
 			cfg.handleError(w, fmt.Sprintf("webhook handler error: %v", err), http.StatusInternalServerError)
 			return
 		}
