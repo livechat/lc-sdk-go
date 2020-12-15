@@ -16,6 +16,14 @@ import (
 
 const apiVersion = "3.3"
 
+// RetryStrategyFunc is called by each API method if set to retry when handling an error.
+// If not set, there will be no retry at all.
+//
+// It accepts two arguments: attempts - number of sent requests (starting from 0)
+// and err - error as ErrAPI struct (with StatusCode and Details)
+// It returns info whether to retry the request.
+type RetryStrategyFunc func(attempts uint, err error) bool
+
 type api struct {
 	httpClient           *http.Client
 	clientID             string
@@ -23,6 +31,7 @@ type api struct {
 	httpRequestGenerator HTTPRequestGenerator
 	host                 string
 	customHeaders        http.Header
+	retryStrategy        RetryStrategyFunc
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
@@ -59,12 +68,9 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if err != nil {
 		return err
 	}
-	token := a.tokenGetter()
-	if token == nil {
-		return fmt.Errorf("couldn't get token")
-	}
-	if token.Type != authorization.BearerToken && token.Type != authorization.BasicToken {
-		return fmt.Errorf("unsupported token type")
+	token, err := a.getToken()
+	if err != nil {
+		return err
 	}
 
 	req, err := a.httpRequestGenerator(token, a.host, action)
@@ -91,6 +97,11 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 // SetCustomHeader allows to set a custom header (e.g. X-Debug-Id or X-Author-Id) that will be sent in every request
 func (a *api) SetCustomHeader(key, val string) {
 	a.customHeaders.Set(key, val)
+}
+
+// SetRetryStrategy allows to set a retry strategy that will be performed in every failed request
+func (a *api) SetRetryStrategy(f RetryStrategyFunc) {
+	a.retryStrategy = f
 }
 
 type fileUploadAPI struct{ *api }
@@ -133,7 +144,7 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	req.Body = ioutil.NopCloser(body)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+	req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
 	req.Header.Set("User-agent", fmt.Sprintf("GO SDK Application %s", a.clientID))
 	req.Header.Set("X-Region", token.Region)
 
@@ -145,28 +156,59 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 }
 
 func (a *api) send(req *http.Request, respPayload interface{}) error {
-	resp, err := a.httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if resp.StatusCode != http.StatusOK {
-		apiErr := &api_errors.ErrAPI{}
-		if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
-			return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
+	var attempts uint
+	var do func() error
+
+	do = func() error {
+		resp, err := a.httpClient.Do(req)
+		if err != nil {
+			return err
 		}
-		if apiErr.Error() == "" {
-			return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
+		defer resp.Body.Close()
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if resp.StatusCode != http.StatusOK {
+			apiErr := &api_errors.ErrAPI{}
+			if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
+				return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
+			}
+			if apiErr.Error() == "" {
+				return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
+			}
+
+			if a.retryStrategy == nil || !a.retryStrategy(attempts, apiErr) {
+				return apiErr
+			}
+
+			token, err := a.getToken()
+			if err != nil {
+				return err
+			}
+
+			req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
+			attempts++
+			return do()
 		}
-		return apiErr
+
+		if err != nil {
+			return err
+		}
+
+		return json.Unmarshal(bodyBytes, respPayload)
 	}
 
-	if err != nil {
-		return err
+	return do()
+}
+
+func (a *api) getToken() (*authorization.Token, error) {
+	token := a.tokenGetter()
+	if token == nil {
+		return nil, fmt.Errorf("couldn't get token")
+	}
+	if token.Type != authorization.BearerToken && token.Type != authorization.BasicToken {
+		return nil, fmt.Errorf("unsupported token type")
 	}
 
-	return json.Unmarshal(bodyBytes, respPayload)
+	return token, nil
 }
 
 // SetCustomHost allows to change API host address. This method is mostly for LiveChat internal testing and should not be used in production environments.
