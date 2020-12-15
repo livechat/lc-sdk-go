@@ -15,6 +15,7 @@ type agentAPI interface {
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetCustomHeader(string, string)
+	SetRetryStrategy(i.RetryStrategyFunc)
 }
 
 // API provides the API operation methods for making requests to Agent Chat API via Web API.

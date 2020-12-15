@@ -358,6 +358,33 @@ func createMockedErrorResponder(t *testing.T, method string) func(req *http.Requ
 	}
 }
 
+func createMockedMultipleAuthErrorsResponder(t *testing.T, fails int) func(req *http.Request) *http.Response {
+	var n int
+
+	responseError := `{
+		"error": {
+			"type": "authentication",
+			"message": "Invalid access token"
+		}
+	}`
+
+	return func(req *http.Request) *http.Response {
+		n++
+		if n > fails {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewBufferString(`{}`)),
+				Header:     make(http.Header),
+			}
+		}
+		return &http.Response{
+			StatusCode: http.StatusUnauthorized,
+			Body:       ioutil.NopCloser(bytes.NewBufferString(responseError)),
+			Header:     make(http.Header),
+		}
+	}
+}
+
 func verifyErrorResponse(method string, resp error, t *testing.T) {
 	if resp == nil {
 		t.Errorf("%v should fail", method)
@@ -1486,4 +1513,62 @@ func TestInvalidAuthorizationScheme(t *testing.T) {
 	if err == nil {
 		t.Errorf("Err should not be nil")
 	}
+}
+
+func TestRetryStrategyAllFails(t *testing.T) {
+	client := NewTestClient(createMockedMultipleAuthErrorsResponder(t, 10))
+
+	api, err := agent.NewAPI(stubTokenGetter(authorization.BearerToken), client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	var retries uint
+	api.SetRetryStrategy(func(attempts uint, err error) bool {
+		if attempts < 3 {
+			retries++
+			return true
+		}
+
+		return false
+	})
+
+	err = api.Call("", nil, nil)
+	if err == nil {
+		t.Errorf("Err should not be nil")
+	}
+
+	if retries != 3 {
+		t.Errorf("Retries should be done 3 times")
+	}
+
+}
+
+func TestRetryStrategyLastSuccess(t *testing.T) {
+	client := NewTestClient(createMockedMultipleAuthErrorsResponder(t, 2))
+
+	api, err := agent.NewAPI(stubTokenGetter(authorization.BearerToken), client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	var retries uint
+	api.SetRetryStrategy(func(attempts uint, err error) bool {
+		if attempts < 3 {
+			retries++
+			return true
+		}
+
+		return false
+	})
+
+	err = api.Call("", nil, &struct{}{})
+	if err != nil {
+		t.Errorf("Err should be nil after 2 retries")
+	}
+
+	if retries != 2 {
+		t.Errorf("Retries should be done 2 times")
+	}
+
 }
