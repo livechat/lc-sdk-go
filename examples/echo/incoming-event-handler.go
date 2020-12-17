@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 
-	"github.com/livechat/lc-sdk-go/v2/agent"
-	"github.com/livechat/lc-sdk-go/v2/authorization"
-	"github.com/livechat/lc-sdk-go/v2/objects"
-	"github.com/livechat/lc-sdk-go/v2/webhooks"
+	"github.com/livechat/lc-sdk-go/v3/agent"
+	"github.com/livechat/lc-sdk-go/v3/authorization"
+	"github.com/livechat/lc-sdk-go/v3/objects"
+	"github.com/livechat/lc-sdk-go/v3/webhooks"
 )
 
 type IncomingEventHandler struct {
@@ -18,7 +19,7 @@ func NewIncomingEventHandler(cfg *Configuration, tr tokensRepository) *IncomingE
 	return &IncomingEventHandler{cfg, tr}
 }
 
-func (h *IncomingEventHandler) Handle(wh *webhooks.Webhook) error {
+func (h *IncomingEventHandler) Handle(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.IncomingEvent)
 	if !ok {
 		return errors.New("type assertion failed")

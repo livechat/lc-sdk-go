@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/livechat/lc-sdk-go/v2/authorization"
-	"github.com/livechat/lc-sdk-go/v2/configuration"
+	"github.com/livechat/lc-sdk-go/v3/authorization"
+	"github.com/livechat/lc-sdk-go/v3/configuration"
 )
 
 type InstallationHandler struct {

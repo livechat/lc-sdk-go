@@ -1,6 +1,6 @@
 package customer
 
-import "github.com/livechat/lc-sdk-go/v2/objects"
+import "github.com/livechat/lc-sdk-go/v3/objects"
 
 type startChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat,omitempty"`

@@ -1,6 +1,6 @@
 package agent
 
-import "github.com/livechat/lc-sdk-go/v2/objects"
+import "github.com/livechat/lc-sdk-go/v3/objects"
 
 type postback struct {
 	ID      string `json:"id"`

@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/v2/authorization"
-	api_errors "github.com/livechat/lc-sdk-go/v2/errors"
+	"github.com/livechat/lc-sdk-go/v3/authorization"
+	api_errors "github.com/livechat/lc-sdk-go/v3/errors"
 )
 
 const apiVersion = "3.3"
