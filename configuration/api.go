@@ -323,3 +323,12 @@ func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix stri
 	}, &resp)
 	return resp, err
 }
+
+// ListWebhookNames returns list of webhooks available in given API version.
+func (a *API) ListWebhookNames(version string) ([]*WebhookData, error) {
+	var resp []*WebhookData
+	err := a.Call("list_webhook_names", &listWebhookNamesRequest{
+		Version: version,
+	}, &resp)
+	return resp, err
+}

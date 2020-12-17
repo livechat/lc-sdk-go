@@ -22,6 +22,13 @@ type RegisteredWebhook struct {
 	OwnerClientID  string          `json:"owner_client_id"`
 }
 
+// WebhookData represents available webhook definition
+type WebhookData struct {
+	Action         string   `json:"action"`
+	AdditionalData []string `json:"additional_data,omitempty"`
+	Filters        []string `json:"filters,omitempty"`
+}
+
 // WebhookFilters represent set of properties that webhook will use for filtering triggers
 type WebhookFilters struct {
 	AuthorType    string               `json:"author_type,omitempty"`

@@ -145,3 +145,7 @@ type listGroupsRequest struct {
 }
 
 type listGroupsResponse []*Group
+
+type listWebhookNamesRequest struct {
+	Version string `json:"version,omitempty"`
+}

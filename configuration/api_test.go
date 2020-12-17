@@ -202,6 +202,28 @@ var mockedResponses = map[string]string{
 		},
 		"routing_status": "offline"
 	}`,
+	"list_webhook_names": `[
+		{
+			"action": "chat_access_granted",
+			"filters": [
+				"chat_member_ids",
+				"only_my_chats"
+			],
+			"additional_data": [
+				"chat_properties"
+			]
+		},
+		{
+			"action": "event_properties_deleted",
+			"filters": [
+				"chat_member_ids",
+				"only_my_chats"
+			],
+			"additional_data": [
+				"chat_properties"
+			]
+		}
+	]`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -778,5 +800,27 @@ func TestGetGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 
 	if resp.LanguageCode != "en" {
 		t.Errorf("Invalid group language: %v", resp.LanguageCode)
+	}
+}
+
+func TestListWebhookNamesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_webhook_names"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.ListWebhookNames("3.2")
+	if rErr != nil {
+		t.Errorf("ListWebhookNames failed: %v", rErr)
+	}
+
+	if len(resp) != 2 {
+		t.Errorf("Invalid response length: %v", len(resp))
+	}
+
+	if resp[0].Action != "chat_access_granted" {
+		t.Errorf("Invalid action in first element: %v", resp[0].Action)
 	}
 }
