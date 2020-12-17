@@ -202,7 +202,7 @@ var mockedResponses = map[string]string{
 		},
 		"routing_status": "offline"
 	}`,
-	"list_available_webhooks": `[
+	"list_webhook_names": `[
 		{
 			"action": "chat_access_granted",
 			"filters": [
@@ -803,17 +803,17 @@ func TestGetGroupShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	}
 }
 
-func TestListAvailableWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "list_available_webhooks"))
+func TestListWebhookNamesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_webhook_names"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListAvailableWebhooks("3.2")
+	resp, rErr := api.ListWebhookNames("3.2")
 	if rErr != nil {
-		t.Errorf("ListAvailableWebhooks failed: %v", rErr)
+		t.Errorf("ListWebhookNames failed: %v", rErr)
 	}
 
 	if len(resp) != 2 {
