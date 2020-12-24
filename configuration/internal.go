@@ -158,3 +158,7 @@ type listWebhookNamesRequest struct {
 type listWebhooksRequest struct {
 	OwnerClientID string `json:"owner_client_id,omitempty"`
 }
+
+type manageWebhooksStateRequest struct {
+	ClientID string `json:"client_id,omitempty"`
+}

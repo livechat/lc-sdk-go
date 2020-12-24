@@ -29,6 +29,17 @@ type WebhookData struct {
 	Filters        []string `json:"filters,omitempty"`
 }
 
+// WebhooksState represents state of webhooks for given clientID on given license
+type WebhooksState struct {
+	Enabled bool `json:"webhooks_enabled"`
+}
+
+// ManageWebhooksStateOptions are options for methods responsible for webhooks' state management:
+// EnableWebhooks, DisableWebhooks and GetWebhooksState
+type ManageWebhooksStateOptions struct {
+	ClientID string
+}
+
 // WebhookFilters represent set of properties that webhook will use for filtering triggers
 type WebhookFilters struct {
 	AuthorType    string               `json:"author_type,omitempty"`
