@@ -55,7 +55,7 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		Filters:     &configuration.WebhookFilters{AuthorType: "customer"},
 	}
 
-	whID, err := api.RegisterWebhook(wh)
+	whID, err := api.RegisterWebhook(wh, nil)
 	if err != nil {
 		fmt.Println("Error when handling installation: webhook registration failed")
 		w.WriteHeader(http.StatusBadRequest)

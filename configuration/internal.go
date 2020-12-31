@@ -1,14 +1,19 @@
 package configuration
 
+type registerWebhookRequest struct {
+	*Webhook
+	OwnerClientID string `json:"owner_client_id,omitempty"`
+}
 type registerWebhookResponse struct {
-	ID string `json:"webhook_id"`
+	ID string `json:"id"`
 }
 
 type unregisterWebhookRequest struct {
-	ID string `json:"webhook_id"`
+	ID            string `json:"id"`
+	OwnerClientID string `json:"owner_client_id,omitempty"`
 }
 
-type listRegisteredWebhooksResponse []RegisteredWebhook
+type listWebhooksResponse []RegisteredWebhook
 
 type createBotRequest struct {
 	Name                 string         `json:"name"`
@@ -148,4 +153,8 @@ type listGroupsResponse []*Group
 
 type listWebhookNamesRequest struct {
 	Version string `json:"version,omitempty"`
+}
+
+type listWebhooksRequest struct {
+	OwnerClientID string `json:"owner_client_id,omitempty"`
 }

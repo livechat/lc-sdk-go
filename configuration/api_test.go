@@ -33,11 +33,11 @@ func stubTokenGetter() *authorization.Token {
 
 var mockedResponses = map[string]string{
 	"register_webhook": `{
-		"webhook_id": "pqi8oasdjahuakndw9nsad9na"
+		"id": "pqi8oasdjahuakndw9nsad9na"
 	}`,
-	"list_registered_webhooks": `[
+	"list_webhooks": `[
     {
-      "webhook_id": "pqi8oasdjahuakndw9nsad9na",
+	  "id": "pqi8oasdjahuakndw9nsad9na",
       "url": "http://myservice.com/webhooks",
       "description": "Test webhook",
       "action": "thread_closed",
@@ -288,7 +288,7 @@ func TestRegisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	webhookID, rErr := api.RegisterWebhook(&configuration.Webhook{})
+	webhookID, rErr := api.RegisterWebhook(&configuration.Webhook{}, nil)
 	if rErr != nil {
 		t.Errorf("RegisterWebhook failed: %v", rErr)
 	}
@@ -298,17 +298,17 @@ func TestRegisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	}
 }
 
-func TestListRegisteredWebhooksShouldReturnDataReceivedFromConfApi(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "list_registered_webhooks"))
+func TestListWebhooksShouldReturnDataReceivedFromConfApi(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_webhooks"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListRegisteredWebhooks()
+	resp, rErr := api.ListWebhooks(nil)
 	if rErr != nil {
-		t.Errorf("ListRegisteredWebhooks failed: %v", rErr)
+		t.Errorf("ListWebhooks failed: %v", rErr)
 	}
 
 	if len(resp) != 1 || resp[0].ID != "pqi8oasdjahuakndw9nsad9na" {
@@ -324,7 +324,7 @@ func TestUnregisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UnregisterWebhook("pqi8oasdjahuakndw9nsad9na")
+	rErr := api.UnregisterWebhook("pqi8oasdjahuakndw9nsad9na", nil)
 	if rErr != nil {
 		t.Errorf("UnregisterWebhook failed: %v", rErr)
 	}
