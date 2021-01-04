@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -64,10 +65,6 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 
 // Call sends request to API with given action
 func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}) error {
-	rawBody, err := json.Marshal(reqPayload)
-	if err != nil {
-		return err
-	}
 	token, err := a.getToken()
 	if err != nil {
 		return err
@@ -77,7 +74,15 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if err != nil {
 		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
-	req.Body = ioutil.NopCloser(bytes.NewReader(rawBody))
+
+	rawBody, err := json.Marshal(reqPayload)
+	if err != nil {
+		return err
+	}
+	req.GetBody = func() (io.ReadCloser, error) {
+		return ioutil.NopCloser(bytes.NewReader(rawBody)), nil
+	}
+	req.Body, _ = req.GetBody()
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
@@ -119,6 +124,17 @@ func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clie
 // Returned URL shall be used in call to SendFile or SendEvent or it'll become invalid
 // in about 24 hours.
 func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error) {
+	token := a.tokenGetter()
+	if token == nil {
+		return "", fmt.Errorf("couldn't get token")
+	}
+
+	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
+	if err != nil {
+		return "", fmt.Errorf("couldn't create new http request: %v", err)
+	}
+	req.Method = "POST"
+
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	w, err := writer.CreateFormFile("file", filename)
@@ -131,17 +147,11 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	if err := writer.Close(); err != nil {
 		return "", fmt.Errorf("couldn't close multipart writer: %v", err)
 	}
-	token := a.tokenGetter()
-	if token == nil {
-		return "", fmt.Errorf("couldn't get token")
-	}
 
-	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
-	if err != nil {
-		return "", fmt.Errorf("couldn't create new http request: %v", err)
+	req.GetBody = func() (io.ReadCloser, error) {
+		return ioutil.NopCloser(bytes.NewReader(body.Bytes())), nil
 	}
-	req.Method = "POST"
-	req.Body = ioutil.NopCloser(body)
+	req.Body, _ = req.GetBody()
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
@@ -185,6 +195,14 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 			}
 
 			req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
+			if req.Body != nil {
+				reqBody, err := req.GetBody()
+				if err != nil {
+					return fmt.Errorf("couldn't get request body: %v", err)
+				}
+				req.Body = reqBody
+			}
+
 			attempts++
 			return do()
 		}
