@@ -12,7 +12,7 @@ type Webhook struct {
 
 // RegisteredWebhook represents data for webhook registered in Configuration API
 type RegisteredWebhook struct {
-	ID             string          `json:"webhook_id"`
+	ID             string          `json:"id"`
 	Action         string          `json:"action"`
 	SecretKey      string          `json:"secret_key"`
 	URL            string          `json:"url"`
@@ -170,4 +170,10 @@ const (
 // AgentsFilters defines set of filters for getting agents
 type AgentsFilters struct {
 	GroupIDs []int32 `json:"group_ids"`
+}
+
+// ManageWebhooksDefinitionOptions are options for methods responsible for webhooks' definition management:
+// ListWebhooks, RegisterWebhook and UnregisterWebhook
+type ManageWebhooksDefinitionOptions struct {
+	ClientID string
 }

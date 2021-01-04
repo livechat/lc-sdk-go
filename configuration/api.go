@@ -33,25 +33,46 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string) (
 }
 
 // RegisterWebhook allows to register specified webhook.
-func (a *API) RegisterWebhook(webhook *Webhook) (string, error) {
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) RegisterWebhook(webhook *Webhook, opts *ManageWebhooksDefinitionOptions) (string, error) {
 	var resp registerWebhookResponse
-	err := a.Call("register_webhook", webhook, &resp)
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
+	err := a.Call("register_webhook", &registerWebhookRequest{webhook, clientID}, &resp)
 
 	return resp.ID, err
 }
 
-// ListRegisteredWebhooks returns configurations of all registered webhooks.
-func (a *API) ListRegisteredWebhooks() ([]RegisteredWebhook, error) {
-	var resp listRegisteredWebhooksResponse
-	err := a.Call("list_registered_webhooks", nil, &resp)
+// ListWebhooks returns configurations of all registered webhooks for requester's clientID.
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) ListWebhooks(opts *ManageWebhooksDefinitionOptions) ([]RegisteredWebhook, error) {
+	var resp listWebhooksResponse
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
+	err := a.Call("list_webhooks", &listWebhooksRequest{
+		OwnerClientID: clientID,
+	}, &resp)
 
 	return resp, err
 }
 
 // UnregisterWebhook removes webhook with given id from registered webhooks.
-func (a *API) UnregisterWebhook(id string) error {
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions) error {
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
 	return a.Call("unregister_webhook", unregisterWebhookRequest{
-		ID: id,
+		ID:            id,
+		OwnerClientID: clientID,
 	}, &emptyResponse{})
 }
 
