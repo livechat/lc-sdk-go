@@ -353,3 +353,44 @@ func (a *API) ListWebhookNames(version string) ([]*WebhookData, error) {
 	}, &resp)
 	return resp, err
 }
+
+// EnableWebhooks enables webhooks for the authorization token's clientID.
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) EnableWebhooks(opts *ManageWebhooksStateOptions) error {
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
+	return a.Call("enable_webhooks", &manageWebhooksStateRequest{
+		ClientID: clientID,
+	}, &emptyResponse{})
+}
+
+// DisableWebhooks disables webhooks for the authorization token's clientID.
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) DisableWebhooks(opts *ManageWebhooksStateOptions) error {
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
+	return a.Call("disable_webhooks", &manageWebhooksStateRequest{
+		ClientID: clientID,
+	}, &emptyResponse{})
+}
+
+// GetWebhooksState retrieves webhooks' state for the authorization token's clientID.
+//
+// When authorizing via Personal Access Token, set correct ClientID in opts.
+func (a *API) GetWebhooksState(opts *ManageWebhooksStateOptions) (*WebhooksState, error) {
+	var clientID string
+	if opts != nil {
+		clientID = opts.ClientID
+	}
+	var resp *WebhooksState
+	err := a.Call("get_webhooks_state", &manageWebhooksStateRequest{
+		ClientID: clientID,
+	}, &resp)
+	return resp, err
+}

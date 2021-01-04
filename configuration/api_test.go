@@ -224,6 +224,11 @@ var mockedResponses = map[string]string{
 			]
 		}
 	]`,
+	"enable_webhooks":  `{}`,
+	"disable_webhooks": `{}`,
+	"get_webhooks_state": `{
+		"webhooks_enabled": true
+	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -822,5 +827,50 @@ func TestListWebhookNamesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 
 	if resp[0].Action != "chat_access_granted" {
 		t.Errorf("Invalid action in first element: %v", resp[0].Action)
+	}
+}
+
+func TestEnableWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "enable_webhooks"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.EnableWebhooks(nil)
+	if err != nil {
+		t.Errorf("EnableWebhooks failed: %v", err)
+	}
+}
+
+func TestDisableWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "disable_webhooks"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.DisableWebhooks(nil)
+	if err != nil {
+		t.Errorf("DisableWebhooks failed: %v", err)
+	}
+}
+
+func TestGetWebhooksStateShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_webhooks_state"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	state, err := api.GetWebhooksState(nil)
+	if err != nil {
+		t.Errorf("GetWebhooksState failed: %v", err)
+	}
+	if !state.Enabled {
+		t.Errorf("webhooks' state should be enabled'")
 	}
 }
