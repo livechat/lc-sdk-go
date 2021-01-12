@@ -173,6 +173,23 @@ type RoutingStatusSet struct {
 	Status  string `json:"status"`
 }
 
+// ChatTransferred represents payload of chat_transferred webhook.
+type ChatTransferred struct {
+	ChatID        string `json:"chat_id"`
+	ThreadID      string `json:"thread_id,omitempty"`
+	RequesterID   string `json:"requester_id,omitempty"`
+	Reason        string `json:"reason"`
+	TransferredTo struct {
+		AgentIDs []string `json:"agent_ids,omitempty"`
+		GroupIDs []int    `json:"group_ids,omitempty"`
+	} `json:"transferred_to"`
+	Queue struct {
+		Position int    `json:"position"`
+		WaitTime int    `json:"wait_time"`
+		QueuedAt string `json:"queued_at"`
+	} `json:"queue,omitempty"`
+}
+
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
 func (p *IncomingChat) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChat

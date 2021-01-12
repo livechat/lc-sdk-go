@@ -40,6 +40,7 @@ const (
 	EventPropertiesUpdated      WebhookAction = "event_properties_updated"
 	EventPropertiesDeleted      WebhookAction = "event_properties_deleted"
 	RoutingStatusSet            WebhookAction = "routing_status_set"
+	ChatTransferred             WebhookAction = "chat_transferred"
 )
 
 // GroupPriority represents priority of assigning chats in group

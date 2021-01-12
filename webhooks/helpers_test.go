@@ -539,3 +539,28 @@ func routingStatusSet(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 	return nil
 }
+
+func chatTransferred(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatTransferred)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", payload)
+	}
+
+	var errors string
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("RequesterID", payload.RequesterID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Reason", payload.Reason, "manual", &errors)
+	propEq("TransferredTo.GroupIDs.length", len(payload.TransferredTo.AgentIDs), 1, &errors)
+	propEq("TransferredTo.GroupIDs[0]", payload.TransferredTo.AgentIDs[0], "l.wojciechowski@livechatinc.com", &errors)
+	propEq("TransferredTo.GroupIDs.length", len(payload.TransferredTo.GroupIDs), 1, &errors)
+	propEq("TransferredTo.GroupIDs[0]", payload.TransferredTo.GroupIDs[0], 2, &errors)
+	propEq("Queue.Position", payload.Queue.Position, 42, &errors)
+	propEq("Queue.WaitTime", payload.Queue.WaitTime, 1337, &errors)
+	propEq("Queue.QueuedAt", payload.Queue.QueuedAt, "2019-12-09T12:01:18.909000Z", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}

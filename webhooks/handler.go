@@ -135,6 +135,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &EventPropertiesDeleted{}
 		case "routing_status_set":
 			payload = &RoutingStatusSet{}
+		case "chat_transferred":
+			payload = &ChatTransferred{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return
