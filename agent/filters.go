@@ -252,6 +252,13 @@ func (cf *customersFilters) ByID(values []string, inclusive bool) *customersFilt
 	return cf
 }
 
+// ByChatGroupIDs extends customers filters with integer filter for chat group ids
+// See NewIntegerFilter definition for details of filter creation
+func (cf *customersFilters) ByChatGroupIDs(values []int64, inclusive bool) *customersFilters {
+	cf.ChatGroupIDs = NewIntegerFilter(values, inclusive)
+	return cf
+}
+
 // ByChatsCount extends customers filters with range filter for customer's chats count
 // See RangeFilter definition for details of filter creation
 func (cf *customersFilters) ByChatsCount(ranges *RangeFilter) *customersFilters {
