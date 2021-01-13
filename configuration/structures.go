@@ -65,24 +65,18 @@ func NewChatMemberIDsFilter(agents []string, inclusive bool) *chatMemberIDsFilte
 	return cmf
 }
 
-// BotAgent represents basic bot agent information
-type BotAgent struct {
-	ID     string    `json:"id"`
-	Name   string    `json:"name"`
-	Avatar string    `json:"avatar"`
-	Status BotStatus `json:"status"`
-}
-
-// BotAgentDetails represents detailed bot agent information
-type BotAgentDetails struct {
-	BotAgent
-	DefaultGroupPriority GroupPriority `json:"default_group_priority"`
-	Application          struct {
-		ClientID string `json:"client_id"`
-	} `json:"application"`
-	MaxChatsCount uint           `json:"max_chats_count"`
-	Groups        []*GroupConfig `json:"groups"`
-	Webhooks      *BotWebhooks   `json:"webhooks"`
+// Bot represents basic bot agent information
+type Bot struct {
+	ID                   string         `json:"id"`
+	Name                 string         `json:"name,omitempty"`
+	AvatarPath           string         `json:"avatar_path,omitempty"`
+	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
+	ClientID             string         `json:"owner_client_id,omitempty"`
+	MaxChatsCount        uint           `json:"max_chats_count,omitempty"`
+	Groups               []*GroupConfig `json:"groups,omitempty"`
+	JobTitle             string         `json:"job_title,omitempty"`
+	Webhooks             *BotWebhooks   `json:"webhooks,omitempty"`
+	WorkScheduler        WorkScheduler  `json:"work_scheduler,omitempty"`
 }
 
 // BotWebhooks represents webhooks configuration for bot agent

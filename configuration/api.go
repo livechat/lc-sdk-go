@@ -77,9 +77,7 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 }
 
 // CreateBot allows to create bot and returns its ID.
-//
-// Deprecated: status is ignored, please use SetRoutingStatus method from agent package to set status.
-func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) (string, error) {
+func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) (string, error) {
 	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
@@ -97,9 +95,7 @@ func (a *API) CreateBot(name, avatar string, status BotStatus, maxChats uint, de
 }
 
 // UpdateBot allows to update bot.
-//
-// Deprecated: status is ignored, please use SetRoutingStatus method from agent package to set status.
-func (a *API) UpdateBot(id, name, avatar string, status BotStatus, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) error {
+func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
@@ -124,23 +120,25 @@ func (a *API) DeleteBot(id string) error {
 }
 
 // ListBots returns list of bots (all or caller's only, depending on getAll parameter).
-func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
+func (a *API) ListBots(getAll bool, fields []string) ([]*Bot, error) {
 	var resp listBotsResponse
 	err := a.Call("list_bots", &listBotsRequest{
-		All: getAll,
+		All:    getAll,
+		Fields: fields,
 	}, &resp)
 
-	return resp.BotAgents, err
+	return resp, err
 }
 
 // GetBot returns bot.
-func (a *API) GetBot(id string) (*BotAgentDetails, error) {
+func (a *API) GetBot(id string, fields []string) (*Bot, error) {
 	var resp getBotResponse
 	err := a.Call("get_bot", &getBotRequest{
-		BotID: id,
+		BotID:  id,
+		Fields: fields,
 	}, &resp)
 
-	return resp.BotAgent, err
+	return resp, err
 }
 
 // CreateAgent creates a new Agent with specified parameters within a license.

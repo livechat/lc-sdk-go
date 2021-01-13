@@ -17,7 +17,7 @@ type listWebhooksResponse []RegisteredWebhook
 
 type createBotRequest struct {
 	Name                 string         `json:"name"`
-	Avatar               string         `json:"avatar,omitempty"`
+	Avatar               string         `json:"avatar_path,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
 	Groups               []*GroupConfig `json:"groups,omitempty"`
@@ -25,11 +25,11 @@ type createBotRequest struct {
 }
 
 type createBotResponse struct {
-	BotID string `json:"bot_agent_id"`
+	BotID string `json:"id"`
 }
 
 type deleteBotRequest struct {
-	BotID string `json:"bot_agent_id"`
+	BotID string `json:"id"`
 }
 
 type updateBotRequest struct {
@@ -38,20 +38,18 @@ type updateBotRequest struct {
 }
 
 type listBotsRequest struct {
-	All bool `json:"all"`
+	All    bool     `json:"all"`
+	Fields []string `json:"fields,omitempty"`
 }
 
-type listBotsResponse struct {
-	BotAgents []*BotAgent `json:"bot_agents"`
-}
+type listBotsResponse []*Bot
 
 type getBotRequest struct {
-	BotID string `json:"bot_agent_id"`
+	BotID  string   `json:"id"`
+	Fields []string `json:"fields,omitempty"`
 }
 
-type getBotResponse struct {
-	BotAgent *BotAgentDetails `json:"bot_agent"`
-}
+type getBotResponse *Bot
 
 type unregisterPropertyRequest struct {
 	Name          string `json:"name"`

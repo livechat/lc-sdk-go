@@ -52,58 +52,58 @@ var mockedResponses = map[string]string{
   ]`,
 	"unregister_webhook": `{}`,
 	"create_bot": `{
-    "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
+    "id": "5c9871d5372c824cbf22d860a707a578"
 	}`,
 	"update_bot": `{}`,
 	"delete_bot": `{}`,
-	"list_bots": `{
-    "bot_agents": [{
-        "id": "5c9871d5372c824cbf22d860a707a578",
-        "name": "John Doe",
-        "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
-        "status": "accepting chats"
-    }]
-	}`,
+	"list_bots": `[
+		{
+			"id": "5c9871d5372c824cbf22d860a707a578",
+			"name": "John Doe",
+			"avatar_path": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg"
+		},
+		{
+			"id": "8g1231ss112c013cbf11d530b595h987",
+			"name": "Jason Brown",
+			"avatar_path": "livechat.s3.amazonaws.com/1011121/all/avatars/wff9482gkdjanzjgdsf88a184jsskaz1.jpg"
+		}
+	]`,
 	"get_bot": `{
-    "bot_agent": {
-        "id": "5c9871d5372c824cbf22d860a707a578",
-        "name": "John Doe",
-        "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
-        "status": "accepting chats",
-        "application": {
-            "client_id": "asXdesldiAJSq9padj"
-        },
-        "max_chats_count": 6,
-        "groups": [{
-            "id": 0,
-            "priority": "normal"
-        }, {
-            "id": 1,
-            "priority": "normal"
-        }, {
-            "id": 2,
-            "priority": "first"
-        }],
-        "webhooks": {
-            "url": "http://myservice.com/webhooks",
-            "secret_key": "JSauw0Aks8l-asAa",
-            "actions": [{
-                "name": "incoming_chats",
-                "filters": {
-                  "chat_properties": {
-                     "source": {
-                        "type": {
-                           "values": ["facebook", "twitter"]
-                        }
-                      }
-                  }
-                }
-            },{
-                "name": "incoming_event",
-                "additional_data": ["chat_properties"]
-            }]
-        }
-    }
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"name": "John Doe",
+		"avatar_path": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+		"default_group_priority": "first",
+		"owner_client_id": "asXdesldiAJSq9padj",
+		"max_chats_count": 6,
+		"groups": [{
+			"id": 0,
+			"priority": "normal"
+		}, {
+			"id": 1,
+			"priority": "normal"
+		}, {
+			"id": 2,
+			"priority": "first"
+		}],
+		"webhooks": {
+			"url": "http://myservice.com/webhooks",
+			"secret_key": "JSauw0Aks8l-asAa",
+			"actions": [{
+				"name": "incoming_chats",
+				"filters": {
+					"chat_properties": {
+						"source": {
+							"type": {
+								"values": ["facebook", "twitter"]
+							}
+						}
+					}
+				}
+			},{
+				"name": "incoming_event",
+				"additional_data": ["chat_properties"]
+			}]
+		}
 	}`,
 	"register_property":   `{}`,
 	"unregister_property": `{}`,
@@ -343,7 +343,7 @@ func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -362,7 +362,7 @@ func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -376,7 +376,7 @@ func TestUpdateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
 	if rErr != nil {
 		t.Errorf("UpdateBot failed: %v", rErr)
 	}
@@ -391,7 +391,7 @@ func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", "accepting chats", 6, "first", groups, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, &configuration.BotWebhooks{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -419,13 +419,21 @@ func TestListBotsShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.ListBots(true)
+	resp, rErr := api.ListBots(true, []string{})
 	if rErr != nil {
 		t.Errorf("ListBots failed: %v", rErr)
 	}
 
-	if len(resp) != 1 || resp[0].ID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid bots: %v", resp)
+	if len(resp) != 2 {
+		t.Errorf("Invalid number of bots: %v", len(resp))
+	}
+
+	if resp[0].ID != "5c9871d5372c824cbf22d860a707a578" {
+		t.Errorf("Invalid bot ID: %v", resp[0].ID)
+	}
+
+	if resp[1].ID != "8g1231ss112c013cbf11d530b595h987" {
+		t.Errorf("Invalid bot ID: %v", resp[1].ID)
 	}
 }
 
@@ -437,7 +445,7 @@ func TestGetBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	resp, rErr := api.GetBot("5c9871d5372c824cbf22d860a707a578")
+	resp, rErr := api.GetBot("5c9871d5372c824cbf22d860a707a578", []string{})
 	if rErr != nil {
 		t.Errorf("GetBot failed: %v", rErr)
 	}

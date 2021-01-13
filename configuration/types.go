@@ -1,17 +1,5 @@
 package configuration
 
-// BotStatus represents bot availability status
-type BotStatus string
-
-const (
-	// AcceptingChats - Bot will be accepting chats
-	AcceptingChats BotStatus = "accepting chats"
-	// NotAcceptingChats - Bot will not accept any chats, yet it will still occupy seat
-	NotAcceptingChats BotStatus = "not accepting chats"
-	// Offline - Bot will not accept chats and will not use up seats
-	Offline BotStatus = "offline"
-)
-
 // WebhookAction represents allowed values for action name
 type WebhookAction string
 
