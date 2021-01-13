@@ -103,23 +103,25 @@ func (a *API) DeleteBot(id string) error {
 }
 
 // ListBots returns list of bots (all or caller's only, depending on getAll parameter).
-func (a *API) ListBots(getAll bool) ([]*BotAgent, error) {
+func (a *API) ListBots(getAll bool, fields []string) ([]*Bot, error) {
 	var resp listBotsResponse
 	err := a.Call("list_bots", &listBotsRequest{
-		All: getAll,
+		All:    getAll,
+		Fields: fields,
 	}, &resp)
 
-	return resp.BotAgents, err
+	return resp, err
 }
 
 // GetBot returns bot.
-func (a *API) GetBot(id string) (*BotAgentDetails, error) {
+func (a *API) GetBot(id string, fields []string) (*BotDetails, error) {
 	var resp getBotResponse
 	err := a.Call("get_bot", &getBotRequest{
-		BotID: id,
+		BotID:  id,
+		Fields: fields,
 	}, &resp)
 
-	return resp.BotAgent, err
+	return resp, err
 }
 
 // CreateAgent creates a new Agent with specified parameters within a license.

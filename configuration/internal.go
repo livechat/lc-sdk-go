@@ -33,20 +33,18 @@ type updateBotRequest struct {
 }
 
 type listBotsRequest struct {
-	All bool `json:"all"`
+	All    bool     `json:"all"`
+	Fields []string `json:"fields,omitempty"`
 }
 
-type listBotsResponse struct {
-	BotAgents []*BotAgent `json:"bot_agents"`
-}
+type listBotsResponse []*Bot
 
 type getBotRequest struct {
-	BotID string `json:"bot_agent_id"`
+	BotID  string   `json:"id"`
+	Fields []string `json:"fields,omitempty"`
 }
 
-type getBotResponse struct {
-	BotAgent *BotAgentDetails `json:"bot_agent"`
-}
+type getBotResponse *BotDetails
 
 type createPropertiesRequest map[string]*PropertyConfig
 

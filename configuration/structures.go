@@ -47,24 +47,21 @@ func NewChatMemberIDsFilter(agents []string, inclusive bool) *chatMemberIDsFilte
 	return cmf
 }
 
-// BotAgent represents basic bot agent information
-type BotAgent struct {
-	ID     string    `json:"id"`
-	Name   string    `json:"name"`
-	Avatar string    `json:"avatar"`
-	Status BotStatus `json:"status"`
+// Bot represents basic bot agent information
+type Bot struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar_path"`
 }
 
-// BotAgentDetails represents detailed bot agent information
-type BotAgentDetails struct {
-	BotAgent
-	DefaultGroupPriority GroupPriority `json:"default_group_priority"`
-	Application          struct {
-		ClientID string `json:"client_id"`
-	} `json:"application"`
-	MaxChatsCount uint           `json:"max_chats_count"`
-	Groups        []*GroupConfig `json:"groups"`
-	Webhooks      *BotWebhooks   `json:"webhooks"`
+// BotDetails represents detailed bot agent information
+type BotDetails struct {
+	Bot
+	DefaultGroupPriority GroupPriority  `json:"default_group_priority"`
+	OwnerClientID        string         `json:"owner_client_id"`
+	MaxChatsCount        uint           `json:"max_chats_count"`
+	Groups               []*GroupConfig `json:"groups"`
+	Webhooks             *BotWebhooks   `json:"webhooks"`
 }
 
 // BotWebhooks represents webhooks configuration for bot agent
