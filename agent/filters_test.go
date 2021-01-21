@@ -299,3 +299,36 @@ func TestThreadsFilters(t *testing.T) {
 		t.Errorf("ThreadsFilters.To invalid: %v", tf.To)
 	}
 }
+
+func TestIntegerFilterMatchValues(t *testing.T) {
+	intF := agent.NewIntegerFilter([]int64{12345678901234567}, true)
+
+	if intF.Values[0] != 12345678901234567 {
+		t.Errorf("IntegerFilter.Values invalid: %v", intF.Values)
+	}
+
+	if intF.ExcludeValues != nil {
+		t.Errorf("IntegerFilter.ExcludeValues should not be set: %v", intF.ExcludeValues)
+	}
+}
+
+func TestIntegerFilterExcludeValues(t *testing.T) {
+	intF := agent.NewIntegerFilter([]int64{12345678901234567}, false)
+
+	if intF.ExcludeValues[0] != 12345678901234567 {
+		t.Errorf("IntegerFilter.Values invalid: %v", intF.ExcludeValues)
+	}
+
+	if intF.Values != nil {
+		t.Errorf("IntegerFilter.ExcludeValues should not be set: %v", intF.Values)
+	}
+}
+
+func TestCustomersFiltersIntegerFilterField(t *testing.T) {
+	cf := agent.NewCustomersFilters()
+	cf.ByChatGroupIDs([]int64{12345678901234567}, true)
+
+	if cf.ChatGroupIDs.Values[0] != 12345678901234567 {
+		t.Errorf("CustomersFilters.ChatGroupIDs.Values invalid: %v", cf.ChatGroupIDs.Values)
+	}
+}

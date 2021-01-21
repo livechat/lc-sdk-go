@@ -144,6 +144,7 @@ type customersFilters struct {
 	Email                        *stringFilter    `json:"email,omitempty"`
 	Name                         *stringFilter    `json:"name,omitempty"`
 	CustomerID                   *stringFilter    `json:"customer_id,omitempty"`
+	ChatGroupIDs                 *integerFilter   `json:"chat_group_ids,omitempty"`
 	ChatsCount                   *RangeFilter     `json:"chats_count,omitempty"`
 	ThreadsCount                 *RangeFilter     `json:"threads_count,omitempty"`
 	VisitsCount                  *RangeFilter     `json:"visits_count,omitempty"`
@@ -169,6 +170,24 @@ func NewStringFilter(values []string, inclusive bool) *stringFilter {
 		sf.ExcludeValues = values
 	}
 	return sf
+}
+
+type integerFilter struct {
+	Values        []int64 `json:"values,omitempty"`
+	ExcludeValues []int64 `json:"exclude_values,omitempty"`
+}
+
+// NewIntegerFilter creates new filter for integer values
+// `inclusive` parameter controls if the filtered values should match or exclude given values
+func NewIntegerFilter(values []int64, inclusive bool) *integerFilter {
+	intF := &integerFilter{}
+	switch {
+	case inclusive:
+		intF.Values = values
+	default:
+		intF.ExcludeValues = values
+	}
+	return intF
 }
 
 // RangeFilter represents structure to define a range in which filtered numbers should be matched
@@ -230,6 +249,13 @@ func (cf *customersFilters) ByName(values []string, inclusive bool) *customersFi
 // See NewStringFilter definition for details of filter creation
 func (cf *customersFilters) ByID(values []string, inclusive bool) *customersFilters {
 	cf.CustomerID = NewStringFilter(values, inclusive)
+	return cf
+}
+
+// ByChatGroupIDs extends customers filters with integer filter for chat group ids
+// See NewIntegerFilter definition for details of filter creation
+func (cf *customersFilters) ByChatGroupIDs(values []int64, inclusive bool) *customersFilters {
+	cf.ChatGroupIDs = NewIntegerFilter(values, inclusive)
 	return cf
 }
 
