@@ -183,6 +183,7 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	return resp.URL, err
 }
 
+// GetSamplesChan returns a channel to send metrics data over it
 func (a *api) GetSamplesChan() chan *APICallStats {
 	return a.s.sampleChan
 }
