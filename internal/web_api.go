@@ -33,6 +33,7 @@ type api struct {
 	host                 string
 	customHeaders        http.Header
 	retryStrategy        RetryStrategyFunc
+	s                    *stats
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
@@ -60,6 +61,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		host:                 "https://api.livechatinc.com",
 		httpRequestGenerator: r,
 		customHeaders:        make(http.Header),
+		s:                    newStats(),
 	}, nil
 }
 
@@ -69,6 +71,13 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if err != nil {
 		return err
 	}
+
+	start := time.Now()
+
+	defer func(startTime time.Time) {
+		executionTime := time.Now().Sub(startTime)
+		a.s.sample(&APICallStats{action, executionTime})
+	}(start)
 
 	req, err := a.httpRequestGenerator(token, a.host, action)
 	if err != nil {
@@ -129,6 +138,12 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 		return "", fmt.Errorf("couldn't get token")
 	}
 
+	start := time.Now()
+	defer func(startTime time.Time) {
+		executionTime := time.Now().Sub(startTime)
+		a.s.sample(&APICallStats{"upload_file", executionTime})
+	}(start)
+
 	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
 	if err != nil {
 		return "", fmt.Errorf("couldn't create new http request: %v", err)
@@ -163,6 +178,10 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	}
 	err = a.send(req, &resp)
 	return resp.URL, err
+}
+
+func (a *api) GetSamplesChan() chan *APICallStats {
+	return a.s.sampleChan
 }
 
 func (a *api) send(req *http.Request, respPayload interface{}) error {
