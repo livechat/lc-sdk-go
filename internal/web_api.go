@@ -13,6 +13,7 @@ import (
 
 	"github.com/livechat/lc-sdk-go/v2/authorization"
 	api_errors "github.com/livechat/lc-sdk-go/v2/errors"
+	"github.com/livechat/lc-sdk-go/v2/metrics"
 )
 
 const apiVersion = "3.2"
@@ -25,6 +26,9 @@ const apiVersion = "3.2"
 // It returns info whether to retry the request.
 type RetryStrategyFunc func(attempts uint, err error) bool
 
+// StatsSinkFunc is called after each API method with statistics of that method execution.
+type StatsSinkFunc func(callStats metrics.APICallStats)
+
 type api struct {
 	httpClient           *http.Client
 	clientID             string
@@ -33,6 +37,7 @@ type api struct {
 	host                 string
 	customHeaders        http.Header
 	retryStrategy        RetryStrategyFunc
+	statsSink            StatsSinkFunc
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
@@ -60,6 +65,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		host:                 "https://api.livechatinc.com",
 		httpRequestGenerator: r,
 		customHeaders:        make(http.Header),
+		statsSink:            func(metrics.APICallStats) {},
 	}, nil
 }
 
@@ -69,6 +75,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if err != nil {
 		return err
 	}
+	start := time.Now()
 
 	req, err := a.httpRequestGenerator(token, a.host, action)
 	if err != nil {
@@ -95,8 +102,12 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		}
 		req.Header.Set(key, val[0])
 	}
+	err = a.send(req, respPayload)
 
-	return a.send(req, respPayload)
+	executionTime := time.Now().Sub(start)
+	a.statsSink(metrics.APICallStats{action, executionTime, err == nil})
+
+	return err
 }
 
 // SetCustomHeader allows to set a custom header (e.g. X-Debug-Id or X-Author-Id) that will be sent in every request
@@ -107,6 +118,11 @@ func (a *api) SetCustomHeader(key, val string) {
 // SetRetryStrategy allows to set a retry strategy that will be performed in every failed request
 func (a *api) SetRetryStrategy(f RetryStrategyFunc) {
 	a.retryStrategy = f
+}
+
+// SetStatsSink allows to set a statistics sink that will send API calls metrics data to SDK consumers
+func (a *api) SetStatsSink(f StatsSinkFunc) {
+	a.statsSink = f
 }
 
 type fileUploadAPI struct{ *api }
@@ -128,6 +144,7 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	if token == nil {
 		return "", fmt.Errorf("couldn't get token")
 	}
+	start := time.Now()
 
 	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
 	if err != nil {
@@ -162,6 +179,10 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 		URL string `json:"url"`
 	}
 	err = a.send(req, &resp)
+
+	executionTime := time.Now().Sub(start)
+	a.statsSink(metrics.APICallStats{"upload_file", executionTime, err == nil})
+
 	return resp.URL, err
 }
 
