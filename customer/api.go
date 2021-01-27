@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/livechat/lc-sdk-go/v3/authorization"
-	"github.com/livechat/lc-sdk-go/v3/internal"
 	i "github.com/livechat/lc-sdk-go/v3/internal"
 	"github.com/livechat/lc-sdk-go/v3/objects"
 )
@@ -16,7 +15,7 @@ type customerAPI interface {
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
-	GetSamplesChan() chan *internal.APICallStats
+	GetSamplesChan() chan *i.APICallStats
 }
 
 // API provides the API operation methods for making requests to Customer Chat API via Web API.

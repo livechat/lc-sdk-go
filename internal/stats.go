@@ -25,4 +25,5 @@ func newStats() *stats {
 type APICallStats struct {
 	Method        string
 	ExecutionTime time.Duration
+	Success       bool
 }

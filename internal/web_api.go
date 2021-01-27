@@ -71,13 +71,7 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 	if err != nil {
 		return err
 	}
-
 	start := time.Now()
-
-	defer func(startTime time.Time) {
-		executionTime := time.Now().Sub(startTime)
-		a.s.sample(&APICallStats{action, executionTime})
-	}(start)
 
 	req, err := a.httpRequestGenerator(token, a.host, action)
 	if err != nil {
@@ -104,8 +98,15 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		}
 		req.Header.Set(key, val[0])
 	}
+	err = a.send(req, respPayload)
 
-	return a.send(req, respPayload)
+	executionTime := time.Now().Sub(start)
+	if err != nil {
+		a.s.sample(&APICallStats{action, executionTime, false})
+	} else {
+		a.s.sample(&APICallStats{action, executionTime, true})
+	}
+	return err
 }
 
 // SetCustomHeader allows to set a custom header (e.g. X-Debug-Id or X-Author-Id) that will be sent in every request
@@ -137,12 +138,7 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	if token == nil {
 		return "", fmt.Errorf("couldn't get token")
 	}
-
 	start := time.Now()
-	defer func(startTime time.Time) {
-		executionTime := time.Now().Sub(startTime)
-		a.s.sample(&APICallStats{"upload_file", executionTime})
-	}(start)
 
 	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
 	if err != nil {
@@ -177,6 +173,13 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 		URL string `json:"url"`
 	}
 	err = a.send(req, &resp)
+
+	executionTime := time.Now().Sub(start)
+	if err != nil {
+		a.s.sample(&APICallStats{"upload_file", executionTime, false})
+	} else {
+		a.s.sample(&APICallStats{"upload_file", executionTime, true})
+	}
 	return resp.URL, err
 }
 

@@ -13,6 +13,7 @@ type configurationAPI interface {
 	Call(string, interface{}, interface{}) error
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
+	GetSamplesChan() chan *i.APICallStats
 }
 
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.

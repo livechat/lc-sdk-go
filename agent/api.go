@@ -16,6 +16,7 @@ type agentAPI interface {
 	SetCustomHost(string)
 	SetCustomHeader(string, string)
 	SetRetryStrategy(i.RetryStrategyFunc)
+	GetSamplesChan() chan *i.APICallStats
 }
 
 // API provides the API operation methods for making requests to Agent Chat API via Web API.
