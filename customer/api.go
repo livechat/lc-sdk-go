@@ -15,6 +15,7 @@ type customerAPI interface {
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
+	SetStatsSink(i.StatsSinkFunc)
 }
 
 // API provides the API operation methods for making requests to Customer Chat API via Web API.
