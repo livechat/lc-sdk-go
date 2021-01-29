@@ -3,6 +3,10 @@
 ### [Current Changes]
 * Add `active` parameter to `ResumeChat` and `StartChat`.
 * Renamed `ActivateChat` to `ResumeChat`.
+* Removed `BotStatus` parameter from `CreateBot` and `UpdateBot` methods.
+* `BotAgent` and `BotAgentDetails` merged to `Bot` structure.
+* Add `fields` parameter to `ListBots` method in order to get additional Bots information.
+* Add `fields` parameter to `GetBot` method in order to get additional Bot information.
 * Support LiveChat APIs v3.3.
 
 ### [v2.1.0]
