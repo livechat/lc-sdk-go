@@ -8,6 +8,7 @@
 * Add `fields` parameter to `ListBots` method in order to get additional Bots information.
 * Add `fields` parameter to `GetBot` method in order to get additional Bot information.
 * Support LiveChat APIs v3.3.
+* Add `default_value` parameter to `RegisterProperty`.
 
 ### [v2.1.0]
 

@@ -124,7 +124,8 @@ var mockedResponses = map[string]string{
 			"domain": [
 				"hello",
 				"hi"
-			]
+			],
+			"default_value": "hi"
 		}
 	}`,
 	"list_license_properties": `{
@@ -475,6 +476,7 @@ func TestRegisterPropertyShouldReturnDataReceivedFromConfApi(t *testing.T) {
 				Customer: []string{"read"},
 			},
 		},
+		DefaultValue: 7,
 	})
 	if rErr != nil {
 		t.Errorf("RegisterProperty failed: %v", rErr)

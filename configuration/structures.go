@@ -111,7 +111,8 @@ type PropertyConfig struct {
 		From int `json:"from"`
 		To   int `json:"to"`
 	} `json:"range,omitempty"`
-	PublicAccess []string `json:"public_access,omitempty"`
+	PublicAccess []string    `json:"public_access,omitempty"`
+	DefaultValue interface{} `json:"default_value,omitempty"`
 }
 
 // PropertyAccess defines read/write rights of a property
