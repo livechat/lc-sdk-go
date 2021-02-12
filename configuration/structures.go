@@ -5,6 +5,7 @@ type Webhook struct {
 	Action         WebhookAction   `json:"action"`
 	SecretKey      string          `json:"secret_key"`
 	URL            string          `json:"url"`
+	Type           string          `json:"type"`
 	AdditionalData []string        `json:"additional_data,omitempty"`
 	Description    string          `json:"description,omitempty"`
 	Filters        *WebhookFilters `json:"filters,omitempty"`
@@ -16,6 +17,7 @@ type RegisteredWebhook struct {
 	Action         string          `json:"action"`
 	SecretKey      string          `json:"secret_key"`
 	URL            string          `json:"url"`
+	Type           string          `json:"type"`
 	AdditionalData []string        `json:"additional_data,omitempty"`
 	Description    string          `json:"description,omitempty"`
 	Filters        *WebhookFilters `json:"filters,omitempty"`
@@ -31,7 +33,7 @@ type WebhookData struct {
 
 // WebhooksState represents state of webhooks for given clientID on given license
 type WebhooksState struct {
-	Enabled bool `json:"webhooks_enabled"`
+	Enabled bool `json:"license_webhooks_enabled"`
 }
 
 // ManageWebhooksStateOptions are options for methods responsible for webhooks' state management:

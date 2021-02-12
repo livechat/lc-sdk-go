@@ -36,23 +36,24 @@ var mockedResponses = map[string]string{
 		"id": "pqi8oasdjahuakndw9nsad9na"
 	}`,
 	"list_webhooks": `[
-    {
-	  "id": "pqi8oasdjahuakndw9nsad9na",
-      "url": "http://myservice.com/webhooks",
-      "description": "Test webhook",
-      "action": "thread_closed",
-      "secret_key": "laudla991lamda0pnoaa0",
-      "filters": {
-        "chat_member_ids": {
-          "agents_any": ["johndoe@mail.com"]
-        }
-      },
-      "owner_client_id": "asXdesldiAJSq9padj"
-    }
-  ]`,
+		{
+			"id": "pqi8oasdjahuakndw9nsad9na",
+			"url": "http://myservice.com/webhooks",
+			"description": "Test webhook",
+			"action": "thread_closed",
+			"secret_key": "laudla991lamda0pnoaa0",
+			"type": "license",
+			"filters": {
+				"chat_member_ids": {
+					"agents_any": ["johndoe@mail.com"]
+				}
+			},
+			"owner_client_id": "asXdesldiAJSq9padj"
+		}
+	]`,
 	"unregister_webhook": `{}`,
 	"create_bot": `{
-    "id": "5c9871d5372c824cbf22d860a707a578"
+		"id": "5c9871d5372c824cbf22d860a707a578"
 	}`,
 	"update_bot": `{}`,
 	"delete_bot": `{}`,
@@ -224,10 +225,10 @@ var mockedResponses = map[string]string{
 			]
 		}
 	]`,
-	"enable_webhooks":  `{}`,
-	"disable_webhooks": `{}`,
-	"get_webhooks_state": `{
-		"webhooks_enabled": true
+	"enable_license_webhooks":  `{}`,
+	"disable_license_webhooks": `{}`,
+	"get_license_webhooks_state": `{
+		"license_webhooks_enabled": true
 	}`,
 }
 
@@ -838,43 +839,43 @@ func TestListWebhookNamesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	}
 }
 
-func TestEnableWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "enable_webhooks"))
+func TestEnableLicenseWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "enable_license_webhooks"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	err = api.EnableWebhooks(nil)
+	err = api.EnableLicenseWebhooks(nil)
 	if err != nil {
 		t.Errorf("EnableWebhooks failed: %v", err)
 	}
 }
 
-func TestDisableWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "disable_webhooks"))
+func TestDisableLicenseWebhooksShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "disable_license_webhooks"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	err = api.DisableWebhooks(nil)
+	err = api.DisableLicenseWebhooks(nil)
 	if err != nil {
 		t.Errorf("DisableWebhooks failed: %v", err)
 	}
 }
 
-func TestGetWebhooksStateShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "get_webhooks_state"))
+func TestGetLicenseWebhooksStateShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_license_webhooks_state"))
 
 	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
 	if err != nil {
 		t.Errorf("API creation failed")
 	}
 
-	state, err := api.GetWebhooksState(nil)
+	state, err := api.GetLicenseWebhooksState(nil)
 	if err != nil {
 		t.Errorf("GetWebhooksState failed: %v", err)
 	}

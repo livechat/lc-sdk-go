@@ -353,42 +353,42 @@ func (a *API) ListWebhookNames(version string) ([]*WebhookData, error) {
 	return resp, err
 }
 
-// EnableWebhooks enables webhooks for the authorization token's clientID.
+// EnableLicenseWebhooks enables webhooks for the authorization token's clientID.
 //
 // When authorizing via Personal Access Token, set correct ClientID in opts.
-func (a *API) EnableWebhooks(opts *ManageWebhooksStateOptions) error {
+func (a *API) EnableLicenseWebhooks(opts *ManageWebhooksStateOptions) error {
 	var clientID string
 	if opts != nil {
 		clientID = opts.ClientID
 	}
-	return a.Call("enable_webhooks", &manageWebhooksStateRequest{
+	return a.Call("enable_license_webhooks", &manageWebhooksStateRequest{
 		ClientID: clientID,
 	}, &emptyResponse{})
 }
 
-// DisableWebhooks disables webhooks for the authorization token's clientID.
+// DisableLicenseWebhooks disables webhooks for the authorization token's clientID.
 //
 // When authorizing via Personal Access Token, set correct ClientID in opts.
-func (a *API) DisableWebhooks(opts *ManageWebhooksStateOptions) error {
+func (a *API) DisableLicenseWebhooks(opts *ManageWebhooksStateOptions) error {
 	var clientID string
 	if opts != nil {
 		clientID = opts.ClientID
 	}
-	return a.Call("disable_webhooks", &manageWebhooksStateRequest{
+	return a.Call("disable_license_webhooks", &manageWebhooksStateRequest{
 		ClientID: clientID,
 	}, &emptyResponse{})
 }
 
-// GetWebhooksState retrieves webhooks' state for the authorization token's clientID.
+// GetLicenseWebhooksState retrieves webhooks' state for the authorization token's clientID.
 //
 // When authorizing via Personal Access Token, set correct ClientID in opts.
-func (a *API) GetWebhooksState(opts *ManageWebhooksStateOptions) (*WebhooksState, error) {
+func (a *API) GetLicenseWebhooksState(opts *ManageWebhooksStateOptions) (*WebhooksState, error) {
 	var clientID string
 	if opts != nil {
 		clientID = opts.ClientID
 	}
 	var resp *WebhooksState
-	err := a.Call("get_webhooks_state", &manageWebhooksStateRequest{
+	err := a.Call("get_license_webhooks_state", &manageWebhooksStateRequest{
 		ClientID: clientID,
 	}, &resp)
 	return resp, err
