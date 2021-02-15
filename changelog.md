@@ -7,6 +7,10 @@
 * `BotAgent` and `BotAgentDetails` merged to `Bot` structure.
 * Add `fields` parameter to `ListBots` method in order to get additional Bots information.
 * Add `fields` parameter to `GetBot` method in order to get additional Bot information.
+* Add `type` parameter to `RegisterWebhook` ("bot" or "license").
+* Renamed `EnableWebhooks` to `EnableLicenseWebhooks`.
+* Renamed `DisableWebhooks` to `DisableLicenseWebhooks`.
+* Renamed `GetWebhooksState` to `GetLicenseWebhooksState`.
 * Support LiveChat APIs v3.3.
 
 ### [v2.1.0]
