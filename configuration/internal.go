@@ -21,7 +21,7 @@ type createBotRequest struct {
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
 	Groups               []*GroupConfig `json:"groups,omitempty"`
-	Webhooks             *BotWebhooks   `json:"webhooks,omitempty"`
+	OwnerClientID        string         `json:"owner_client_id,omitempty"`
 }
 
 type createBotResponse struct {

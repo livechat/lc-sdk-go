@@ -85,26 +85,7 @@ var mockedResponses = map[string]string{
 		}, {
 			"id": 2,
 			"priority": "first"
-		}],
-		"webhooks": {
-			"url": "http://myservice.com/webhooks",
-			"secret_key": "JSauw0Aks8l-asAa",
-			"actions": [{
-				"name": "incoming_chats",
-				"filters": {
-					"chat_properties": {
-						"source": {
-							"type": {
-								"values": ["facebook", "twitter"]
-							}
-						}
-					}
-				}
-			},{
-				"name": "incoming_event",
-				"additional_data": ["chat_properties"]
-			}]
-		}
+		}]
 	}`,
 	"register_property":   `{}`,
 	"unregister_property": `{}`,
@@ -345,7 +326,7 @@ func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id")
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -364,7 +345,7 @@ func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, &configuration.BotWebhooks{})
+	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, "dummy_client_id")
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -378,7 +359,7 @@ func TestUpdateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{})
 	if rErr != nil {
 		t.Errorf("UpdateBot failed: %v", rErr)
 	}
@@ -393,7 +374,7 @@ func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, &configuration.BotWebhooks{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups)
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}

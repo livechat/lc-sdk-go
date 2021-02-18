@@ -77,28 +77,13 @@ type Bot struct {
 	MaxChatsCount        uint           `json:"max_chats_count,omitempty"`
 	Groups               []*GroupConfig `json:"groups,omitempty"`
 	JobTitle             string         `json:"job_title,omitempty"`
-	Webhooks             *BotWebhooks   `json:"webhooks,omitempty"`
 	WorkScheduler        WorkScheduler  `json:"work_scheduler,omitempty"`
-}
-
-// BotWebhooks represents webhooks configuration for bot agent
-type BotWebhooks struct {
-	URL       string              `json:"url"`
-	SecretKey string              `json:"secret_key"`
-	Actions   []*BotWebhookAction `json:"actions"`
 }
 
 // GroupConfig defines bot's priority and membership in group
 type GroupConfig struct {
 	ID       uint          `json:"id"`
 	Priority GroupPriority `json:"priority"`
-}
-
-// BotWebhookAction represents action that should trigger bot's webhook
-type BotWebhookAction struct {
-	Name           WebhookAction   `json:"name"`
-	Filters        *WebhookFilters `json:"filters"`
-	AdditionalData []string        `json:"additional_data"`
 }
 
 // PropertyConfig defines configuration of a property

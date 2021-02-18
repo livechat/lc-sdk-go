@@ -78,7 +78,7 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 }
 
 // CreateBot allows to create bot and returns its ID.
-func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) (string, error) {
+func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID string) (string, error) {
 	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
@@ -89,14 +89,14 @@ func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority Grou
 		MaxChatsCount:        &maxChats,
 		DefaultGroupPriority: defaultPriority,
 		Groups:               groups,
-		Webhooks:             webhooks,
+		OwnerClientID:        ownerClientID,
 	}, &resp)
 
 	return resp.BotID, err
 }
 
 // UpdateBot allows to update bot.
-func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, webhooks *BotWebhooks) error {
+func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
@@ -108,7 +108,6 @@ func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority 
 			MaxChatsCount:        &maxChats,
 			DefaultGroupPriority: defaultPriority,
 			Groups:               groups,
-			Webhooks:             webhooks,
 		},
 	}, &emptyResponse{})
 }
