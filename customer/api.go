@@ -394,3 +394,10 @@ func (a *API) CancelGreeting(uniqueID string) error {
 		UniqueID: uniqueID,
 	}, &emptyResponse{})
 }
+
+// RequestEmailVerification sends a request to confirm customer identity with webhook sent to `callbackURI` after validation.
+func (a *API) RequestEmailVerification(callbackURI string) error {
+	return a.Call("request_email_verification", &requestEmailVerificationRequest{
+		CallbackURI: callbackURI,
+	}, &emptyResponse{})
+}

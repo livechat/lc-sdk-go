@@ -263,9 +263,10 @@ var mockedResponses = map[string]string{
 				"string_property": "string value"
 		}
 	}`,
-	"get_customer":    `{}`, //TODO - create some real structure here
-	"accept_greeting": `{}`,
-	"cancel_greeting": `{}`,
+	"get_customer":               `{}`, //TODO - create some real structure here
+	"accept_greeting":            `{}`,
+	"cancel_greeting":            `{}`,
+	"request_email_verification": `{}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -871,6 +872,20 @@ func TestGetCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 
 	if customer == nil {
 		t.Errorf("Invalid Customer")
+	}
+}
+
+func TestRequestEmailVerificationShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "request_email_verification"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	rErr := api.RequestEmailVerification("http://page.url")
+	if rErr != nil {
+		t.Errorf("RequestEmailVerification failed: %v", rErr)
 	}
 }
 

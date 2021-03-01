@@ -200,3 +200,7 @@ type hashedPaginationResponse struct {
 	PreviousPageID string `json:"previous_page_id,omitempty"`
 	NextPageID     string `json:"next_page_id,omitempty"`
 }
+
+type requestEmailVerificationRequest struct {
+	CallbackURI string `json:"callback_uri"`
+}
