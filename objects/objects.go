@@ -195,8 +195,9 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
-	LastVisit  Visit `json:"last_visit"`
-	Statistics struct {
+	EmailVerified bool  `json:"email_verified"`
+	LastVisit     Visit `json:"last_visit"`
+	Statistics    struct {
 		VisitsCount            int `json:"visits_count"`
 		ThreadsCount           int `json:"threads_count"`
 		ChatsCount             int `json:"chats_count"`
