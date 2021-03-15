@@ -44,27 +44,46 @@ type ManageWebhooksStateOptions struct {
 
 // WebhookFilters represent set of properties that webhook will use for filtering triggers
 type WebhookFilters struct {
-	AuthorType    string               `json:"author_type,omitempty"`
-	OnlyMyChats   bool                 `json:"only_my_chats,omitempty"`
-	ChatMemberIDs *chatMemberIDsFilter `json:"chat_member_ids,omitempty"`
+	AuthorType   string              `json:"author_type,omitempty"`
+	OnlyMyChats  bool                `json:"only_my_chats,omitempty"`
+	ChatPresence *chatPresenceFilter `json:"chat_presence,omitempty"`
 }
 
-type chatMemberIDsFilter struct {
-	AgentsAny     []string `json:"agents_any,omitempty"`
-	AgentsExclude []string `json:"agents_exclude,omitempty"`
+type chatPresenceFilter struct {
+	UserIDs *userIDsFilter `json:"user_ids,omitempty"`
+	MyBots  bool           `json:"my_bots,omitempty"`
 }
 
-// NewChatMemberIDsFilter creates new filter for triggering webhooks based on agents in chat
-// `inclusive` parameter controls if the filtered agents should match or exclude given agents
-func NewChatMemberIDsFilter(agents []string, inclusive bool) *chatMemberIDsFilter {
-	cmf := &chatMemberIDsFilter{}
-	switch {
-	case inclusive:
-		cmf.AgentsAny = agents
-	default:
-		cmf.AgentsExclude = agents
+type userIDsFilter struct {
+	Values        []string `json:"values,omitempty"`
+	ExcludeValues []string `json:"exclude_values,omitempty"`
+}
+
+// NewChatPresenceFilter creates new filter for triggering webhooks based on chat members
+func NewChatPresenceFilter() *chatPresenceFilter {
+	return &chatPresenceFilter{}
+}
+
+// WithMyBots causes webhooks to be triggered if there's any bot owned by the integration
+// in the chat
+func (cpf *chatPresenceFilter) WithMyBots() *chatPresenceFilter {
+	cpf.MyBots = true
+	return cpf
+}
+
+// WithUserIDs causes webhooks to be triggered based on chat presence of any provided user_id
+// `inclusive` parameter controls if the provided user_ids should match or exclude users present in the chat
+func (cpf *chatPresenceFilter) WithUserIDs(user_ids []string, inclusive bool) *chatPresenceFilter {
+	if inclusive {
+		cpf.UserIDs = &userIDsFilter{
+			Values: user_ids,
+		}
+	} else {
+		cpf.UserIDs = &userIDsFilter{
+			ExcludeValues: user_ids,
+		}
 	}
-	return cmf
+	return cpf
 }
 
 // Bot represents basic bot agent information
