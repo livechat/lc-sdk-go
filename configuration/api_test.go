@@ -44,8 +44,11 @@ var mockedResponses = map[string]string{
 			"secret_key": "laudla991lamda0pnoaa0",
 			"type": "license",
 			"filters": {
-				"chat_member_ids": {
-					"agents_any": ["johndoe@mail.com"]
+				"chat_presence": {
+					"my_bots": true,
+					"user_ids": {
+						"value": ["johndoe@mail.com"]
+					}
 				}
 			},
 			"owner_client_id": "asXdesldiAJSq9padj"
@@ -193,7 +196,8 @@ var mockedResponses = map[string]string{
 				"only_my_chats"
 			],
 			"additional_data": [
-				"chat_properties"
+				"chat_properties",
+				"chat_presence_user_ids"
 			]
 		},
 		{
@@ -203,7 +207,8 @@ var mockedResponses = map[string]string{
 				"only_my_chats"
 			],
 			"additional_data": [
-				"chat_properties"
+				"chat_properties",
+				"chat_presence_user_ids"
 			]
 		}
 	]`,
@@ -276,7 +281,12 @@ func TestRegisterWebhookShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	webhookID, rErr := api.RegisterWebhook(&configuration.Webhook{}, nil)
+	cpf := configuration.NewChatPresenceFilter().WithMyBots().WithUserIDs([]string{"agent@smith.com"}, true)
+	webhookID, rErr := api.RegisterWebhook(&configuration.Webhook{
+		Filters: &configuration.WebhookFilters{
+			ChatPresence: cpf,
+		},
+	}, nil)
 	if rErr != nil {
 		t.Errorf("RegisterWebhook failed: %v", rErr)
 	}
