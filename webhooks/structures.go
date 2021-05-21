@@ -85,20 +85,24 @@ type ThreadPropertiesDeleted struct {
 	Properties map[string][]string `json:"properties"`
 }
 
-// ChatUserAdded represents payload of chat_user_added webhook.
-type ChatUserAdded struct {
-	ChatID   string       `json:"chat_id"`
-	ThreadID string       `json:"thread_id"`
-	User     objects.User `json:"user"`
-	UserType string       `json:"user_type"`
+// UserAddedToChat represents payload of user_added_to_chat webhook.
+type UserAddedToChat struct {
+	ChatID      string       `json:"chat_id"`
+	ThreadID    string       `json:"thread_id"`
+	User        objects.User `json:"user"`
+	UserType    string       `json:"user_type"`
+	Reason      string       `json:"reason"`
+	RequesterID string       `json:"requester_id"`
 }
 
-// ChatUserRemoved represents payload of chat_user_removed webhook.
-type ChatUserRemoved struct {
-	ChatID   string `json:"chat_id"`
-	ThreadID string `json:"thread_id"`
-	UserID   string `json:"user_id"`
-	UserType string `json:"user_type"`
+// UserRemovedFromChat represents payload of user_removed_from_chat webhook.
+type UserRemovedFromChat struct {
+	ChatID      string `json:"chat_id"`
+	ThreadID    string `json:"thread_id"`
+	UserID      string `json:"user_id"`
+	UserType    string `json:"user_type"`
+	Reason      string `json:"reason"`
+	RequesterID string `json:"requester_id"`
 }
 
 // ThreadTagged represents payload of thread_tagged webhook.
@@ -127,25 +131,16 @@ type EventsMarkedAsSeen struct {
 	SeenUpTo string `json:"seen_up_to"`
 }
 
-// AccessGranted represents payload of access_granted webhook.
-type AccessGranted struct {
-	Resource string         `json:"resource"`
-	ID       string         `json:"id"`
-	Access   objects.Access `json:"access"`
+// ChatAccessGranted represents payload of chat_access_granted webhook.
+type ChatAccessGranted struct {
+	ID     string         `json:"id"`
+	Access objects.Access `json:"access"`
 }
 
-// AccessRevoked represents payload of access_revoked webhook.
-type AccessRevoked struct {
-	Resource string         `json:"resource"`
-	ID       string         `json:"id"`
-	Access   objects.Access `json:"access"`
-}
-
-// AccessSet represents payload of access_set webhook.
-type AccessSet struct {
-	Resource string         `json:"resource"`
-	ID       string         `json:"id"`
-	Access   objects.Access `json:"access"`
+// ChatAccessRevoked represents payload of chat_access_revoked webhook.
+type ChatAccessRevoked struct {
+	ID     string         `json:"id"`
+	Access objects.Access `json:"access"`
 }
 
 // IncomingCustomer represents payload of incoming_customer webhook.

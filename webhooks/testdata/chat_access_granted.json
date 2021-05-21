@@ -1,14 +1,13 @@
 {
-	"webhook_id": "37901609f767dea5bc3a8acf5458bd80",
+	"webhook_id": "37901609f767dea5bc3a8acf5458bd34",
 	"secret_key": "dummy_key",
-	"action": "access_set",
+	"action": "chat_access_granted",
 	"license_id": 21377312,
 	"payload": {
-		"resource": "chat",
-		"id": "PJ0MRSHTDG",
+		"id": "PJ0MRSHTDX",
 		"access": {
 			"group_ids": [
-				1
+				2
 			]
 		}
 	},

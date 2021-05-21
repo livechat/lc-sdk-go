@@ -406,7 +406,7 @@ func (a *API) DeleteLicenseProperties(props map[string][]string) error {
 
 // DeleteGroupProperties deletes the properties set within a group.
 func (a *API) DeleteGroupProperties(id int, props map[string][]string) error {
-	return a.Call("delete_license_properties", &deleteGroupPropertiesRequest{
+	return a.Call("delete_group_properties", &deleteGroupPropertiesRequest{
 		ID:         id,
 		Properties: props,
 	}, &emptyResponse{})

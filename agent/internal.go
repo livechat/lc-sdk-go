@@ -268,5 +268,5 @@ type unfollowCustomerRequest struct {
 }
 
 type listRoutingStatusesRequest struct {
-	Filters *routingStatusesFilter `json:"filters`
+	Filters *routingStatusesFilter `json:"filters"`
 }

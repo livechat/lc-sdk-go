@@ -265,23 +265,30 @@ func threadPropertiesDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatUserAdded(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.ChatUserAdded)
+func userAddedToChat(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.UserAddedToChat)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
 	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("Reason", payload.Reason, "manual", &errors)
+	propEq("RequesterID", payload.RequesterID, "smith@example.com", &errors)
 	propEq("UserType", payload.UserType, "customer", &errors)
 
 	customer := payload.User.Customer()
+	if customer == nil {
+		return fmt.Errorf("`User.Customer` is nil")
+	}
 	propEq("Customer.ID", customer.ID, "345f8235-d60d-433e-63c5-7f813a6ffe25", &errors)
 	propEq("Customer.Type", customer.Type, "customer", &errors)
 	propEq("Customer.Name", customer.Name, "test", &errors)
 	propEq("Customer.Email", customer.Email, "test@test.pl", &errors)
 	propEq("Customer.Avatar", customer.Avatar, "", &errors)
 	propEq("Customer.Present", customer.Present, true, &errors)
+	propEq("Customer.EmailVerified", customer.EmailVerified, true, &errors)
 	propEq("Customer.EventsSeenUpTo", customer.EventsSeenUpTo.String(), "2019-10-08 11:56:53 +0000 UTC", &errors)
 
 	lastVisit := customer.LastVisit
@@ -312,6 +319,7 @@ func chatUserAdded(ctx context.Context, wh *webhooks.Webhook) error {
 
 	propEq("Customer.AgentLastEventCreatedAt", customer.AgentLastEventCreatedAt.String(), "2019-10-11 09:40:59.249 +0000 UTC", &errors)
 	propEq("Customer.CustomerLastEventCreatedAt", customer.CustomerLastEventCreatedAt.String(), "2019-10-11 09:40:59.219001 +0000 UTC", &errors)
+	propEq("Customer.SessionFields[0][\"some_key\"]", customer.SessionFields[0]["some_key"], "some_value", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -319,14 +327,17 @@ func chatUserAdded(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatUserRemoved(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.ChatUserRemoved)
+func userRemovedFromChat(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.UserRemovedFromChat)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
-	propEq("ChatID", payload.ChatID, "PS0X0L086G", &errors)
+	propEq("ChatID", payload.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ThreadID", payload.ThreadID, "K600PKZON8", &errors)
+	propEq("Reason", payload.Reason, "manual", &errors)
+	propEq("RequesterID", payload.RequesterID, "smith@example.com", &errors)
 	propEq("UserType", payload.UserType, "agent", &errors)
 	propEq("UserID", payload.UserID, "agent@livechatinc.com", &errors)
 
@@ -402,15 +413,14 @@ func eventsMarkedAsSeen(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessGranted(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.AccessGranted)
+func chatAccessGranted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatAccessGranted)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
 	propEq("ID", payload.ID, "PJ0MRSHTDX", &errors)
-	propEq("Resource", payload.Resource, "thread", &errors)
 	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &errors)
 	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 2, &errors)
 
@@ -420,15 +430,14 @@ func accessGranted(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessRevoked(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.AccessRevoked)
+func chatAccessRevoked(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatAccessRevoked)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
 
 	var errors string
 	propEq("ID", payload.ID, "PJ0MRSHTDV", &errors)
-	propEq("Resource", payload.Resource, "chat", &errors)
 	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 2, &errors)
 	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 3, &errors)
 	propEq("Access.GroupIDs[1]", payload.Access.GroupIDs[1], 4, &errors)
@@ -439,26 +448,8 @@ func accessRevoked(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func accessSet(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.AccessSet)
-	if !ok {
-		return fmt.Errorf("invalid payload type: %T", wh.Payload)
-	}
-
-	var errors string
-	propEq("ID", payload.ID, "PJ0MRSHTDG", &errors)
-	propEq("Resource", payload.Resource, "chat", &errors)
-	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &errors)
-	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 1, &errors)
-
-	if errors != "" {
-		return fmt.Errorf(errors)
-	}
-	return nil
-}
-
-func customerCreated(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.CustomerCreated)
+func incomingCustomer(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.IncomingCustomer)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
@@ -558,6 +549,23 @@ func chatTransferred(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("Queue.Position", payload.Queue.Position, 42, &errors)
 	propEq("Queue.WaitTime", payload.Queue.WaitTime, 1337, &errors)
 	propEq("Queue.QueuedAt", payload.Queue.QueuedAt, "2019-12-09T12:01:18.909000Z", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func customerSessionFieldsUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.CustomerSessionFieldsUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5280e68c-9692-4212-4ba9-85f7d8af55cd", &errors)
+	propEq("ActiveChat.ChatID", payload.ActiveChat.ChatID, "PJ0MRSHTDG", &errors)
+	propEq("ActiveChat.ThreadID", payload.ActiveChat.ThreadID, "K600PKZON8", &errors)
+	propEq("ActiveChat.SessionFields[0][\"key\"]", payload.SessionFields[0]["key"], "value", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
