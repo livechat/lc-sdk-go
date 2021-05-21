@@ -411,3 +411,46 @@ func (a *API) DeleteGroupProperties(id int, props map[string][]string) error {
 		Properties: props,
 	}, &emptyResponse{})
 }
+
+// AddAutoAccess creates an auto access data structure.
+func (a *API) AddAutoAccess(groupIDs []int, url, domain *Condition, geolocation *GeolocationCondition, desc, nextID string) (string, error) {
+	var resp addAutoAccessResponse
+	req := addAutoAccessRequest{
+		Description: desc,
+		NextID:      nextID,
+	}
+	req.Access.Groups = groupIDs
+	req.Conditions.Url = url
+	req.Conditions.Domain = domain
+	req.Conditions.Geolocation = geolocation
+	err := a.Call("add_auto_access", &req, &resp)
+
+	return resp.ID, err
+}
+
+// UpdateAutoAccess updates an existing auto access.
+func (a *API) UpdateAutoAccess(id string, groupIDs []int, url, domain *Condition, geolocation *GeolocationCondition, desc, nextID string) error {
+	req := updateAutoAccessRequest{
+		addAutoAccessRequest: addAutoAccessRequest{
+			Description: desc,
+			NextID:      nextID,
+		},
+	}
+	req.Access.Groups = groupIDs
+	req.Conditions.Url = url
+	req.Conditions.Domain = domain
+	req.Conditions.Geolocation = geolocation
+	return a.Call("update_auto_access", &req, &emptyResponse{})
+}
+
+// DeleteAutoAccess deletes an existing auto access.
+func (a *API) DeleteAutoAccess(id string) error {
+	return a.Call("delete_auto_access", &deleteAutoAccessRequest{ID: id}, &emptyResponse{})
+}
+
+// ListAutoAccesses returns all existing auto access.
+func (a *API) ListAutoAccesses() ([]*AutoAccess, error) {
+	var resp []*AutoAccess
+	err := a.Call("list_auto_accesses", &listAutoAccessesRequest{}, &resp)
+	return resp, err
+}

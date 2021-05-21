@@ -189,3 +189,44 @@ type AgentsFilters struct {
 type ManageWebhooksDefinitionOptions struct {
 	ClientID string
 }
+
+// Condition is option for methods responsible for auto access management:
+// AddAutoAccess, UpdateAutoAccess
+type Condition struct {
+	Values        []Match `json:"values"`
+	ExcludeValues []Match `json:"exclude_values"`
+}
+
+// Match represents possible match conditions for Condition
+type Match struct {
+	Value      string `json:"value"`
+	ExactMatch bool   `json:"exact_match,omitempty"`
+}
+
+// GeolocationCondition is option for methods responsible for auto access management:
+// AddAutoAccess, UpdateAutoAccess
+type GeolocationCondition struct {
+	Values []GeolocationMatch `json:"values"`
+}
+
+// GeolocationMatch represents possible match conditions for GeolocationCondition
+type GeolocationMatch struct {
+	Country     string `json:"country,omitempty"`
+	CountryCode string `json:"country_code,omitempty"`
+	Region      string `json:"region,omitempty"`
+	City        string `json:"city,omitempty"`
+}
+
+type AutoAccess struct {
+	ID     string `json:"id"`
+	Access struct {
+		Groups []int `json:"groups"`
+	} `json:"access"`
+	Conditions struct {
+		Url         *Condition            `json:"url,omitempty"`
+		Domain      *Condition            `json:"domain,omitempty"`
+		Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
+	} `json:"conditions"`
+	Description string `json:"description,omitempty"`
+	NextID      string `json:"next_id,omitempty"`
+}
