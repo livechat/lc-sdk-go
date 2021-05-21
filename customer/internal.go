@@ -67,7 +67,7 @@ type listThreadsResponse struct {
 }
 
 type deactivateChatRequest struct {
-	ChatID string `json:"chat_id"`
+	ID string `json:"id"`
 }
 
 type sendRichMessagePostbackRequest struct {
@@ -88,12 +88,12 @@ type sendSneakPeekRequest struct {
 }
 
 type updateChatPropertiesRequest struct {
-	ChatID     string             `json:"chat_id"`
+	ID         string             `json:"id"`
 	Properties objects.Properties `json:"properties"`
 }
 
 type deleteChatPropertiesRequest struct {
-	ChatID     string              `json:"chat_id"`
+	ID         string              `json:"id"`
 	Properties map[string][]string `json:"properties"`
 }
 
@@ -176,7 +176,7 @@ type listLicensePropertiesRequest struct {
 }
 
 type listGroupPropertiesRequest struct {
-	GroupID   uint   `json:"group_id"`
+	ID        uint   `json:"id"`
 	Namespace string `json:"namespace,omitempty"`
 	Name      string `json:"name,omitempty"`
 }
@@ -203,4 +203,22 @@ type hashedPaginationResponse struct {
 
 type requestEmailVerificationRequest struct {
 	CallbackURI string `json:"callback_uri"`
+}
+
+type getDynamicConfigurationRequest struct {
+	GroupID     int    `json:"group_id"`
+	URL         string `json:"url"`
+	ChannelType string `json:"channel_type"`
+	Test        bool   `json:"test"`
+}
+
+type getConfigurationRequest struct {
+	GroupID int    `json:"group_id"`
+	Version string `json:"version"`
+}
+
+type getLocalizationRequest struct {
+	GroupID  int    `json:"group_id"`
+	Language string `json:"language"`
+	Version  string `json:"version"`
 }

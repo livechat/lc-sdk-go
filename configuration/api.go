@@ -78,7 +78,7 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 }
 
 // CreateBot allows to create bot and returns its ID.
-func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID string) (string, error) {
+func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID, timezone string, workScheduler WorkScheduler) (string, error) {
 	var resp createBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return "", err
@@ -90,13 +90,15 @@ func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority Grou
 		DefaultGroupPriority: defaultPriority,
 		Groups:               groups,
 		OwnerClientID:        ownerClientID,
+		WorkScheduler:        workScheduler,
+		Timezone:             timezone,
 	}, &resp)
 
 	return resp.BotID, err
 }
 
 // UpdateBot allows to update bot.
-func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig) error {
+func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, timezone string, workScheduler WorkScheduler) error {
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return err
 	}
@@ -108,6 +110,8 @@ func (a *API) UpdateBot(id, name, avatar string, maxChats uint, defaultPriority 
 			MaxChatsCount:        &maxChats,
 			DefaultGroupPriority: defaultPriority,
 			Groups:               groups,
+			WorkScheduler:        workScheduler,
+			Timezone:             timezone,
 		},
 	}, &emptyResponse{})
 }
@@ -336,7 +340,7 @@ func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (objects
 func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix string) (objects.Properties, error) {
 	var resp objects.Properties
 	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
-		GroupID:         groupID,
+		ID:              groupID,
 		NamespacePrefix: namespacePrefix,
 		NamePrefix:      namePrefix,
 	}, &resp)
@@ -391,4 +395,19 @@ func (a *API) GetLicenseWebhooksState(opts *ManageWebhooksStateOptions) (*Webhoo
 		ClientID: clientID,
 	}, &resp)
 	return resp, err
+}
+
+// DeleteLicenseProperties deletes the properties set within a license.
+func (a *API) DeleteLicenseProperties(props map[string][]string) error {
+	return a.Call("delete_license_properties", &deleteLicensePropertiesRequest{
+		Properties: props,
+	}, &emptyResponse{})
+}
+
+// DeleteGroupProperties deletes the properties set within a group.
+func (a *API) DeleteGroupProperties(id int, props map[string][]string) error {
+	return a.Call("delete_license_properties", &deleteGroupPropertiesRequest{
+		ID:         id,
+		Properties: props,
+	}, &emptyResponse{})
 }

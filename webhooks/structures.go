@@ -148,8 +148,8 @@ type AccessSet struct {
 	Access   objects.Access `json:"access"`
 }
 
-// CustomerCreated represents payload of customer_created webhook.
-type CustomerCreated objects.Customer
+// IncomingCustomer represents payload of incoming_customer webhook.
+type IncomingCustomer objects.Customer
 
 // EventPropertiesUpdated represents payload of event_properties_updated webhook.
 type EventPropertiesUpdated struct {
@@ -188,6 +188,16 @@ type ChatTransferred struct {
 		WaitTime int    `json:"wait_time"`
 		QueuedAt string `json:"queued_at"`
 	} `json:"queue,omitempty"`
+}
+
+// CustomerSessionFieldsUpdated represents payload of customer_session_fields_updated webhook.
+type CustomerSessionFieldsUpdated struct {
+	ID         string `json:"id"`
+	ActiveChat struct {
+		ChatID   string `json:"chat_id"`
+		ThreadID string `json:"thread_id"`
+	} `json:"active_chat"`
+	SessionFields []map[string]string `json:"session_fields"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
