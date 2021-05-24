@@ -415,8 +415,8 @@ func (a *API) GetDynamicConfiguration(groupID int, url, channelType string, isTe
 }
 
 // GetConfiguration returns the configuration of a given group in a given version.
-func (a *API) GetConfiguration(groupID int, version string) (*StaticConfiguration, error) {
-	var resp StaticConfiguration
+func (a *API) GetConfiguration(groupID int, version string) (*Configuration, error) {
+	var resp Configuration
 	err := a.Call("get_configuration", &getConfigurationRequest{
 		GroupID: groupID,
 		Version: version,

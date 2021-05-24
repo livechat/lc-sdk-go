@@ -58,7 +58,7 @@ type ConfigButton struct {
 	OfflineValue string `json:"offline_value"`
 }
 
-type StaticConfiguration struct {
+type Configuration struct {
 	Buttons        []ConfigButton               `json:"buttons"`
 	TicketForm     *Form                        `json:"ticket_form,omitempty"`
 	PrechatForm    *Form                        `json:"prechat_form,omitempty"`
