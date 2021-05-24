@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/livechat/lc-sdk-go/v3/authorization"
@@ -82,6 +84,9 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
 
+	if req.Method == http.MethodGet {
+		req.URL.RawQuery = simpleQs(reqPayload, req.URL.Query())
+	}
 	rawBody, err := json.Marshal(reqPayload)
 	if err != nil {
 		return err
@@ -261,4 +266,47 @@ func DefaultHTTPRequestGenerator(name string) HTTPRequestGenerator {
 		url := fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
 		return http.NewRequest("POST", url, nil)
 	}
+}
+
+func simpleQs(p interface{}, values url.Values) string {
+	v := reflect.ValueOf(p)
+
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	typeOfV := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		f := typeOfV.Field(i)
+		if f.Anonymous {
+			continue
+		}
+		key := f.Tag.Get("json")
+		if key == "-" || key == "" {
+			continue
+		}
+
+		typeOfF := f.Type.Kind()
+		valOfF := v.Field(i).Interface()
+		if typeOfF == reflect.Ptr {
+			if v.Field(i).IsNil() {
+				continue
+			}
+			typeOfF = f.Type.Elem().Kind()
+			valOfF = v.Field(i).Elem()
+		}
+
+		var val string
+		switch typeOfF {
+		case reflect.Bool, reflect.String, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64:
+			val = fmt.Sprintf("%v", valOfF)
+		}
+
+		if val != "" {
+			values.Add(key, val)
+		}
+	}
+
+	return values.Encode()
 }

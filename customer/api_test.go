@@ -346,15 +346,20 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.3/customer/action/"+method+"?license_id=12345" {
+		expectedMethod := http.MethodPost
+		if method == "list_license_properties" ||
+			method == "list_group_properties" ||
+			method == "get_dynamic_configuration" ||
+			method == "get_configuration" ||
+			method == "get_localization" {
+			expectedMethod = http.MethodGet
+		}
+
+		if expectedMethod == http.MethodPost && req.URL.String() != "https://api.livechatinc.com/v3.3/customer/action/"+method+"?license_id=12345" {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
 
-		expectedMethod := "POST"
-		if method == "list_license_properties" || method == "list_group_properties" {
-			expectedMethod = "GET"
-		}
 		if expectedMethod != req.Method {
 			t.Errorf("Invalid method: %s for Customer API action: %s", req.Method, method)
 			return createServerError("Invalid URL")

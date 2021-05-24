@@ -35,7 +35,11 @@ func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator 
 			qs.Add("license_id", fmt.Sprintf("%v", *t.LicenseID))
 			req.URL.RawQuery = qs.Encode()
 		}
-		if a == "list_license_properties" || a == "list_group_properties" {
+		if a == "list_license_properties" ||
+			a == "list_group_properties" ||
+			a == "get_dynamic_configuration" ||
+			a == "get_configuration" ||
+			a == "get_localization" {
 			req.Method = "GET"
 		}
 		return req, nil
