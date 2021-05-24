@@ -62,7 +62,7 @@ type Configuration struct {
 	Buttons        []ConfigButton               `json:"buttons"`
 	TicketForm     *Form                        `json:"ticket_form,omitempty"`
 	PrechatForm    *Form                        `json:"prechat_form,omitempty"`
-	AllowedDomains []string                     `json:"allowed_domains,omitempty"` // CHECK: why not in docs?
+	AllowedDomains []string                     `json:"allowed_domains,omitempty"`
 	Integrations   map[string]map[string]string `json:"integrations"`
 	Properties     struct {
 		Group   objects.Properties `json:"group"`
