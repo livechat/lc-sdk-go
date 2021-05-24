@@ -430,12 +430,9 @@ func (a *API) AddAutoAccess(groupIDs []int, url, domain *Condition, geolocation 
 
 // UpdateAutoAccess updates an existing auto access.
 func (a *API) UpdateAutoAccess(id string, groupIDs []int, url, domain *Condition, geolocation *GeolocationCondition, desc, nextID string) error {
-	req := updateAutoAccessRequest{
-		addAutoAccessRequest: addAutoAccessRequest{
-			Description: desc,
-			NextID:      nextID,
-		},
-	}
+	req := updateAutoAccessRequest{}
+	req.Description = desc
+	req.NextID = nextID
 	req.Access.Groups = groupIDs
 	req.Conditions.Url = url
 	req.Conditions.Domain = domain
