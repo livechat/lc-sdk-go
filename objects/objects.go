@@ -91,6 +91,15 @@ func (u *User) Customer() *Customer {
 	if err := json.Unmarshal(u.CreatedAt, &c.CreatedAt); err != nil {
 		return nil
 	}
+	if err := json.Unmarshal(u.Followed, &c.Followed); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.Online, &c.Online); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.State, &c.State); err != nil {
+		return nil
+	}
 	if err := json.Unmarshal(u.SessionFields, &c.SessionFields); err != nil {
 		return nil
 	}

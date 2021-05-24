@@ -51,7 +51,10 @@
 				{
 					"some_other_key": "some_other_value"
 				}
-			]
+			],
+			"followed": true,
+			"online": false,
+			"state": "browsing"
 		},
 		"user_type": "customer",
 		"reason": "manual",
