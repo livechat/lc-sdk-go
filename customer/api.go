@@ -11,7 +11,7 @@ import (
 )
 
 type customerAPI interface {
-	Call(string, interface{}, interface{}) error
+	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
@@ -35,9 +35,7 @@ func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator 
 			qs.Add("license_id", fmt.Sprintf("%v", *t.LicenseID))
 			req.URL.RawQuery = qs.Encode()
 		}
-		if a == "list_license_properties" || a == "list_group_properties" {
-			req.Method = "GET"
-		}
+
 		return req, nil
 	}
 }
@@ -365,7 +363,7 @@ func (a *API) ListLicenseProperties(namespace, name string) (objects.Properties,
 	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
 		Namespace: namespace,
 		Name:      name,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return resp, err
 }
 
@@ -376,7 +374,7 @@ func (a *API) ListGroupProperties(groupID uint, namespace, name string) (objects
 		ID:        groupID,
 		Namespace: namespace,
 		Name:      name,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return resp, err
 }
 
@@ -410,7 +408,7 @@ func (a *API) GetDynamicConfiguration(groupID int, url, channelType string, isTe
 		URL:         url,
 		ChannelType: channelType,
 		Test:        isTest,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return &resp, err
 }
 
@@ -420,7 +418,7 @@ func (a *API) GetConfiguration(groupID int, version string) (*Configuration, err
 	err := a.Call("get_configuration", &getConfigurationRequest{
 		GroupID: groupID,
 		Version: version,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return &resp, err
 }
 
@@ -431,6 +429,6 @@ func (a *API) GetLocalization(groupID int, language, version string) (map[string
 		GroupID:  groupID,
 		Language: language,
 		Version:  version,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return resp, err
 }

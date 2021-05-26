@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/go-querystring/query"
 	"github.com/livechat/lc-sdk-go/v3/authorization"
 	api_errors "github.com/livechat/lc-sdk-go/v3/errors"
 	"github.com/livechat/lc-sdk-go/v3/metrics"
@@ -43,6 +44,10 @@ type api struct {
 // HTTPRequestGenerator is called by each API method to generate api http url.
 type HTTPRequestGenerator func(*authorization.Token, string, string) (*http.Request, error)
 
+type CallOptions struct {
+	Method string
+}
+
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
 //
@@ -70,7 +75,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 }
 
 // Call sends request to API with given action
-func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}) error {
+func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}, opts ...*CallOptions) error {
 	token, err := a.getToken()
 	if err != nil {
 		return err
@@ -82,14 +87,30 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
 
-	rawBody, err := json.Marshal(reqPayload)
-	if err != nil {
-		return err
+	if len(opts) > 0 && opts[0].Method == http.MethodGet {
+		req.Method = opts[0].Method
+		qs, err := query.Values(reqPayload)
+		if err != nil {
+			return err
+		}
+		if req.URL.RawQuery != "" {
+			for key, values := range req.URL.Query() {
+				for _, value := range values {
+					qs.Add(key, value)
+				}
+			}
+		}
+		req.URL.RawQuery = qs.Encode()
+	} else {
+		rawBody, err := json.Marshal(reqPayload)
+		if err != nil {
+			return err
+		}
+		req.GetBody = func() (io.ReadCloser, error) {
+			return ioutil.NopCloser(bytes.NewReader(rawBody)), nil
+		}
+		req.Body, _ = req.GetBody()
 	}
-	req.GetBody = func() (io.ReadCloser, error) {
-		return ioutil.NopCloser(bytes.NewReader(rawBody)), nil
-	}
-	req.Body, _ = req.GetBody()
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
