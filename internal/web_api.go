@@ -93,14 +93,12 @@ func (a *api) Call(action string, reqPayload interface{}, respPayload interface{
 		if err != nil {
 			return err
 		}
-		if req.URL.RawQuery != "" {
-			for key, values := range req.URL.Query() {
-				for _, value := range values {
-					qs.Add(key, value)
-				}
-			}
+
+		encodedQuery := qs.Encode()
+		if req.URL.RawQuery != "" && encodedQuery != "" {
+			encodedQuery = "&" + encodedQuery
 		}
-		req.URL.RawQuery = qs.Encode()
+		req.URL.RawQuery = req.URL.RawQuery + encodedQuery
 	} else {
 		rawBody, err := json.Marshal(reqPayload)
 		if err != nil {

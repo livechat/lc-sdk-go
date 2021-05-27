@@ -1,6 +1,8 @@
 package customer
 
-import "github.com/livechat/lc-sdk-go/v3/objects"
+import (
+	"github.com/livechat/lc-sdk-go/v3/objects"
+)
 
 type startChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat,omitempty"`
@@ -218,7 +220,7 @@ type getConfigurationRequest struct {
 }
 
 type getLocalizationRequest struct {
-	GroupID  int    `json:"group_id"`
-	Language string `json:"language"`
-	Version  string `json:"version"`
+	GroupID  int    `url:"group_id"`
+	Language string `url:"language"`
+	Version  string `url:"version"`
 }
