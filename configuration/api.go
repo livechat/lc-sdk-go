@@ -10,7 +10,7 @@ import (
 )
 
 type configurationAPI interface {
-	Call(string, interface{}, interface{}) error
+	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)

@@ -11,7 +11,7 @@ import (
 )
 
 type agentAPI interface {
-	Call(string, interface{}, interface{}) error
+	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetCustomHeader(string, string)

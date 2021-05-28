@@ -1,6 +1,8 @@
 package customer
 
-import "github.com/livechat/lc-sdk-go/v3/objects"
+import (
+	"github.com/livechat/lc-sdk-go/v3/objects"
+)
 
 type startChatRequest struct {
 	Chat       *objects.InitialChat `json:"chat,omitempty"`
@@ -171,14 +173,14 @@ type markEventsAsSeenRequest struct {
 type emptyResponse struct{}
 
 type listLicensePropertiesRequest struct {
-	Namespace string `json:"namespace,omitempty"`
-	Name      string `json:"name,omitempty"`
+	Namespace string `url:"namespace,omitempty"`
+	Name      string `url:"name,omitempty"`
 }
 
 type listGroupPropertiesRequest struct {
-	ID        uint   `json:"id"`
-	Namespace string `json:"namespace,omitempty"`
-	Name      string `json:"name,omitempty"`
+	ID        uint   `url:"id"`
+	Namespace string `url:"namespace,omitempty"`
+	Name      string `url:"name,omitempty"`
 }
 
 type acceptGreetingRequest struct {
@@ -206,19 +208,19 @@ type requestEmailVerificationRequest struct {
 }
 
 type getDynamicConfigurationRequest struct {
-	GroupID     int    `json:"group_id"`
-	URL         string `json:"url"`
-	ChannelType string `json:"channel_type"`
-	Test        bool   `json:"test"`
+	GroupID     int    `url:"group_id"`
+	URL         string `url:"url"`
+	ChannelType string `url:"channel_type"`
+	Test        bool   `url:"test"`
 }
 
 type getConfigurationRequest struct {
-	GroupID int    `json:"group_id"`
-	Version string `json:"version"`
+	GroupID int    `url:"group_id"`
+	Version string `url:"version"`
 }
 
 type getLocalizationRequest struct {
-	GroupID  int    `json:"group_id"`
-	Language string `json:"language"`
-	Version  string `json:"version"`
+	GroupID  int    `url:"group_id"`
+	Language string `url:"language"`
+	Version  string `url:"version"`
 }
