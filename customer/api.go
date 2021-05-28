@@ -24,19 +24,13 @@ type API struct {
 	customerAPI
 }
 
-func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator {
-	return func(t *authorization.Token, h, a string) (*http.Request, error) {
-		req, err := r(t, h, a)
-		if err != nil {
-			return nil, err
-		}
+func CustomerEndpointGenerator(r i.HTTPEndpointGenerator) i.HTTPEndpointGenerator {
+	return func(t *authorization.Token, h, a string) string {
+		endpoint := r(t, h, a)
 		if t.LicenseID != nil {
-			qs := req.URL.Query()
-			qs.Add("license_id", fmt.Sprintf("%v", *t.LicenseID))
-			req.URL.RawQuery = qs.Encode()
+			endpoint += fmt.Sprintf("?license_id=%v", *t.LicenseID)
 		}
-
-		return req, nil
+		return endpoint
 	}
 }
 
