@@ -22,6 +22,8 @@ type createBotRequest struct {
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
 	Groups               []*GroupConfig `json:"groups,omitempty"`
 	OwnerClientID        string         `json:"owner_client_id,omitempty"`
+	WorkScheduler        WorkScheduler  `json:"work_scheduler,omitempty"`
+	Timezone             string         `json:"timezone,omitempty"`
 }
 
 type createBotResponse struct {
@@ -83,7 +85,7 @@ type listLicensePropertiesRequest struct {
 }
 
 type listGroupPropertiesRequest struct {
-	GroupID         uint   `json:"group_id"`
+	ID              uint   `json:"id"`
 	NamespacePrefix string `json:"namespace_prefix,omitempty"`
 	NamePrefix      string `json:"name_prefix,omitempty"`
 }
@@ -159,4 +161,42 @@ type listWebhooksRequest struct {
 
 type manageWebhooksStateRequest struct {
 	ClientID string `json:"client_id,omitempty"`
+}
+
+type deleteLicensePropertiesRequest struct {
+	Properties map[string][]string `json:"properties"`
+}
+
+type deleteGroupPropertiesRequest struct {
+	ID         int                 `json:"id"`
+	Properties map[string][]string `json:"properties"`
+}
+
+type addAutoAccessRequest struct {
+	Access struct {
+		Groups []int `json:"groups"`
+	} `json:"access"`
+	Conditions struct {
+		Url         *Condition            `json:"url,omitempty"`
+		Domain      *Condition            `json:"domain,omitempty"`
+		Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
+	} `json:"conditions"`
+	Description string `json:"description,omitempty"`
+	NextID      string `json:"next_id,omitempty"`
+}
+
+type addAutoAccessResponse struct {
+	ID string `json:"id"`
+}
+
+type updateAutoAccessRequest struct {
+	addAutoAccessRequest
+	ID string `json:"id"`
+}
+
+type deleteAutoAccessRequest struct {
+	ID string `json:"id"`
+}
+
+type listAutoAccessesRequest struct {
 }

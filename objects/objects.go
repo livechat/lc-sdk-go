@@ -40,6 +40,13 @@ type userSpecific struct {
 	Statistics                 json.RawMessage `json:"statistics"`
 	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at"`
 	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at"`
+	SessionFields              json.RawMessage `json:"session_fields"`
+	Followed                   json.RawMessage `json:"followed"`
+	Online                     json.RawMessage `json:"online"`
+	State                      json.RawMessage `json:"state"`
+	GroupIDs                   json.RawMessage `json:"group_ids"`
+	EmailVerified              json.RawMessage `json:"email_verified"`
+	CreatedAt                  json.RawMessage `json:"created_at"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -78,6 +85,24 @@ func (u *User) Customer() *Customer {
 	if err := json.Unmarshal(u.CustomerLastEventCreatedAt, &c.CustomerLastEventCreatedAt); err != nil {
 		return nil
 	}
+	if err := json.Unmarshal(u.EmailVerified, &c.EmailVerified); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.CreatedAt, &c.CreatedAt); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.Followed, &c.Followed); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.Online, &c.Online); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.State, &c.State); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.SessionFields, &c.SessionFields); err != nil {
+		return nil
+	}
 	return &c
 }
 
@@ -93,6 +118,7 @@ type Visit struct {
 		Timezone    string `json:"timezone"`
 	} `json:"geolocation"`
 	StartedAt time.Time `json:"started_at"`
+	EndedAt   time.Time `json:"ended_at"`
 	LastPages []struct {
 		OpenedAt time.Time `json:"opened_at"`
 		URL      string    `json:"url"`
@@ -209,6 +235,10 @@ type Customer struct {
 	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`
 	CreatedAt                  time.Time           `json:"created_at"`
 	SessionFields              []map[string]string `json:"session_fields"`
+	Followed                   bool                `json:"followed"`
+	Online                     bool                `json:"online"`
+	State                      string              `json:"state"`
+	GroupIDs                   []int               `json:"group_ids"`
 }
 
 // ThreadSummary represents a short summary of a thread
@@ -285,16 +315,17 @@ type InitialThread struct {
 }
 
 type eventSpecific struct {
-	Text        json.RawMessage `json:"text"`
-	Fields      json.RawMessage `json:"fields"`
-	ContentType json.RawMessage `json:"content_type"`
-	URL         json.RawMessage `json:"url"`
-	Width       json.RawMessage `json:"width"`
-	Height      json.RawMessage `json:"height"`
-	Name        json.RawMessage `json:"name"`
-	TemplateID  json.RawMessage `json:"template_id"`
-	Elements    json.RawMessage `json:"elements"`
-	Postback    json.RawMessage `json:"postback"`
+	Text            json.RawMessage `json:"text"`
+	Fields          json.RawMessage `json:"fields"`
+	ContentType     json.RawMessage `json:"content_type"`
+	URL             json.RawMessage `json:"url"`
+	Width           json.RawMessage `json:"width"`
+	Height          json.RawMessage `json:"height"`
+	Name            json.RawMessage `json:"name"`
+	TemplateID      json.RawMessage `json:"template_id"`
+	Elements        json.RawMessage `json:"elements"`
+	Postback        json.RawMessage `json:"postback"`
+	AlternativeText json.RawMessage `json:"alternative_text"`
 }
 
 // Event represents base of all LiveChat chat events.
@@ -381,11 +412,12 @@ type SystemMessage struct {
 // File represents LiveChat file event
 type File struct {
 	Event
-	ContentType string `json:"content_type"`
-	URL         string `json:"url"`
-	Width       int    `json:"width"`
-	Height      int    `json:"height"`
-	Name        string `json:"name"`
+	ContentType     string `json:"content_type"`
+	URL             string `json:"url"`
+	Width           int    `json:"width"`
+	Height          int    `json:"height"`
+	Name            string `json:"name"`
+	AlternativeText string `json:"alternative_text"`
 }
 
 // File function converts Event object to File object if Event's Type is "file".
@@ -409,6 +441,9 @@ func (e *Event) File() *File {
 		return nil
 	}
 	if err := json.Unmarshal(e.Name, &f.Name); err != nil {
+		return nil
+	}
+	if err := unmarshalOptionalRawField(e.AlternativeText, &f.AlternativeText); err != nil {
 		return nil
 	}
 
@@ -445,12 +480,13 @@ type RichMessageButton struct {
 
 // RichMessageImage represents image in LiveChat rich message
 type RichMessageImage struct {
-	Name        string `json:"name"`
-	URL         string `json:"url"`
-	ContentType string `json:"content_type"`
-	Size        int    `json:"size"`
-	Width       int    `json:"width,omitempty"`
-	Height      int    `json:"height,omitempty"`
+	Name            string `json:"name"`
+	URL             string `json:"url"`
+	ContentType     string `json:"content_type"`
+	Size            int    `json:"size"`
+	Width           int    `json:"width,omitempty"`
+	Height          int    `json:"height,omitempty"`
+	AlternativeText string `json:"alternative_text,omitempty"`
 }
 
 // RichMessage function converts Event object to RichMessage object if Event's Type is "rich_message".
@@ -471,4 +507,9 @@ func (e *Event) RichMessage() *RichMessage {
 	}
 
 	return &rm
+}
+
+type AgentStatus struct {
+	AgentID string `json:"agent_id,omitempty"`
+	Status  string `json:"status,omitempty"`
 }

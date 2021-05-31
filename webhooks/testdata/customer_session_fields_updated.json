@@ -1,0 +1,18 @@
+{
+  "webhook_id": "a383574a6104d4e3df7eb9523fcb2f7d",
+  "secret_key": "dummy_key",
+  "action": "customer_session_fields_updated",
+  "license_id": 21377312,
+  "payload": {
+    "id": "5280e68c-9692-4212-4ba9-85f7d8af55cd",
+    "active_chat": {
+        "chat_id": "PJ0MRSHTDG",
+        "thread_id": "K600PKZON8"
+    },
+    "session_fields": [
+      {
+        "key": "value"
+      }
+    ]
+  }
+}

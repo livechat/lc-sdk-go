@@ -11,7 +11,7 @@ import (
 )
 
 type agentAPI interface {
-	Call(string, interface{}, interface{}) error
+	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetCustomHeader(string, string)
@@ -138,21 +138,21 @@ func (a *API) ResumeChat(initialChat *InitialChat, continuous, active bool) (thr
 // method is a no-op.
 func (a *API) DeactivateChat(chatID string) error {
 	return a.Call("deactivate_chat", &deactivateChatRequest{
-		ChatID: chatID,
+		ID: chatID,
 	}, &emptyResponse{})
 }
 
 // FollowChat marks given chat as followed by requester.
 func (a *API) FollowChat(chatID string) error {
 	return a.Call("follow_chat", &followChatRequest{
-		ChatID: chatID,
+		ID: chatID,
 	}, &emptyResponse{})
 }
 
 // UnfollowChat removes requester from chat followers.
 func (a *API) UnfollowChat(chatID string) error {
 	return a.Call("unfollow_chat", &unfollowChatRequest{
-		ChatID: chatID,
+		ID: chatID,
 	}, &emptyResponse{})
 }
 
@@ -190,7 +190,7 @@ func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force b
 		}
 	}
 	return a.Call("transfer_chat", &transferChatRequest{
-		ChatID: chatID,
+		ID:     chatID,
 		Target: target,
 		Force:  force,
 	}, &emptyResponse{})
@@ -251,7 +251,7 @@ func (a *API) SendRichMessagePostback(chatID, eventID, threadID, postbackID stri
 // UpdateChatProperties updates given chat's properties.
 func (a *API) UpdateChatProperties(chatID string, properties objects.Properties) error {
 	return a.Call("update_chat_properties", &updateChatPropertiesRequest{
-		ChatID:     chatID,
+		ID:         chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
@@ -259,7 +259,7 @@ func (a *API) UpdateChatProperties(chatID string, properties objects.Properties)
 // DeleteChatProperties deletes given chat's properties.
 func (a *API) DeleteChatProperties(chatID string, properties map[string][]string) error {
 	return a.Call("delete_chat_properties", &deleteChatPropertiesRequest{
-		ChatID:     chatID,
+		ID:         chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
@@ -324,7 +324,7 @@ func (a *API) UntagThread(chatID, threadID, tag string) error {
 func (a *API) GetCustomer(customerID string) (customer objects.Customer, err error) {
 	var resp objects.Customer
 	err = a.Call("get_customer", &getCustomersRequest{
-		CustomerID: customerID,
+		ID: customerID,
 	}, &resp)
 
 	return resp, err
@@ -360,7 +360,7 @@ func (a *API) CreateCustomer(name, email, avatar string, sessionFields []map[str
 // UpdateCustomer updates customer's info.
 func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{
-		CustomerID:    customerID,
+		ID:            customerID,
 		Name:          name,
 		Email:         email,
 		Avatar:        avatar,
@@ -371,7 +371,7 @@ func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFiel
 // BanCustomer bans customer for specific period of time (expressed in days).
 func (a *API) BanCustomer(customerID string, days uint) error {
 	return a.Call("ban_customer", &banCustomerRequest{
-		CustomerID: customerID,
+		ID: customerID,
 		Ban: ban{
 			Days: days,
 		},
@@ -418,5 +418,30 @@ func (a *API) ListAgentsForTransfer(chatID string) (AgentsForTransfer, error) {
 	err := a.Call("list_agents_for_transfer", &listAgentsForTransferRequest{
 		ChatID: chatID,
 	}, &resp)
+	return resp, err
+}
+
+// FollowCustomer marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes.
+func (a *API) FollowCustomer(customerID string) error {
+	return a.Call("follow_customer", &followCustomerRequest{
+		ID: customerID,
+	}, &emptyResponse{})
+}
+
+// UnfollowCustomer removes the agent from the list of customer's followers.
+func (a *API) UnfollowCustomer(customerID string) error {
+	return a.Call("unfollow_customer", &followCustomerRequest{
+		ID: customerID,
+	}, &emptyResponse{})
+}
+
+func (a *API) ListRoutingStatuses(groupIDs []int) ([]objects.AgentStatus, error) {
+	var resp []objects.AgentStatus
+	err := a.Call("list_routing_statuses", &listRoutingStatusesRequest{
+		Filters: &routingStatusesFilter{
+			GroupIDs: groupIDs,
+		},
+	}, &resp)
+
 	return resp, err
 }

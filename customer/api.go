@@ -11,7 +11,7 @@ import (
 )
 
 type customerAPI interface {
-	Call(string, interface{}, interface{}) error
+	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
@@ -24,21 +24,13 @@ type API struct {
 	customerAPI
 }
 
-func CustomerEndpointGenerator(r i.HTTPRequestGenerator) i.HTTPRequestGenerator {
-	return func(t *authorization.Token, h, a string) (*http.Request, error) {
-		req, err := r(t, h, a)
-		if err != nil {
-			return nil, err
-		}
+func CustomerEndpointGenerator(r i.HTTPEndpointGenerator) i.HTTPEndpointGenerator {
+	return func(t *authorization.Token, h, a string) string {
+		endpoint := r(t, h, a)
 		if t.LicenseID != nil {
-			qs := req.URL.Query()
-			qs.Add("license_id", fmt.Sprintf("%v", *t.LicenseID))
-			req.URL.RawQuery = qs.Encode()
+			endpoint += fmt.Sprintf("?license_id=%v", *t.LicenseID)
 		}
-		if a == "list_license_properties" || a == "list_group_properties" {
-			req.Method = "GET"
-		}
-		return req, nil
+		return endpoint
 	}
 }
 
@@ -182,7 +174,7 @@ func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCoun
 // method is a no-op.
 func (a *API) DeactivateChat(chatID string) error {
 	return a.Call("deactivate_chat", &deactivateChatRequest{
-		ChatID: chatID,
+		ID: chatID,
 	}, &emptyResponse{})
 }
 
@@ -210,7 +202,7 @@ func (a *API) SendSneakPeek(chatID, text string) error {
 // UpdateChatProperties updates given chat's properties.
 func (a *API) UpdateChatProperties(chatID string, properties objects.Properties) error {
 	return a.Call("update_chat_properties", &updateChatPropertiesRequest{
-		ChatID:     chatID,
+		ID:         chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
@@ -218,7 +210,7 @@ func (a *API) UpdateChatProperties(chatID string, properties objects.Properties)
 // DeleteChatProperties deletes given chat's properties.
 func (a *API) DeleteChatProperties(chatID string, properties map[string][]string) error {
 	return a.Call("delete_chat_properties", &deleteChatPropertiesRequest{
-		ChatID:     chatID,
+		ID:         chatID,
 		Properties: properties,
 	}, &emptyResponse{})
 }
@@ -365,7 +357,7 @@ func (a *API) ListLicenseProperties(namespace, name string) (objects.Properties,
 	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
 		Namespace: namespace,
 		Name:      name,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return resp, err
 }
 
@@ -373,10 +365,10 @@ func (a *API) ListLicenseProperties(namespace, name string) (objects.Properties,
 func (a *API) ListGroupProperties(groupID uint, namespace, name string) (objects.Properties, error) {
 	var resp objects.Properties
 	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
-		GroupID:   groupID,
+		ID:        groupID,
 		Namespace: namespace,
 		Name:      name,
-	}, &resp)
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
 	return resp, err
 }
 
@@ -400,4 +392,37 @@ func (a *API) RequestEmailVerification(callbackURI string) error {
 	return a.Call("request_email_verification", &requestEmailVerificationRequest{
 		CallbackURI: callbackURI,
 	}, &emptyResponse{})
+}
+
+// GetDynamicConfiguration returns the dynamic configuration of a given group. It provides data to call Get Configuration and Get Localization.
+func (a *API) GetDynamicConfiguration(groupID int, url, channelType string, isTest bool) (*DynamicConfiguration, error) {
+	var resp DynamicConfiguration
+	err := a.Call("get_dynamic_configuration", &getDynamicConfigurationRequest{
+		GroupID:     groupID,
+		URL:         url,
+		ChannelType: channelType,
+		Test:        isTest,
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
+	return &resp, err
+}
+
+// GetConfiguration returns the configuration of a given group in a given version.
+func (a *API) GetConfiguration(groupID int, version string) (*Configuration, error) {
+	var resp Configuration
+	err := a.Call("get_configuration", &getConfigurationRequest{
+		GroupID: groupID,
+		Version: version,
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
+	return &resp, err
+}
+
+// GetLocalization returns the localization of a given language and group in a given version.
+func (a *API) GetLocalization(groupID int, language, version string) (map[string]string, error) {
+	var resp map[string]string
+	err := a.Call("get_localization", &getLocalizationRequest{
+		GroupID:  groupID,
+		Language: language,
+		Version:  version,
+	}, &resp, &i.CallOptions{Method: http.MethodGet})
+	return resp, err
 }

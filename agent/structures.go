@@ -39,6 +39,10 @@ type transferTarget struct {
 	IDs  []interface{} `json:"ids"`
 }
 
+type routingStatusesFilter struct {
+	GroupIDs []int `json:"group_ids,omitempty"`
+}
+
 type AgentsForTransfer []struct {
 	AgentID          string `json:"agent_id"`
 	TotalActiveChats uint   `json:"total_active_chats"`

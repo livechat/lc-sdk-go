@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/go-querystring/query"
 	"github.com/livechat/lc-sdk-go/v3/authorization"
 	api_errors "github.com/livechat/lc-sdk-go/v3/errors"
 	"github.com/livechat/lc-sdk-go/v3/metrics"
@@ -30,24 +31,28 @@ type RetryStrategyFunc func(attempts uint, err error) bool
 type StatsSinkFunc func(callStats metrics.APICallStats)
 
 type api struct {
-	httpClient           *http.Client
-	clientID             string
-	tokenGetter          authorization.TokenGetter
-	httpRequestGenerator HTTPRequestGenerator
-	host                 string
-	customHeaders        http.Header
-	retryStrategy        RetryStrategyFunc
-	statsSink            StatsSinkFunc
+	httpClient            *http.Client
+	clientID              string
+	tokenGetter           authorization.TokenGetter
+	httpEndpointGenerator HTTPEndpointGenerator
+	host                  string
+	customHeaders         http.Header
+	retryStrategy         RetryStrategyFunc
+	statsSink             StatsSinkFunc
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
-type HTTPRequestGenerator func(*authorization.Token, string, string) (*http.Request, error)
+type HTTPEndpointGenerator func(*authorization.Token, string, string) string
+
+type CallOptions struct {
+	Method string
+}
 
 // NewAPI returns ready to use raw API client. This is a base that is used internally
 // by specialized clients for each API, you should use those instead
 //
 // If provided client is nil, then default http client with 20s timeout is used.
-func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPRequestGenerator) (*api, error) {
+func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPEndpointGenerator) (*api, error) {
 	if t == nil {
 		return nil, errors.New("cannot initialize api without TokenGetter")
 	}
@@ -59,37 +64,52 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 	}
 
 	return &api{
-		tokenGetter:          t,
-		clientID:             clientID,
-		httpClient:           client,
-		host:                 "https://api.livechatinc.com",
-		httpRequestGenerator: r,
-		customHeaders:        make(http.Header),
-		statsSink:            func(metrics.APICallStats) {},
+		tokenGetter:           t,
+		clientID:              clientID,
+		httpClient:            client,
+		host:                  "https://api.livechatinc.com",
+		httpEndpointGenerator: r,
+		customHeaders:         make(http.Header),
+		statsSink:             func(metrics.APICallStats) {},
 	}, nil
 }
 
 // Call sends request to API with given action
-func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}) error {
+func (a *api) Call(action string, reqPayload interface{}, respPayload interface{}, opts ...*CallOptions) error {
 	token, err := a.getToken()
 	if err != nil {
 		return err
 	}
 	start := time.Now()
 
-	req, err := a.httpRequestGenerator(token, a.host, action)
+	endpoint := a.httpEndpointGenerator(token, a.host, action)
+	req, err := http.NewRequest(http.MethodPost, endpoint, nil)
 	if err != nil {
 		return fmt.Errorf("couldn't create new http request: %v", err)
 	}
 
-	rawBody, err := json.Marshal(reqPayload)
-	if err != nil {
-		return err
+	if len(opts) > 0 && opts[0].Method == http.MethodGet {
+		req.Method = opts[0].Method
+		qs, err := query.Values(reqPayload)
+		if err != nil {
+			return err
+		}
+
+		encodedQuery := qs.Encode()
+		if req.URL.RawQuery != "" && encodedQuery != "" {
+			encodedQuery = "&" + encodedQuery
+		}
+		req.URL.RawQuery = req.URL.RawQuery + encodedQuery
+	} else {
+		rawBody, err := json.Marshal(reqPayload)
+		if err != nil {
+			return err
+		}
+		req.GetBody = func() (io.ReadCloser, error) {
+			return ioutil.NopCloser(bytes.NewReader(rawBody)), nil
+		}
+		req.Body, _ = req.GetBody()
 	}
-	req.GetBody = func() (io.ReadCloser, error) {
-		return ioutil.NopCloser(bytes.NewReader(rawBody)), nil
-	}
-	req.Body, _ = req.GetBody()
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("%s %s", token.Type, token.AccessToken))
@@ -128,7 +148,7 @@ func (a *api) SetStatsSink(f StatsSinkFunc) {
 type fileUploadAPI struct{ *api }
 
 // NewAPIWithFileUpload returns ready to use raw API client with file upload functionality.
-func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPRequestGenerator) (*fileUploadAPI, error) {
+func NewAPIWithFileUpload(t authorization.TokenGetter, client *http.Client, clientID string, r HTTPEndpointGenerator) (*fileUploadAPI, error) {
 	api, err := NewAPI(t, client, clientID, r)
 	if err != nil {
 		return nil, err
@@ -146,7 +166,8 @@ func (a *fileUploadAPI) UploadFile(filename string, file []byte) (string, error)
 	}
 	start := time.Now()
 
-	req, err := a.httpRequestGenerator(token, a.host, "upload_file")
+	endpoint := a.httpEndpointGenerator(token, a.host, "upload_file")
+	req, err := http.NewRequest(http.MethodPost, endpoint, nil)
 	if err != nil {
 		return "", fmt.Errorf("couldn't create new http request: %v", err)
 	}
@@ -256,9 +277,8 @@ func (a *api) SetCustomHost(host string) {
 }
 
 // DefaultHTTPRequestGenerator generates API request for given service in stable version.
-func DefaultHTTPRequestGenerator(name string) HTTPRequestGenerator {
-	return func(token *authorization.Token, host, action string) (*http.Request, error) {
-		url := fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
-		return http.NewRequest("POST", url, nil)
+func DefaultHTTPRequestGenerator(name string) HTTPEndpointGenerator {
+	return func(token *authorization.Token, host, action string) string {
+		return fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
 	}
 }

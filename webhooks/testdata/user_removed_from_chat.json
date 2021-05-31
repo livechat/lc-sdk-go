@@ -1,0 +1,15 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "user_removed_from_chat",
+	"license_id": 21377312,
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8",
+		"user_type": "agent",
+		"user_id": "agent@livechatinc.com",
+		"reason": "manual",
+		"requester_id": "smith@example.com"
+	},
+	"additional_data": {}
+}

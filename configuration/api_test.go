@@ -217,6 +217,41 @@ var mockedResponses = map[string]string{
 	"get_license_webhooks_state": `{
 		"license_webhooks_enabled": true
 	}`,
+	"delete_license_properties": `{}`,
+	"delete_group_properties":   `{}`,
+	"add_auto_access":           `{ "id": "pqi8oasdjahuakndw9nsad9na" }`,
+	"delete_auto_access":        `{}`,
+	"update_auto_access":        `{}`,
+	"list_auto_accesses": `[
+		{
+			"id": "1faad6f5f1d6e8fdf27e8af9839783b7",
+			"description": "Chats on livechat.com from United States",
+			"access": {
+				"groups": [
+					0
+				]
+			},
+			"conditions": {
+				"geolocation": {
+					"values": [
+						{
+							"country": "United States",
+							"country_code": "US"
+						}
+					]
+				},
+				"domain": {
+					"values": [
+						{
+							"value": "livechat.com",
+							"exact_match": true
+						}
+					]
+				}
+			},
+			"next_id": "pqi8oasdjahuakndw9nsad9na"
+		}
+	]`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -336,7 +371,7 @@ func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id")
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id", "dummy/timezone", configuration.WorkScheduler{})
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -355,7 +390,7 @@ func TestCreateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, "dummy_client_id")
+	_, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, "dummy_client_id", "dummy/timezone", configuration.WorkScheduler{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -369,7 +404,7 @@ func TestUpdateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{})
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy/timezone", configuration.WorkScheduler{})
 	if rErr != nil {
 		t.Errorf("UpdateBot failed: %v", rErr)
 	}
@@ -384,7 +419,7 @@ func TestUpdateBotShouldReturnErrorForInvalidInput(t *testing.T) {
 	}
 
 	groups := []*configuration.GroupConfig{&configuration.GroupConfig{Priority: "supervisor"}}
-	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups)
+	rErr := api.UpdateBot("pqi8oasdjahuakndw9nsad9na", "John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", groups, "dummy/timezone", configuration.WorkScheduler{})
 	if rErr.Error() != "DoNotAssign priority is allowed only as default group priority" {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
@@ -874,5 +909,121 @@ func TestGetLicenseWebhooksStateShouldReturnDataReceivedFromConfAPI(t *testing.T
 	}
 	if !state.Enabled {
 		t.Errorf("webhooks' state should be enabled'")
+	}
+}
+
+func TestDeleteLicensePropertiesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_license_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.DeleteLicenseProperties(nil)
+	if err != nil {
+		t.Errorf("DeleteLicenseProperties failed: %v", err)
+	}
+}
+
+func TestDeleteGroupPropertiesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_group_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.DeleteGroupProperties(0, nil)
+	if err != nil {
+		t.Errorf("DeleteGroupProperties failed: %v", err)
+	}
+}
+
+func TestAddAutoAccessShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "add_auto_access"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, err := api.AddAutoAccess([]int{}, nil, nil, nil, "", "")
+	if err != nil {
+		t.Errorf("AddAutoAccess failed: %v", err)
+	}
+
+	if resp != "pqi8oasdjahuakndw9nsad9na" {
+		t.Errorf("Invalid response: %v", resp)
+	}
+}
+
+func TestUpdateAutoAccessShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_auto_access"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.UpdateAutoAccess("foo", []int{}, nil, nil, nil, "", "")
+	if err != nil {
+		t.Errorf("UpdateAutoAccess failed: %v", err)
+	}
+}
+
+func TestDeleteAutoAccessShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_auto_access"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.DeleteAutoAccess("foo")
+	if err != nil {
+		t.Errorf("DeleteAutoAccess failed: %v", err)
+	}
+}
+
+func TestListAutoAccessesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "list_auto_accesses"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, err := api.ListAutoAccesses()
+	if err != nil {
+		t.Errorf("ListAutoAccesses failed: %v", err)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid response length: %v", len(resp))
+	}
+
+	if resp[0].ID != "1faad6f5f1d6e8fdf27e8af9839783b7" {
+		t.Errorf("Invalid response id: %v", resp[0].ID)
+	}
+
+	if resp[0].NextID != "pqi8oasdjahuakndw9nsad9na" {
+		t.Errorf("Invalid response next id: %v", resp[0].NextID)
+	}
+
+	if resp[0].Description != "Chats on livechat.com from United States" {
+		t.Errorf("Invalid response description: %v", resp[0].ID)
+	}
+
+	if len(resp[0].Access.Groups) != 1 || resp[0].Access.Groups[0] != 0 {
+		t.Errorf("Invalid response access groups: %v", resp[0].Access.Groups)
+	}
+
+	if len(resp[0].Conditions.Domain.Values) != 1 || !resp[0].Conditions.Domain.Values[0].ExactMatch || resp[0].Conditions.Domain.Values[0].Value != "livechat.com" {
+		t.Errorf("Invalid response domain values: %v", resp[0].Conditions.Domain.Values)
+	}
+
+	if len(resp[0].Conditions.Geolocation.Values) != 1 || resp[0].Conditions.Geolocation.Values[0].Country != "United States" || resp[0].Conditions.Geolocation.Values[0].CountryCode != "US" {
+		t.Errorf("Invalid response geolocation values: %v", resp[0].Conditions.Geolocation.Values)
 	}
 }

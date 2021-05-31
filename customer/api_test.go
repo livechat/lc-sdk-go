@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -267,6 +268,66 @@ var mockedResponses = map[string]string{
 	"accept_greeting":            `{}`,
 	"cancel_greeting":            `{}`,
 	"request_email_verification": `{}`,
+	"get_dynamic_configuration": `{
+		"group_id": 0,
+		"client_limit_exceeded": false,
+		"domain_allowed": true,
+		"config_version": "84cc87cxza5ee24ed0f84fe3027fjf0c71",
+		"localization_version": "79cc87cea5ee24ed0f84fe3027fc0c74",
+		"language": "en"
+	}`,
+	"get_configuration": `{
+		"buttons": [
+			{
+				"id": "0466ba53cb",
+				"type": "image",
+				"online_value": "livechat.s3.amazonaws.com/default/buttons/button_online007.png",
+				"offline_value": "livechat.s3.amazonaws.com/default/buttons/button_offline007.png"
+			},
+			{
+				"id": "08ca886ba8",
+				"type": "image",
+				"online_value": "livechat.s3.amazonaws.com/default/buttons/button_online003.png",
+				"offline_value": "livechat.s3.amazonaws.com/default/buttons/button_offline003.png"
+			},
+			{
+				"id": "3344e63cad",
+				"type": "text",
+				"online_value": "Live chat now",
+				"offline_value": "Leave us a message"
+			}
+		],
+		"ticket_form": {
+			"id": "ticket_form_id",
+			"fields": [
+				{
+					"type": "name",
+					"id": "154417206262603539",
+					"label": "Your name",
+					"answer": "Thomas Anderson"
+				}
+			]
+		},
+		"prechat_form": {
+			"id": "prechat_form_id",
+			"fields": [
+				{
+					"type": "name",
+					"id": "154417206262603539",
+					"label": "Your name",
+					"answer": "Thomas Anderson"
+				}
+			]
+		},
+		"integrations": {},
+		"properties": {
+			"group": {},
+			"license": {}
+		}
+	}`,
+	"get_localization": `{
+		"Agents_currently_not_available": "Our agents are not available at the moment."
+	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -286,13 +347,17 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.3/customer/action/"+method+"?license_id=12345" {
+		if !strings.Contains(req.URL.String(), "https://api.livechatinc.com/v3.3/customer/action/"+method) {
+			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
+			return createServerError("Invalid URL")
+		}
+		if req.URL.Query().Get("license_id") != "12345" {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
 
 		expectedMethod := "POST"
-		if method == "list_license_properties" || method == "list_group_properties" {
+		if method == "list_license_properties" || method == "list_group_properties" || method == "get_configuration" || method == "get_dynamic_configuration" || method == "get_localization" {
 			expectedMethod = "GET"
 		}
 		if expectedMethod != req.Method {
@@ -1284,4 +1349,98 @@ func TestCancelGreetingShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	rErr := api.CancelGreeting("foo")
 	verifyErrorResponse("CancelGreeting", rErr, t)
+}
+
+func TestGetDynamicConfigurationShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_dynamic_configuration"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.GetDynamicConfiguration(0, "foo", "bar", false)
+	if rErr != nil {
+		t.Errorf("GetDynamicConfiguration failed: %v", rErr)
+	}
+
+	if resp.ClientLimitExceeded {
+		t.Errorf("Invalid client_limit_exceeded: %v", resp.ClientLimitExceeded)
+	}
+
+	if resp.GroupID != 0 {
+		t.Errorf("Invalid group_id: %v", resp.GroupID)
+	}
+
+	if !resp.DomainAllowed {
+		t.Errorf("Invalid domain_allowed: %v", resp.DomainAllowed)
+	}
+
+	if resp.ConfigVersion != "84cc87cxza5ee24ed0f84fe3027fjf0c71" {
+		t.Errorf("Invalid config_version: %v", resp.ConfigVersion)
+	}
+
+	if resp.LocalizationVersion != "79cc87cea5ee24ed0f84fe3027fc0c74" {
+		t.Errorf("Invalid localization_version: %v", resp.LocalizationVersion)
+	}
+
+	if resp.Language != "en" {
+		t.Errorf("Invalid language: %v", resp.Language)
+	}
+}
+
+func TestGetConfigurationShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_configuration"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.GetConfiguration(0, "foo")
+	if rErr != nil {
+		t.Errorf("GetConfiguration failed: %v", rErr)
+	}
+
+	if len(resp.Buttons) != 3 {
+		t.Errorf("Invalid buttons: %v", resp.Buttons)
+	}
+
+	if len(resp.TicketForm.Fields) != 1 {
+		t.Errorf("Invalid ticket_form.fields: %v", resp.TicketForm.Fields)
+	}
+
+	if resp.TicketForm.ID != "ticket_form_id" {
+		t.Errorf("Invalid ticket_form.id: %v", resp.TicketForm.ID)
+	}
+
+	if len(resp.PrechatForm.Fields) != 1 {
+		t.Errorf("Invalid prechat_form.fields: %v", resp.PrechatForm.Fields)
+	}
+
+	if resp.PrechatForm.ID != "prechat_form_id" {
+		t.Errorf("Invalid prechat_form.id: %v", resp.PrechatForm.ID)
+	}
+}
+
+func TestGetLocalizationShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_localization"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	resp, rErr := api.GetLocalization(0, "foo", "bar")
+	if rErr != nil {
+		t.Errorf("GetLocalization failed: %v", rErr)
+	}
+
+	if len(resp) != 1 {
+		t.Errorf("Invalid response size: %v", resp)
+	}
+
+	if resp["Agents_currently_not_available"] != "Our agents are not available at the moment." {
+		t.Errorf("Invalid response content: %v", resp)
+	}
 }

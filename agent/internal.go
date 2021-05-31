@@ -73,15 +73,15 @@ type resumeChatResponse struct {
 }
 
 type deactivateChatRequest struct {
-	ChatID string `json:"chat_id"`
+	ID string `json:"id"`
 }
 
 type followChatRequest struct {
-	ChatID string `json:"chat_id"`
+	ID string `json:"id"`
 }
 
 type unfollowChatRequest struct {
-	ChatID string `json:"chat_id"`
+	ID string `json:"id"`
 }
 
 // used to grant, revoke and set chat access
@@ -91,7 +91,7 @@ type modifyChatAccessRequest struct {
 }
 
 type transferChatRequest struct {
-	ChatID string          `json:"chat_id"`
+	ID     string          `json:"id"`
 	Target *transferTarget `json:"target,omitempty"`
 	Force  bool            `json:"force"`
 }
@@ -122,12 +122,12 @@ type sendRichMessagePostbackRequest struct {
 }
 
 type updateChatPropertiesRequest struct {
-	ChatID     string             `json:"chat_id"`
+	ID         string             `json:"id"`
 	Properties objects.Properties `json:"properties"`
 }
 
 type deleteChatPropertiesRequest struct {
-	ChatID     string              `json:"chat_id"`
+	ID         string              `json:"id"`
 	Properties map[string][]string `json:"properties"`
 }
 
@@ -165,7 +165,7 @@ type changeThreadTagRequest struct {
 }
 
 type getCustomersRequest struct {
-	CustomerID string `json:"customer_id"`
+	ID string `json:"id"`
 }
 
 type getCustomersResponse struct {
@@ -198,7 +198,7 @@ type createCustomerResponse struct {
 }
 
 type updateCustomerRequest struct {
-	CustomerID    string              `json:"customer_id"`
+	ID            string              `json:"id"`
 	Name          string              `json:"name,omitempty"`
 	Email         string              `json:"email,omitempty"`
 	Avatar        string              `json:"avatar,omitempty"`
@@ -206,8 +206,8 @@ type updateCustomerRequest struct {
 }
 
 type banCustomerRequest struct {
-	CustomerID string `json:"customer_id"`
-	Ban        ban    `json:"ban"`
+	ID  string `json:"id"`
+	Ban ban    `json:"ban"`
 }
 
 type setRoutingStatusRequest struct {
@@ -257,4 +257,16 @@ type paginationResponse struct {
 
 type listAgentsForTransferRequest struct {
 	ChatID string `json:"chat_id"`
+}
+
+type followCustomerRequest struct {
+	ID string `json:"id"`
+}
+
+type unfollowCustomerRequest struct {
+	ID string `json:"id"`
+}
+
+type listRoutingStatusesRequest struct {
+	Filters *routingStatusesFilter `json:"filters"`
 }

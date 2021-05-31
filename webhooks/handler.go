@@ -109,10 +109,10 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &ChatPropertiesDeleted{}
 		case "thread_properties_deleted":
 			payload = &ThreadPropertiesDeleted{}
-		case "chat_user_added":
-			payload = &ChatUserAdded{}
-		case "chat_user_removed":
-			payload = &ChatUserRemoved{}
+		case "user_added_to_chat":
+			payload = &UserAddedToChat{}
+		case "user_removed_from_chat":
+			payload = &UserRemovedFromChat{}
 		case "thread_tagged":
 			payload = &ThreadTagged{}
 		case "thread_untagged":
@@ -121,14 +121,10 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &AgentDeleted{}
 		case "events_marked_as_seen":
 			payload = &EventsMarkedAsSeen{}
-		case "access_granted":
-			payload = &AccessGranted{}
-		case "access_revoked":
-			payload = &AccessRevoked{}
-		case "access_set":
-			payload = &AccessSet{}
-		case "customer_created":
-			payload = &CustomerCreated{}
+		case "chat_access_granted":
+			payload = &ChatAccessGranted{}
+		case "chat_access_revoked":
+			payload = &ChatAccessRevoked{}
 		case "event_properties_updated":
 			payload = &EventPropertiesUpdated{}
 		case "event_properties_deleted":
@@ -137,6 +133,10 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &RoutingStatusSet{}
 		case "chat_transferred":
 			payload = &ChatTransferred{}
+		case "incoming_customer":
+			payload = &IncomingCustomer{}
+		case "customer_session_fields_updated":
+			payload = &CustomerSessionFieldsUpdated{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return
