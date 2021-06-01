@@ -137,6 +137,12 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &IncomingCustomer{}
 		case "customer_session_fields_updated":
 			payload = &CustomerSessionFieldsUpdated{}
+		case "group_created":
+			payload = &GroupCreated{}
+		case "group_updated":
+			payload = &GroupUpdated{}
+		case "group_deleted":
+			payload = &GroupDeleted{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

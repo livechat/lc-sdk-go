@@ -36,6 +36,9 @@ var verifiers = map[string]webhooks.Handler{
 	"chat_transferred":                chatTransferred,
 	"incoming_customer":               incomingCustomer,
 	"customer_session_fields_updated": customerSessionFieldsUpdated,
+	"group_created":                   groupCreated,
+	"group_updated":                   groupUpdated,
+	"group_deleted":                   groupDeleted,
 }
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {
@@ -146,11 +149,12 @@ func TestPayloadParsingOK(t *testing.T) {
 	}
 
 	for action, verifier := range verifiers {
-		stepError := testAction(action, verifier)
-		if stepError != nil {
-			t.Errorf("Payload incorrectly parsed for %v, error: %v", action, stepError)
-			return
-		}
+		t.Run(action, func(t *testing.T) {
+			stepError := testAction(action, verifier)
+			if stepError != nil {
+				t.Errorf("Payload incorrectly parsed for %v, error: %v", action, stepError)
+			}
+		})
 	}
 }
 

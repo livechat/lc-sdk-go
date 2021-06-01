@@ -195,6 +195,27 @@ type CustomerSessionFieldsUpdated struct {
 	SessionFields []map[string]string `json:"session_fields"`
 }
 
+// GroupCreated represents payload of group_created webhook.
+type GroupCreated struct {
+	ID              int               `json:"id"`
+	Name            string            `json:"name"`
+	LanguageCode    string            `json:"language_code"`
+	AgentPriorities map[string]string `json:"agent_priorities"`
+}
+
+// GroupUpdated represents payload of group_updated webhook.
+type GroupUpdated struct {
+	ID              int               `json:"id"`
+	Name            string            `json:"name,omitempty"`
+	LanguageCode    string            `json:"language_code,omitempty"`
+	AgentPriorities map[string]string `json:"agent_priorities"`
+}
+
+// GroupDeleted represents payload of group_deleted webhook.
+type GroupDeleted struct {
+	ID int `json:"id"`
+}
+
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
 func (p *IncomingChat) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChat

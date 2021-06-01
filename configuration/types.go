@@ -28,6 +28,9 @@ const (
 	ChatTransferred              WebhookAction = "chat_transferred"
 	IncomingCustomer             WebhookAction = "incoming_customer"
 	CustomerSessionFieldsUpdated WebhookAction = "customer_session_fields_updated"
+	GroupCreated                 WebhookAction = "group_created"
+	GroupUpdated                 WebhookAction = "group_updated"
+	GroupDeleted                 WebhookAction = "group_deleted"
 )
 
 // GroupPriority represents priority of assigning chats in group

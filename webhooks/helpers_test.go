@@ -572,3 +572,49 @@ func customerSessionFieldsUpdated(ctx context.Context, wh *webhooks.Webhook) err
 	}
 	return nil
 }
+
+func groupCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+	propEq("Name", payload.Name, "sales", &errors)
+	propEq("LanguageCode", payload.LanguageCode, "en", &errors)
+	propEq("AgentPriorities[\"agent@example.com\"]", payload.AgentPriorities["agent@example.com"], "normal", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func groupUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+	propEq("Name", payload.Name, "sales", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func groupDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
