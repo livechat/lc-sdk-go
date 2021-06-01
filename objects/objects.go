@@ -195,16 +195,18 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 
 // Thread represents LiveChat chat thread
 type Thread struct {
-	ID               string     `json:"id"`
-	Active           bool       `json:"active"`
-	UserIDs          []string   `json:"user_ids"`
-	RestrictedAccess bool       `json:"restricted_access"`
-	Properties       Properties `json:"properties"`
-	Access           Access     `json:"access"`
-	Events           []*Event   `json:"events"`
-	PreviousThreadID string     `json:"previous_thread_id"`
-	NextThreadID     string     `json:"next_thread_id"`
-	CreatedAt        time.Time  `json:"created_at"`
+	ID                        string     `json:"id"`
+	Active                    bool       `json:"active"`
+	UserIDs                   []string   `json:"user_ids"`
+	RestrictedAccess          bool       `json:"restricted_access"`
+	Properties                Properties `json:"properties"`
+	Access                    Access     `json:"access"`
+	Events                    []*Event   `json:"events"`
+	PreviousThreadID          string     `json:"previous_thread_id"`
+	NextThreadID              string     `json:"next_thread_id"`
+	CreatedAt                 time.Time  `json:"created_at"`
+	PreviousAccesibleThreadID string     `json:"previous_accessible_thread_id,omitempty"`
+	NextAccessibleThreadID    string     `json:"next_accessible_thread_id,omitempty"`
 }
 
 // Access represents LiveChat chat and thread access
