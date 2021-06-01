@@ -149,6 +149,12 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &AutoAccessUpdated{}
 		case "auto_access_deleted":
 			payload = &AutoAccessDeleted{}
+		case "bot_created":
+			payload = &BotCreated{}
+		case "bot_updated":
+			payload = &BotUpdated{}
+		case "bot_deleted":
+			payload = &BotDeleted{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

@@ -1,0 +1,11 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "bot_updated",
+	"license_id": 21377312,
+	"payload": {
+    "id": "5c9871d5372c824cbf22d860a707a578",
+    "name": "New Bot Name"
+	},
+	"additional_data": {}
+}

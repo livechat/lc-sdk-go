@@ -228,6 +228,38 @@ type AutoAccessDeleted struct {
 	ID string `json:"id"`
 }
 
+// BotCreated represents payload of bot_created webhook.
+type BotCreated struct {
+	ID                   string                       `json:"id"`
+	Name                 string                       `json:"name"`
+	Avatar               string                       `json:"avatar,omitempty"`
+	MaxChatsCount        *uint                        `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority configuration.GroupPriority  `json:"default_group_priority,omitempty"`
+	Groups               []*configuration.GroupConfig `json:"groups,omitempty"`
+	WorkScheduler        configuration.WorkScheduler  `json:"work_scheduler,omitempty"`
+	Timezone             string                       `json:"timezone,omitempty"`
+	OwnerClientID        string                       `json:"owner_client_id"`
+	JobTitle             string                       `json:"job_title,omitempty"`
+}
+
+// BotUpdated represents payload of bot_updated webhook.
+type BotUpdated struct {
+	ID                   string                       `json:"id"`
+	Name                 string                       `json:"name,omitempty"`
+	Avatar               string                       `json:"avatar,omitempty"`
+	MaxChatsCount        *uint                        `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority configuration.GroupPriority  `json:"default_group_priority,omitempty"`
+	Groups               []*configuration.GroupConfig `json:"groups,omitempty"`
+	WorkScheduler        configuration.WorkScheduler  `json:"work_scheduler,omitempty"`
+	Timezone             string                       `json:"timezone,omitempty"`
+	JobTitle             string                       `json:"job_title,omitempty"`
+}
+
+// BotDeleted represents payload of bot_deleted webhook.
+type BotDeleted struct {
+	ID string `json:"id"`
+}
+
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
 func (p *IncomingChat) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChat

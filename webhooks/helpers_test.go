@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/livechat/lc-sdk-go/v4/configuration"
 	"github.com/livechat/lc-sdk-go/v4/webhooks"
 )
 
@@ -649,6 +650,54 @@ func autoAccessUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
 	propEq("Access.Groups[0]", payload.Access.Groups[0], 0, &errors)
 	propEq("Access.Groups[1]", payload.Access.Groups[1], 42, &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Name", payload.Name, "Bot Name", &errors)
+	propEq("DefaultGroupPriority", payload.DefaultGroupPriority, configuration.GroupPriority("first"), &errors)
+	propEq("Groups[0].ID", payload.Groups[0].ID, uint(0), &errors)
+	propEq("Groups[0].Priority", payload.Groups[0].Priority, configuration.GroupPriority("normal"), &errors)
+	propEq("OwnerClientID", payload.OwnerClientID, "asXdesldiAJSq9padj", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Name", payload.Name, "New Bot Name", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
