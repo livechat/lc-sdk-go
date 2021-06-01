@@ -618,3 +618,54 @@ func groupDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 	return nil
 }
+
+func autoAccessAdded(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessAdded)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
+	propEq("Description", payload.Description, "Chats on livechat.com from United States", &errors)
+	propEq("Access.Groups[0]", payload.Access.Groups[0], 1, &errors)
+	propEq("Conditions.Domain.Values[0].Value", payload.Conditions.Domain.Values[0].Value, "livechat.com", &errors)
+	propEq("Conditions.Domain.Values[0].ExactMatch", payload.Conditions.Domain.Values[0].ExactMatch, true, &errors)
+	propEq("Conditions.Geolocation.Values[0].Country", payload.Conditions.Geolocation.Values[0].Country, "United States", &errors)
+	propEq("Conditions.Geolocation.Values[0].CountryCode", payload.Conditions.Geolocation.Values[0].CountryCode, "US", &errors)
+	propEq("NextID", payload.NextID, "1faad6f5f1d6e8fdf27e8af9839783b7", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func autoAccessUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
+	propEq("Access.Groups[0]", payload.Access.Groups[0], 0, &errors)
+	propEq("Access.Groups[1]", payload.Access.Groups[1], 42, &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func autoAccessDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}

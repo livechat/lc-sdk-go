@@ -143,6 +143,12 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &GroupUpdated{}
 		case "group_deleted":
 			payload = &GroupDeleted{}
+		case "auto_access_added":
+			payload = &AutoAccessAdded{}
+		case "auto_access_updated":
+			payload = &AutoAccessUpdated{}
+		case "auto_access_deleted":
+			payload = &AutoAccessDeleted{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

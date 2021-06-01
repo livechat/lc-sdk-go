@@ -7,6 +7,7 @@ package webhooks
 import (
 	"encoding/json"
 
+	"github.com/livechat/lc-sdk-go/v4/configuration"
 	"github.com/livechat/lc-sdk-go/v4/objects"
 )
 
@@ -214,6 +215,17 @@ type GroupUpdated struct {
 // GroupDeleted represents payload of group_deleted webhook.
 type GroupDeleted struct {
 	ID int `json:"id"`
+}
+
+// AutoAccessAdded represents payload of auto_access_added webhook.
+type AutoAccessAdded = configuration.AutoAccess
+
+// AutoAccessUpdated represents payload of auto_access_updated webhook.
+type AutoAccessUpdated = configuration.AutoAccess
+
+// AutoAccessDeleted represents payload of auto_access_deleted webhook.
+type AutoAccessDeleted struct {
+	ID string `json:"id"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.

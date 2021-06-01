@@ -31,6 +31,9 @@ const (
 	GroupCreated                 WebhookAction = "group_created"
 	GroupUpdated                 WebhookAction = "group_updated"
 	GroupDeleted                 WebhookAction = "group_deleted"
+	AutoAccessAdded              WebhookAction = "auto_access_added"
+	AutoAccessUpdated            WebhookAction = "auto_access_updated"
+	AutoAccessDeleted            WebhookAction = "auto_access_deleted"
 )
 
 // GroupPriority represents priority of assigning chats in group
