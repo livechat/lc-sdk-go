@@ -120,9 +120,30 @@ type ThreadUntagged struct {
 	Tag      string `json:"tag"`
 }
 
+// AgentCreated represents payload of agent_created webhook.
+type AgentCreated = configuration.Agent
+
+// AgentUpdated represents payload of agent_updated webhook.
+type AgentUpdated = configuration.Agent
+
 // AgentDeleted represents payload of agent_deleted webhook.
 type AgentDeleted struct {
-	AgentID string `json:"agent_id"`
+	ID string `json:"id"`
+}
+
+// AgentSuspended represents payload of agent_suspended webhook.
+type AgentSuspended struct {
+	ID string `json:"id"`
+}
+
+// AgentUnsuspended represents payload of agent_unsuspended webhook.
+type AgentUnsuspended struct {
+	ID string `json:"id"`
+}
+
+// AgentApproved represents payload of agent_approved webhook.
+type AgentApproved struct {
+	ID string `json:"id"`
 }
 
 // EventsMarkedAsSeen represents payload of events_marked_as_seen webhook.

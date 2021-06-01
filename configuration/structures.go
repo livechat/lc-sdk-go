@@ -147,7 +147,7 @@ type Agent struct {
 type AgentFields struct {
 	Name               string        `json:"name,omitempty"`
 	Role               string        `json:"role,omitempty"`
-	AvatarPath         string        `json:"avatar_path,omitempty"`
+	Avatar             string        `json:"avatar,omitempty"`
 	JobTitle           string        `json:"job_title,omitempty"`
 	Mobile             string        `json:"mobile,omitempty"`
 	MaxChatsCount      uint          `json:"max_chats_count,omitempty"`

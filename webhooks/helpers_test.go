@@ -382,6 +382,48 @@ func threadUntagged(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
+func agentCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+	propEq("Name", payload.Name, "Agent Smith", &errors)
+	propEq("Role", payload.Role, "viceowner", &errors)
+	propEq("AwaitingApproval", payload.AwaitingApproval, false, &errors)
+	propEq("Groups[0].ID", payload.Groups[0].ID, uint(5), &errors)
+	propEq("Groups[1].Priority", payload.Groups[1].Priority, configuration.Last, &errors)
+	propEq("Notifications[0]", payload.Notifications[0], "new_visitor", &errors)
+	propEq("Notifications[1]", payload.Notifications[1], "new_goal", &errors)
+	propEq("EmailSubscriptions[0]", payload.EmailSubscriptions[0], "weekly_summary", &errors)
+	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Monday].Start, "08:30", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Monday].End, "12:30", &errors)
+	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Friday].Start, "07:30", &errors)
+	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Friday].End, "21:30", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
 func agentDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AgentDeleted)
 	if !ok {
@@ -389,7 +431,52 @@ func agentDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 
 	var errors string
-	propEq("AgentID", payload.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentSuspended(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentSuspended)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentUnsuspended(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentUnsuspended)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentApproved(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentApproved)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -665,9 +752,9 @@ func botCreated(ctx context.Context, wh *webhooks.Webhook) error {
 	var errors string
 	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
 	propEq("Name", payload.Name, "Bot Name", &errors)
-	propEq("DefaultGroupPriority", payload.DefaultGroupPriority, configuration.GroupPriority("first"), &errors)
+	propEq("DefaultGroupPriority", payload.DefaultGroupPriority, configuration.First, &errors)
 	propEq("Groups[0].ID", payload.Groups[0].ID, uint(0), &errors)
-	propEq("Groups[0].Priority", payload.Groups[0].Priority, configuration.GroupPriority("normal"), &errors)
+	propEq("Groups[0].Priority", payload.Groups[0].Priority, configuration.Normal, &errors)
 	propEq("OwnerClientID", payload.OwnerClientID, "asXdesldiAJSq9padj", &errors)
 
 	if errors != "" {
