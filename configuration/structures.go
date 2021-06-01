@@ -47,6 +47,7 @@ type WebhookFilters struct {
 	AuthorType   string              `json:"author_type,omitempty"`
 	OnlyMyChats  bool                `json:"only_my_chats,omitempty"`
 	ChatPresence *chatPresenceFilter `json:"chat_presence,omitempty"`
+	SourceType   []string            `json:"source_type,omitempty"`
 }
 
 type chatPresenceFilter struct {
