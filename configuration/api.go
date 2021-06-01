@@ -397,6 +397,21 @@ func (a *API) GetLicenseWebhooksState(opts *ManageWebhooksStateOptions) (*Webhoo
 	return resp, err
 }
 
+// UpdateLicenseProperties updates the properties set within a license.
+func (a *API) UpdateLicenseProperties(props objects.Properties) error {
+	return a.Call("update_license_properties", &updateLicensePropertiesRequest{
+		Properties: props,
+	}, &emptyResponse{})
+}
+
+// UpdateLicenseProperties updates the properties set within a group.
+func (a *API) UpdateGroupProperties(id int, props objects.Properties) error {
+	return a.Call("update_group_properties", &updateGroupPropertiesRequest{
+		ID:         id,
+		Properties: props,
+	}, &emptyResponse{})
+}
+
 // DeleteLicenseProperties deletes the properties set within a license.
 func (a *API) DeleteLicenseProperties(props map[string][]string) error {
 	return a.Call("delete_license_properties", &deleteLicensePropertiesRequest{
