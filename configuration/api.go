@@ -404,7 +404,7 @@ func (a *API) UpdateLicenseProperties(props objects.Properties) error {
 	}, &emptyResponse{})
 }
 
-// UpdateLicenseProperties updates the properties set within a group.
+// UpdateGroupProperties updates the properties set within a group.
 func (a *API) UpdateGroupProperties(id int, props objects.Properties) error {
 	return a.Call("update_group_properties", &updateGroupPropertiesRequest{
 		ID:         id,
