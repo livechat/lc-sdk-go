@@ -219,6 +219,8 @@ var mockedResponses = map[string]string{
 	}`,
 	"delete_license_properties": `{}`,
 	"delete_group_properties":   `{}`,
+	"update_license_properties": `{}`,
+	"update_group_properties":   `{}`,
 	"add_auto_access":           `{ "id": "pqi8oasdjahuakndw9nsad9na" }`,
 	"delete_auto_access":        `{}`,
 	"update_auto_access":        `{}`,
@@ -935,6 +937,34 @@ func TestDeleteGroupPropertiesShouldReturnDataReceivedFromConfAPI(t *testing.T) 
 	}
 
 	err = api.DeleteGroupProperties(0, nil)
+	if err != nil {
+		t.Errorf("DeleteGroupProperties failed: %v", err)
+	}
+}
+
+func TestUpdateLicensePropertiesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_license_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.UpdateLicenseProperties(nil)
+	if err != nil {
+		t.Errorf("DeleteLicensePropertie s failed: %v", err)
+	}
+}
+
+func TestUpdateGroupPropertiesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "update_group_properties"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Errorf("API creation failed")
+	}
+
+	err = api.UpdateGroupProperties(0, nil)
 	if err != nil {
 		t.Errorf("DeleteGroupProperties failed: %v", err)
 	}
