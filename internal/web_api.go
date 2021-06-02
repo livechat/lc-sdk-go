@@ -12,12 +12,12 @@ import (
 	"time"
 
 	"github.com/google/go-querystring/query"
-	"github.com/livechat/lc-sdk-go/v3/authorization"
-	api_errors "github.com/livechat/lc-sdk-go/v3/errors"
-	"github.com/livechat/lc-sdk-go/v3/metrics"
+	"github.com/livechat/lc-sdk-go/v4/authorization"
+	api_errors "github.com/livechat/lc-sdk-go/v4/errors"
+	"github.com/livechat/lc-sdk-go/v4/metrics"
 )
 
-const apiVersion = "3.3"
+const apiVersion = "3.4"
 
 // RetryStrategyFunc is called by each API method if set to retry when handling an error.
 // If not set, there will be no retry at all.

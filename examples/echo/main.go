@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/livechat/lc-sdk-go/v3/webhooks"
+	"github.com/livechat/lc-sdk-go/v4/webhooks"
 )
 
 func fillConfig(cfg *Configuration) {

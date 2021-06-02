@@ -1,6 +1,6 @@
 package customer
 
-import "github.com/livechat/lc-sdk-go/v3/objects"
+import "github.com/livechat/lc-sdk-go/v4/objects"
 
 // Form struct describes schema of custom form (e-mail, prechat or postchat survey).
 type Form struct {

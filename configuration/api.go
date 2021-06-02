@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/livechat/lc-sdk-go/v3/authorization"
-	i "github.com/livechat/lc-sdk-go/v3/internal"
-	"github.com/livechat/lc-sdk-go/v3/objects"
+	"github.com/livechat/lc-sdk-go/v4/authorization"
+	i "github.com/livechat/lc-sdk-go/v4/internal"
+	"github.com/livechat/lc-sdk-go/v4/objects"
 )
 
 type configurationAPI interface {

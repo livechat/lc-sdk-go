@@ -30,7 +30,7 @@ Having troubles? Visit docs dedicated page for [creating LiveChat apps](https://
 - Clone the repository
 
     ```bash
-    git clone https://github.com/livechat/lc-sdk-go/v3.git
+    git clone https://github.com/livechat/lc-sdk-go/v4.git
     ```
 
 - In a terminal, navigate to `lc-sdk-go/examples/echo`

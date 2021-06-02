@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/v3/agent"
-	"github.com/livechat/lc-sdk-go/v3/authorization"
-	"github.com/livechat/lc-sdk-go/v3/objects"
+	"github.com/livechat/lc-sdk-go/v4/agent"
+	"github.com/livechat/lc-sdk-go/v4/authorization"
+	"github.com/livechat/lc-sdk-go/v4/objects"
 )
 
 // TEST HELPERS
@@ -321,7 +321,7 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if req.URL.String() != "https://api.livechatinc.com/v3.3/agent/action/"+method {
+		if req.URL.String() != "https://api.livechatinc.com/v3.4/agent/action/"+method {
 			t.Errorf("Invalid URL for Agent API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}
