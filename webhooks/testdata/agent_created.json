@@ -4,38 +4,38 @@
 	"action": "agent_created",
 	"license_id": 21377312,
 	"payload": {
-    "id": "smith@example.com",
-    "name": "Agent Smith",
-    "role": "viceowner",
-    "awaiting_approval": false,
-    "groups": [
-      {
-        "id": 5,
-        "priority": "first"
-      },
-      {
-        "id": 2,
-        "priority": "last"
-      },
-      {
-        "id": 1,
-        "priority": "normal"
-      }
-    ],
-    "notifications": [
-      "new_visitor",
-      "new_goal",
-      "visitor_is_typing"
-    ],
-    "email_subscriptions": [
-      "weekly_summary"
-    ],
-    "work_scheduler": {
-      "monday": {
-        "start": "08:30",
-        "end": "12:30"
-      }
-    }
+		"id": "smith@example.com",
+		"name": "Agent Smith",
+		"role": "viceowner",
+		"awaiting_approval": false,
+		"groups": [
+			{
+				"id": 5,
+				"priority": "first"
+			},
+			{
+				"id": 2,
+				"priority": "last"
+			},
+			{
+				"id": 1,
+				"priority": "normal"
+			}
+		],
+		"notifications": [
+			"new_visitor",
+			"new_goal",
+			"visitor_is_typing"
+		],
+		"email_subscriptions": [
+			"weekly_summary"
+		],
+		"work_scheduler": {
+			"monday": {
+				"start": "08:30",
+				"end": "12:30"
+			}
+		}
 	},
 	"additional_data": {}
 }

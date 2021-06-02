@@ -4,30 +4,30 @@
 	"action": "auto_access_added",
 	"license_id": 21377312,
 	"payload": {
-    "id": "pqi8oasdjahuakndw9nsad9na",
-    "description": "Chats on livechat.com from United States",
-    "access": {
-      "groups": [ 1 ]
-    },
-    "conditions": {
-      "domain": {
-        "values": [
-          {
-            "value": "livechat.com",
-            "exact_match": true
-          }
-        ]
-      },
-      "geolocation": {
-        "values": [
-          {
-            "country": "United States",
-            "country_code": "US"
-          }
-        ]
-      }
-    },
-    "next_id": "1faad6f5f1d6e8fdf27e8af9839783b7"
+		"id": "pqi8oasdjahuakndw9nsad9na",
+		"description": "Chats on livechat.com from United States",
+		"access": {
+			"groups": [ 1 ]
+		},
+		"conditions": {
+			"domain": {
+				"values": [
+					{
+						"value": "livechat.com",
+						"exact_match": true
+					}
+				]
+			},
+			"geolocation": {
+				"values": [
+					{
+						"country": "United States",
+						"country_code": "US"
+					}
+				]
+			}
+		},
+		"next_id": "1faad6f5f1d6e8fdf27e8af9839783b7"
 	},
 	"additional_data": {}
 }
