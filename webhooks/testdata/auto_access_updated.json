@@ -4,10 +4,10 @@
 	"action": "auto_access_updated",
 	"license_id": 21377312,
 	"payload": {
-    "id": "pqi8oasdjahuakndw9nsad9na",
-    "access": {
-      "groups": [ 0, 42 ]
-    }
+		"id": "pqi8oasdjahuakndw9nsad9na",
+		"access": {
+			"groups": [ 0, 42 ]
+		}
 	},
 	"additional_data": {}
 }
