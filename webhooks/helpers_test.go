@@ -414,9 +414,9 @@ func agentUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 
 	var errors string
 	propEq("ID", payload.ID, "smith@example.com", &errors)
-	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Monday].End, "12:30", &errors)
-	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Friday].Start, "07:30", &errors)
-	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Friday].End, "21:30", &errors)
+	propEq("WorkScheduler.Monday.End", payload.WorkScheduler[configuration.Monday].End, "12:30", &errors)
+	propEq("WorkScheduler.Friday.Start", payload.WorkScheduler[configuration.Friday].Start, "07:30", &errors)
+	propEq("WorkScheduler.Friday.End", payload.WorkScheduler[configuration.Friday].End, "21:30", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
