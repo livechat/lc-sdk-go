@@ -1,10 +1,10 @@
 {
 	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
 	"secret_key": "dummy_key",
-	"action": "agent_deleted",
+	"action": "auto_access_deleted",
 	"license_id": 21377312,
 	"payload": {
-		"id": "smith@example.com"
+		"id": "pqi8oasdjahuakndw9nsad9na"
 	},
 	"additional_data": {}
 }

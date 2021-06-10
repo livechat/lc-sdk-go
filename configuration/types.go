@@ -18,7 +18,12 @@ const (
 	UserRemovedFromChat          WebhookAction = "user_removed_from_chat"
 	ThreadTagged                 WebhookAction = "thread_tagged"
 	ThreadUntagged               WebhookAction = "thread_untagged"
+	AgentCreated                 WebhookAction = "agent_created"
+	AgentUpdated                 WebhookAction = "agent_updated"
 	AgentDeleted                 WebhookAction = "agent_deleted"
+	AgentSuspended               WebhookAction = "agent_suspended"
+	AgentUnsuspended             WebhookAction = "agent_unsuspended"
+	AgentApproved                WebhookAction = "agent_approved"
 	EventsMarkedAsSeen           WebhookAction = "events_marked_as_seen"
 	ChatAccessGranted            WebhookAction = "chat_access_granted"
 	ChatAccessRevoked            WebhookAction = "chat_access_revoked"
@@ -28,6 +33,15 @@ const (
 	ChatTransferred              WebhookAction = "chat_transferred"
 	IncomingCustomer             WebhookAction = "incoming_customer"
 	CustomerSessionFieldsUpdated WebhookAction = "customer_session_fields_updated"
+	GroupCreated                 WebhookAction = "group_created"
+	GroupUpdated                 WebhookAction = "group_updated"
+	GroupDeleted                 WebhookAction = "group_deleted"
+	AutoAccessAdded              WebhookAction = "auto_access_added"
+	AutoAccessUpdated            WebhookAction = "auto_access_updated"
+	AutoAccessDeleted            WebhookAction = "auto_access_deleted"
+	BotCreated                   WebhookAction = "bot_created"
+	BotUpdated                   WebhookAction = "bot_updated"
+	BotDeleted                   WebhookAction = "bot_deleted"
 )
 
 // GroupPriority represents priority of assigning chats in group

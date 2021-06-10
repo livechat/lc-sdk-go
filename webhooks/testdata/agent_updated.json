@@ -1,0 +1,20 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "agent_updated",
+	"license_id": 21377312,
+	"payload": {
+		"id": "smith@example.com",
+		"work_scheduler": {
+			"monday": {
+				"start": "08:30",
+				"end": "12:30"
+			},
+			"friday": {
+				"start": "07:30",
+				"end": "21:30"
+			}
+		}
+	},
+	"additional_data": {}
+}

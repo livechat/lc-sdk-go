@@ -7,6 +7,7 @@ package webhooks
 import (
 	"encoding/json"
 
+	"github.com/livechat/lc-sdk-go/v4/configuration"
 	"github.com/livechat/lc-sdk-go/v4/objects"
 )
 
@@ -119,9 +120,30 @@ type ThreadUntagged struct {
 	Tag      string `json:"tag"`
 }
 
+// AgentCreated represents payload of agent_created webhook.
+type AgentCreated = configuration.Agent
+
+// AgentUpdated represents payload of agent_updated webhook.
+type AgentUpdated = configuration.Agent
+
 // AgentDeleted represents payload of agent_deleted webhook.
 type AgentDeleted struct {
-	AgentID string `json:"agent_id"`
+	ID string `json:"id"`
+}
+
+// AgentSuspended represents payload of agent_suspended webhook.
+type AgentSuspended struct {
+	ID string `json:"id"`
+}
+
+// AgentUnsuspended represents payload of agent_unsuspended webhook.
+type AgentUnsuspended struct {
+	ID string `json:"id"`
+}
+
+// AgentApproved represents payload of agent_approved webhook.
+type AgentApproved struct {
+	ID string `json:"id"`
 }
 
 // EventsMarkedAsSeen represents payload of events_marked_as_seen webhook.
@@ -193,6 +215,70 @@ type CustomerSessionFieldsUpdated struct {
 		ThreadID string `json:"thread_id"`
 	} `json:"active_chat"`
 	SessionFields []map[string]string `json:"session_fields"`
+}
+
+// GroupCreated represents payload of group_created webhook.
+type GroupCreated struct {
+	ID              int               `json:"id"`
+	Name            string            `json:"name"`
+	LanguageCode    string            `json:"language_code"`
+	AgentPriorities map[string]string `json:"agent_priorities"`
+}
+
+// GroupUpdated represents payload of group_updated webhook.
+type GroupUpdated struct {
+	ID              int               `json:"id"`
+	Name            string            `json:"name,omitempty"`
+	LanguageCode    string            `json:"language_code,omitempty"`
+	AgentPriorities map[string]string `json:"agent_priorities"`
+}
+
+// GroupDeleted represents payload of group_deleted webhook.
+type GroupDeleted struct {
+	ID int `json:"id"`
+}
+
+// AutoAccessAdded represents payload of auto_access_added webhook.
+type AutoAccessAdded = configuration.AutoAccess
+
+// AutoAccessUpdated represents payload of auto_access_updated webhook.
+type AutoAccessUpdated = configuration.AutoAccess
+
+// AutoAccessDeleted represents payload of auto_access_deleted webhook.
+type AutoAccessDeleted struct {
+	ID string `json:"id"`
+}
+
+// BotCreated represents payload of bot_created webhook.
+type BotCreated struct {
+	ID                   string                       `json:"id"`
+	Name                 string                       `json:"name"`
+	Avatar               string                       `json:"avatar,omitempty"`
+	MaxChatsCount        *uint                        `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority configuration.GroupPriority  `json:"default_group_priority,omitempty"`
+	Groups               []*configuration.GroupConfig `json:"groups,omitempty"`
+	WorkScheduler        configuration.WorkScheduler  `json:"work_scheduler,omitempty"`
+	Timezone             string                       `json:"timezone,omitempty"`
+	OwnerClientID        string                       `json:"owner_client_id"`
+	JobTitle             string                       `json:"job_title,omitempty"`
+}
+
+// BotUpdated represents payload of bot_updated webhook.
+type BotUpdated struct {
+	ID                   string                       `json:"id"`
+	Name                 string                       `json:"name,omitempty"`
+	Avatar               string                       `json:"avatar,omitempty"`
+	MaxChatsCount        *uint                        `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority configuration.GroupPriority  `json:"default_group_priority,omitempty"`
+	Groups               []*configuration.GroupConfig `json:"groups,omitempty"`
+	WorkScheduler        configuration.WorkScheduler  `json:"work_scheduler,omitempty"`
+	Timezone             string                       `json:"timezone,omitempty"`
+	JobTitle             string                       `json:"job_title,omitempty"`
+}
+
+// BotDeleted represents payload of bot_deleted webhook.
+type BotDeleted struct {
+	ID string `json:"id"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.

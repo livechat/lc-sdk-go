@@ -117,8 +117,18 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &ThreadTagged{}
 		case "thread_untagged":
 			payload = &ThreadUntagged{}
+		case "agent_created":
+			payload = &AgentCreated{}
+		case "agent_updated":
+			payload = &AgentUpdated{}
 		case "agent_deleted":
 			payload = &AgentDeleted{}
+		case "agent_suspended":
+			payload = &AgentSuspended{}
+		case "agent_unsuspended":
+			payload = &AgentUnsuspended{}
+		case "agent_approved":
+			payload = &AgentApproved{}
 		case "events_marked_as_seen":
 			payload = &EventsMarkedAsSeen{}
 		case "chat_access_granted":
@@ -137,6 +147,24 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &IncomingCustomer{}
 		case "customer_session_fields_updated":
 			payload = &CustomerSessionFieldsUpdated{}
+		case "group_created":
+			payload = &GroupCreated{}
+		case "group_updated":
+			payload = &GroupUpdated{}
+		case "group_deleted":
+			payload = &GroupDeleted{}
+		case "auto_access_added":
+			payload = &AutoAccessAdded{}
+		case "auto_access_updated":
+			payload = &AutoAccessUpdated{}
+		case "auto_access_deleted":
+			payload = &AutoAccessDeleted{}
+		case "bot_created":
+			payload = &BotCreated{}
+		case "bot_updated":
+			payload = &BotUpdated{}
+		case "bot_deleted":
+			payload = &BotDeleted{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

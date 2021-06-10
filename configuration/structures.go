@@ -47,6 +47,7 @@ type WebhookFilters struct {
 	AuthorType   string              `json:"author_type,omitempty"`
 	OnlyMyChats  bool                `json:"only_my_chats,omitempty"`
 	ChatPresence *chatPresenceFilter `json:"chat_presence,omitempty"`
+	SourceType   []string            `json:"source_type,omitempty"`
 }
 
 type chatPresenceFilter struct {
@@ -146,7 +147,7 @@ type Agent struct {
 type AgentFields struct {
 	Name               string        `json:"name,omitempty"`
 	Role               string        `json:"role,omitempty"`
-	AvatarPath         string        `json:"avatar_path,omitempty"`
+	Avatar             string        `json:"avatar,omitempty"`
 	JobTitle           string        `json:"job_title,omitempty"`
 	Mobile             string        `json:"mobile,omitempty"`
 	MaxChatsCount      uint          `json:"max_chats_count,omitempty"`

@@ -1,0 +1,19 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "bot_created",
+	"license_id": 21377312,
+	"payload": {
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"name": "Bot Name",
+		"default_group_priority": "first",
+		"groups": [
+			{
+				"id": 0,
+				"priority": "normal"
+			}
+		],
+		"owner_client_id": "asXdesldiAJSq9padj"
+	},
+	"additional_data": {}
+}

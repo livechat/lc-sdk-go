@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/livechat/lc-sdk-go/v4/configuration"
 	"github.com/livechat/lc-sdk-go/v4/webhooks"
 )
 
@@ -381,6 +382,48 @@ func threadUntagged(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
+func agentCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+	propEq("Name", payload.Name, "Agent Smith", &errors)
+	propEq("Role", payload.Role, "viceowner", &errors)
+	propEq("AwaitingApproval", payload.AwaitingApproval, false, &errors)
+	propEq("Groups[0].ID", payload.Groups[0].ID, uint(5), &errors)
+	propEq("Groups[1].Priority", payload.Groups[1].Priority, configuration.Last, &errors)
+	propEq("Notifications[0]", payload.Notifications[0], "new_visitor", &errors)
+	propEq("Notifications[1]", payload.Notifications[1], "new_goal", &errors)
+	propEq("EmailSubscriptions[0]", payload.EmailSubscriptions[0], "weekly_summary", &errors)
+	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Monday].Start, "08:30", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+	propEq("WorkScheduler.Monday.End", payload.WorkScheduler[configuration.Monday].End, "12:30", &errors)
+	propEq("WorkScheduler.Friday.Start", payload.WorkScheduler[configuration.Friday].Start, "07:30", &errors)
+	propEq("WorkScheduler.Friday.End", payload.WorkScheduler[configuration.Friday].End, "21:30", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
 func agentDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.AgentDeleted)
 	if !ok {
@@ -388,7 +431,52 @@ func agentDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 
 	var errors string
-	propEq("AgentID", payload.AgentID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentSuspended(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentSuspended)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentUnsuspended(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentUnsuspended)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func agentApproved(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AgentApproved)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var errors string
+	propEq("ID", payload.ID, "smith@example.com", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
@@ -566,6 +654,151 @@ func customerSessionFieldsUpdated(ctx context.Context, wh *webhooks.Webhook) err
 	propEq("ActiveChat.ChatID", payload.ActiveChat.ChatID, "PJ0MRSHTDG", &errors)
 	propEq("ActiveChat.ThreadID", payload.ActiveChat.ThreadID, "K600PKZON8", &errors)
 	propEq("ActiveChat.SessionFields[0][\"key\"]", payload.SessionFields[0]["key"], "value", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func groupCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+	propEq("Name", payload.Name, "sales", &errors)
+	propEq("LanguageCode", payload.LanguageCode, "en", &errors)
+	propEq("AgentPriorities[\"agent@example.com\"]", payload.AgentPriorities["agent@example.com"], "normal", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func groupUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+	propEq("Name", payload.Name, "sales", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func groupDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.GroupDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, 42, &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func autoAccessAdded(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessAdded)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
+	propEq("Description", payload.Description, "Chats on livechat.com from United States", &errors)
+	propEq("Access.Groups[0]", payload.Access.Groups[0], 1, &errors)
+	propEq("Conditions.Domain.Values[0].Value", payload.Conditions.Domain.Values[0].Value, "livechat.com", &errors)
+	propEq("Conditions.Domain.Values[0].ExactMatch", payload.Conditions.Domain.Values[0].ExactMatch, true, &errors)
+	propEq("Conditions.Geolocation.Values[0].Country", payload.Conditions.Geolocation.Values[0].Country, "United States", &errors)
+	propEq("Conditions.Geolocation.Values[0].CountryCode", payload.Conditions.Geolocation.Values[0].CountryCode, "US", &errors)
+	propEq("NextID", payload.NextID, "1faad6f5f1d6e8fdf27e8af9839783b7", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func autoAccessUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
+	propEq("Access.Groups[0]", payload.Access.Groups[0], 0, &errors)
+	propEq("Access.Groups[1]", payload.Access.Groups[1], 42, &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botCreated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotCreated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Name", payload.Name, "Bot Name", &errors)
+	propEq("DefaultGroupPriority", payload.DefaultGroupPriority, configuration.First, &errors)
+	propEq("Groups[0].ID", payload.Groups[0].ID, uint(0), &errors)
+	propEq("Groups[0].Priority", payload.Groups[0].Priority, configuration.Normal, &errors)
+	propEq("OwnerClientID", payload.OwnerClientID, "asXdesldiAJSq9padj", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotUpdated)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
+	propEq("Name", payload.Name, "New Bot Name", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func botDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.BotDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "5c9871d5372c824cbf22d860a707a578", &errors)
+
+	if errors != "" {
+		return fmt.Errorf(errors)
+	}
+	return nil
+}
+
+func autoAccessDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.AutoAccessDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var errors string
+	propEq("ID", payload.ID, "pqi8oasdjahuakndw9nsad9na", &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
