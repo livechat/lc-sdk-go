@@ -715,7 +715,7 @@ func TestAddUserToChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.AddUserToChat("chat", "user", "agent", false)
+	rErr := api.AddUserToChat("chat", "user", "agent")
 	if rErr != nil {
 		t.Errorf("AddUserToChat failed: %v", rErr)
 	}
@@ -1225,7 +1225,7 @@ func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Errorf("API creation failed")
 	}
 
-	rErr := api.AddUserToChat("chat", "user", "agent", true)
+	rErr := api.AddUserToChat("chat", "user", "agent")
 	verifyErrorResponse("AddUserToChat", rErr, t)
 }
 

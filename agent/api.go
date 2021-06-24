@@ -197,12 +197,11 @@ func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force b
 }
 
 // AddUserToChat adds user to the chat. You can't add more than one customer type user to the chat.
-func (a *API) AddUserToChat(chatID, userID, userType string, requireActiveThread bool) error {
+func (a *API) AddUserToChat(chatID, userID, userType string) error {
 	return a.Call("add_user_to_chat", &changeChatUsersRequest{
-		ChatID:              chatID,
-		UserID:              userID,
-		UserType:            userType,
-		RequireActiveThread: requireActiveThread,
+		ChatID:   chatID,
+		UserID:   userID,
+		UserType: userType,
 	}, &emptyResponse{})
 }
 
