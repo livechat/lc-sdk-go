@@ -72,7 +72,7 @@ func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 		ByQuery("query").
 		FromDate("11-09-2001").
 		ToDate("02-04-2137").
-		ByEventTypes("filled_form", "file")
+		ByEventTypes(true, "filled_form", "file")
 
 	if af.Agents.Values[0] != "a" {
 		t.Errorf("ArchivesFilters.Agents invalid: %v", af.Agents)
@@ -94,8 +94,8 @@ func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 		t.Errorf("ArchivesFilters.To invalid: %v", af.To)
 	}
 
-	if af.Events.Types[0] != "filled_form" || af.Events.Types[1] != "file" {
-		t.Errorf("ArchivesFilters.Events.Types invalid: %v", af.Events.Types)
+	if af.EventTypes.Values[0] != "filled_form" || af.EventTypes.Values[1] != "file" {
+		t.Errorf("ArchivesFilters.EventTypes.Values invalid: %v", af.EventTypes.Values)
 	}
 }
 

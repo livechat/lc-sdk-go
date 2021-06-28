@@ -40,11 +40,12 @@ type archivesFilters struct {
 	Surveys    []SurveyFilter      `json:"surveys,omitempty"`
 	ThreadIDs  []string            `json:"thread_ids,omitempty"`
 	Query      string              `json:"query,omitempty"`
-	Events     *eventsFilter       `json:"events,omitempty"`
+	EventTypes *eventTypesFilter   `json:"event_types,omitempty"`
 }
 
-type eventsFilter struct {
-	Types []string `json:"types,omitempty"`
+type eventTypesFilter struct {
+	Values        []string `json:"values,omitempty"`
+	ExcludeValues []string `json:"exclude_values,omitempty"`
 }
 
 // SurveyFilter represents structure to match surveys when getting Archives
@@ -131,9 +132,14 @@ func (af *archivesFilters) ByGoals(includes bool, vals ...interface{}) *archives
 	return af
 }
 
-// ByEventTypes extends archives filter with event.types to match
-func (af *archivesFilters) ByEventTypes(types ...string) *archivesFilters {
-	af.Events = &eventsFilter{Types: types}
+// ByEventTypes extends archives filter with event_types.values to match if first parameter true
+// Otherwise it extends archives filter with event_types.exclude_values
+func (af *archivesFilters) ByEventTypes(includes bool, vals ...string) *archivesFilters {
+	if includes {
+		af.EventTypes = &eventTypesFilter{Values: vals}
+	} else {
+		af.EventTypes = &eventTypesFilter{ExcludeValues: vals}
+	}
 	return af
 }
 
