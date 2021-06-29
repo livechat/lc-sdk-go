@@ -162,7 +162,7 @@ type listWebhooksRequest struct {
 }
 
 type manageWebhooksStateRequest struct {
-	ClientID string `json:"client_id,omitempty"`
+	OwnerClientID string `json:"owner_client_id,omitempty"`
 }
 
 type updateLicensePropertiesRequest struct {
