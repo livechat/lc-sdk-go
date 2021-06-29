@@ -365,7 +365,7 @@ func (a *API) EnableLicenseWebhooks(opts *ManageWebhooksStateOptions) error {
 		clientID = opts.ClientID
 	}
 	return a.Call("enable_license_webhooks", &manageWebhooksStateRequest{
-		ClientID: clientID,
+		OwnerClientID: clientID,
 	}, &emptyResponse{})
 }
 
@@ -378,7 +378,7 @@ func (a *API) DisableLicenseWebhooks(opts *ManageWebhooksStateOptions) error {
 		clientID = opts.ClientID
 	}
 	return a.Call("disable_license_webhooks", &manageWebhooksStateRequest{
-		ClientID: clientID,
+		OwnerClientID: clientID,
 	}, &emptyResponse{})
 }
 
@@ -392,7 +392,7 @@ func (a *API) GetLicenseWebhooksState(opts *ManageWebhooksStateOptions) (*Webhoo
 	}
 	var resp *WebhooksState
 	err := a.Call("get_license_webhooks_state", &manageWebhooksStateRequest{
-		ClientID: clientID,
+		OwnerClientID: clientID,
 	}, &resp)
 	return resp, err
 }
