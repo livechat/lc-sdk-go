@@ -131,10 +131,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &AgentApproved{}
 		case "events_marked_as_seen":
 			payload = &EventsMarkedAsSeen{}
-		case "chat_access_granted":
-			payload = &ChatAccessGranted{}
-		case "chat_access_revoked":
-			payload = &ChatAccessRevoked{}
+		case "chat_access_updated":
+			payload = &ChatAccessUpdated{}
 		case "event_properties_updated":
 			payload = &EventPropertiesUpdated{}
 		case "event_properties_deleted":

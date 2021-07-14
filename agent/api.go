@@ -156,30 +156,6 @@ func (a *API) UnfollowChat(chatID string) error {
 	}, &emptyResponse{})
 }
 
-// GrantChatAccess grants access to a new chat without overwriting the existing ones.
-func (a *API) GrantChatAccess(id string, access objects.Access) error {
-	return a.Call("grant_chat_access", &modifyChatAccessRequest{
-		ID:     id,
-		Access: access,
-	}, &emptyResponse{})
-}
-
-// RevokeChatAccess removes access to a chat.
-func (a *API) RevokeChatAccess(id string, access objects.Access) error {
-	return a.Call("revoke_chat_access", &modifyChatAccessRequest{
-		ID:     id,
-		Access: access,
-	}, &emptyResponse{})
-}
-
-// SetChatAccess gives access to a new chat overwriting the existing ones.
-func (a *API) SetChatAccess(id string, access objects.Access) error {
-	return a.Call("set_chat_access", &modifyChatAccessRequest{
-		ID:     id,
-		Access: access,
-	}, &emptyResponse{})
-}
-
 // TransferChat transfers chat to agent or group.
 func (a *API) TransferChat(chatID, targetType string, ids []interface{}, force bool) error {
 	var target *transferTarget
