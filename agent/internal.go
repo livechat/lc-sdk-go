@@ -84,12 +84,6 @@ type unfollowChatRequest struct {
 	ID string `json:"id"`
 }
 
-// used to grant, revoke and set chat access
-type modifyChatAccessRequest struct {
-	ID     string         `json:"id"`
-	Access objects.Access `json:"access"`
-}
-
 type transferChatRequest struct {
 	ID     string          `json:"id"`
 	Target *transferTarget `json:"target,omitempty"`

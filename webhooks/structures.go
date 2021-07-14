@@ -153,14 +153,8 @@ type EventsMarkedAsSeen struct {
 	SeenUpTo string `json:"seen_up_to"`
 }
 
-// ChatAccessGranted represents payload of chat_access_granted webhook.
-type ChatAccessGranted struct {
-	ID     string         `json:"id"`
-	Access objects.Access `json:"access"`
-}
-
-// ChatAccessRevoked represents payload of chat_access_revoked webhook.
-type ChatAccessRevoked struct {
+// ChatAccessUpdated represents payload of chat_access_updated webhook.
+type ChatAccessUpdated struct {
 	ID     string         `json:"id"`
 	Access objects.Access `json:"access"`
 }

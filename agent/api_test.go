@@ -665,48 +665,6 @@ func TestUploadFileShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestGrantChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "grant_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.GrantChatAccess("id", objects.Access{})
-	if rErr != nil {
-		t.Errorf("GrantChatAccess failed: %v", rErr)
-	}
-}
-
-func TestRevokeChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "revoke_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.RevokeChatAccess("id", objects.Access{})
-	if rErr != nil {
-		t.Errorf("RevokeChatAccess failed: %v", rErr)
-	}
-}
-
-func TestSetChatAccessShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "set_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.SetChatAccess("id", objects.Access{})
-	if rErr != nil {
-		t.Errorf("SetChatAccess failed: %v", rErr)
-	}
-}
-
 func TestAddUserToChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "add_user_to_chat"))
 
@@ -1179,42 +1137,6 @@ func TestUploadFileShouldNotCrashOnErrorResponse(t *testing.T) {
 	_, rErr := api.UploadFile("filename", []byte{})
 	verifyErrorResponse("UploadFile", rErr, t)
 
-}
-
-func TestGrantChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "grant_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.GrantChatAccess("id", objects.Access{})
-	verifyErrorResponse("GrantChatAccess", rErr, t)
-}
-
-func TestRevokeChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "revoke_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.RevokeChatAccess("id", objects.Access{})
-	verifyErrorResponse("RevokeChatAccess", rErr, t)
-}
-
-func TestSetChatAccessShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "set_chat_access"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Errorf("API creation failed")
-	}
-
-	rErr := api.SetChatAccess("id", objects.Access{})
-	verifyErrorResponse("SetChatAccess", rErr, t)
 }
 
 func TestAddUserToChatShouldNotCrashOnErrorResponse(t *testing.T) {

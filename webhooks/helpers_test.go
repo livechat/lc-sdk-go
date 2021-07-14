@@ -501,8 +501,8 @@ func eventsMarkedAsSeen(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
-func chatAccessGranted(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.ChatAccessGranted)
+func chatAccessUpdated(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ChatAccessUpdated)
 	if !ok {
 		return fmt.Errorf("invalid payload type: %T", wh.Payload)
 	}
@@ -511,24 +511,6 @@ func chatAccessGranted(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("ID", payload.ID, "PJ0MRSHTDX", &errors)
 	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &errors)
 	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 2, &errors)
-
-	if errors != "" {
-		return fmt.Errorf(errors)
-	}
-	return nil
-}
-
-func chatAccessRevoked(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.ChatAccessRevoked)
-	if !ok {
-		return fmt.Errorf("invalid payload type: %T", wh.Payload)
-	}
-
-	var errors string
-	propEq("ID", payload.ID, "PJ0MRSHTDV", &errors)
-	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 2, &errors)
-	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 3, &errors)
-	propEq("Access.GroupIDs[1]", payload.Access.GroupIDs[1], 4, &errors)
 
 	if errors != "" {
 		return fmt.Errorf(errors)
