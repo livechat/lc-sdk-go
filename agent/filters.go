@@ -4,24 +4,27 @@ package agent
 type PropertiesFilters map[string]map[string]*propertyFilterType
 
 type propertyFilterType struct {
-	Exists        *bool         `json:"exists,omitempty"`
-	Values        []interface{} `json:"values,omitempty"`
-	ExcludeValues []interface{} `json:"exclude_values,omitempty"`
+	Exists            *bool         `json:"exists,omitempty"`
+	Values            []interface{} `json:"values,omitempty"`
+	ExcludeValues     []interface{} `json:"exclude_values,omitempty"`
+	RequireEveryValue *bool         `json:"require_every_value,omitempty"`
 }
 
 // NewPropertyFilterType creates new filter object for Chat properties
-// If only first parameter is passed, filter will check only existence of property
-// Passing additional parameters will check if property values match/exclude given values
-// based on the first parameter
-func NewPropertyFilterType(includes bool, vals ...interface{}) *propertyFilterType {
+// If the first parameter is passed along with nil values then the last parameter will be ignore and the filter will check only existence of property
+// Otherwise will check if property values match/exclude given values based on the first parameter
+// The last parameter modifies the filter behavior so that it matches only those Chats that have or don't have all values in the property the filter relates to
+func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue bool) *propertyFilterType {
 	pft := &propertyFilterType{}
 	switch {
 	case vals == nil:
 		pft.Exists = &includes
 	case includes:
 		pft.Values = vals
+		pft.RequireEveryValue = &requireEveryValue
 	case !includes:
 		pft.ExcludeValues = vals
+		pft.RequireEveryValue = &requireEveryValue
 	}
 	return pft
 }
@@ -44,8 +47,9 @@ type archivesFilters struct {
 }
 
 type eventTypesFilter struct {
-	Values        []string `json:"values,omitempty"`
-	ExcludeValues []string `json:"exclude_values,omitempty"`
+	Values            []string `json:"values,omitempty"`
+	ExcludeValues     []string `json:"exclude_values,omitempty"`
+	RequireEveryValue *bool    `json:"require_every_value,omitempty"`
 }
 
 // SurveyFilter represents structure to match surveys when getting Archives
@@ -61,8 +65,8 @@ func NewArchivesFilters() *archivesFilters {
 
 // ByAgents extends archives filter with agents specific property filter
 // See NewPropertyFilterType definition for details of filter creation
-func (af *archivesFilters) ByAgents(includes bool, vals ...interface{}) *archivesFilters {
-	af.Agents = NewPropertyFilterType(includes, vals...)
+func (af *archivesFilters) ByAgents(includes bool, vals []interface{}, requireEveryValue bool) *archivesFilters {
+	af.Agents = NewPropertyFilterType(includes, vals, requireEveryValue)
 	return af
 }
 
@@ -113,33 +117,35 @@ func (af *archivesFilters) BySurveys(surveyFilters []SurveyFilter) *archivesFilt
 
 // ByTags extends archives filter with tags specific property filter
 // See NewPropertyFilterType definition for details of filter creation
-func (af *archivesFilters) ByTags(includes bool, vals ...interface{}) *archivesFilters {
-	af.Tags = NewPropertyFilterType(includes, vals...)
+func (af *archivesFilters) ByTags(includes bool, vals []interface{}, requireEveryValue bool) *archivesFilters {
+	af.Tags = NewPropertyFilterType(includes, vals, requireEveryValue)
 	return af
 }
 
 // BySales extends archives filter with sales specific property filter
 // See NewPropertyFilterType definition for details of filter creation
-func (af *archivesFilters) BySales(includes bool, vals ...interface{}) *archivesFilters {
-	af.Sales = NewPropertyFilterType(includes, vals...)
+func (af *archivesFilters) BySales(includes bool, vals []interface{}, requireEveryValue bool) *archivesFilters {
+	af.Sales = NewPropertyFilterType(includes, vals, requireEveryValue)
 	return af
 }
 
 // ByGoals extends archives filter with goals specific property filter
 // See NewPropertyFilterType definition for details of filter creation
-func (af *archivesFilters) ByGoals(includes bool, vals ...interface{}) *archivesFilters {
-	af.Goals = NewPropertyFilterType(includes, vals...)
+func (af *archivesFilters) ByGoals(includes bool, vals []interface{}, requireEveryValue bool) *archivesFilters {
+	af.Goals = NewPropertyFilterType(includes, vals, requireEveryValue)
 	return af
 }
 
 // ByEventTypes extends archives filter with event_types.values to match if first parameter true
 // Otherwise it extends archives filter with event_types.exclude_values
-func (af *archivesFilters) ByEventTypes(includes bool, vals ...string) *archivesFilters {
+func (af *archivesFilters) ByEventTypes(includes bool, vals []string, requireEveryValue bool) *archivesFilters {
 	if includes {
 		af.EventTypes = &eventTypesFilter{Values: vals}
 	} else {
 		af.EventTypes = &eventTypesFilter{ExcludeValues: vals}
 	}
+
+	af.EventTypes.RequireEveryValue = &requireEveryValue
 	return af
 }
 
