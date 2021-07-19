@@ -11,8 +11,8 @@ type propertyFilterType struct {
 }
 
 // NewPropertyFilterType creates new filter object for Chat properties
-// If the first parameter is passed along with nil values then the last parameter will be ignore and the filter will check only existence of property
-// Otherwise will check if property values match/exclude given values based on the first parameter
+// If the first parameter is passed along with nil values then the last parameter will be ignored and the filter will check only existence of property
+// Otherwise it will check if property values match/exclude given values based on the first parameter
 // The last parameter modifies the filter behavior so that it matches only those Chats that have or don't have all values in the property the filter relates to
 func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue bool) *propertyFilterType {
 	pft := &propertyFilterType{}
