@@ -7,7 +7,7 @@ import (
 )
 
 func TestPropertyFilterTypeExistenceOnly(t *testing.T) {
-	pft := agent.NewPropertyFilterType(true)
+	pft := agent.NewPropertyFilterType(true, nil, false)
 	if *pft.Exists != true {
 		t.Errorf("PropertyFilterType.Exists invalid: %v", pft.Exists)
 	}
@@ -19,6 +19,10 @@ func TestPropertyFilterTypeExistenceOnly(t *testing.T) {
 	if pft.ExcludeValues != nil {
 		t.Errorf("PropertyFilterType.ExcludeValues should not be set: %v", pft.ExcludeValues)
 	}
+
+	if pft.RequireEveryValue != nil {
+		t.Errorf("PropertyFilterType.RequireEveryValue should not be set: %v", pft.RequireEveryValue)
+	}
 }
 
 func TestPropertyFilterTypeMatchValues(t *testing.T) {
@@ -26,7 +30,7 @@ func TestPropertyFilterTypeMatchValues(t *testing.T) {
 	for i := range values {
 		values[i] = i
 	}
-	pft := agent.NewPropertyFilterType(true, values...)
+	pft := agent.NewPropertyFilterType(true, values, false)
 
 	for i := range pft.Values {
 		if pft.Values[i] != i {
@@ -41,6 +45,10 @@ func TestPropertyFilterTypeMatchValues(t *testing.T) {
 	if pft.ExcludeValues != nil {
 		t.Errorf("PropertyFilterType.ExcludeValues should not be set: %v", pft.ExcludeValues)
 	}
+
+	if *pft.RequireEveryValue {
+		t.Errorf("PropertyFilterType.RequireEveryValue invalid: %v", pft.RequireEveryValue)
+	}
 }
 
 func TestPropertyFilterTypeExcludeValues(t *testing.T) {
@@ -48,7 +56,7 @@ func TestPropertyFilterTypeExcludeValues(t *testing.T) {
 	for i := range values {
 		values[i] = i
 	}
-	pft := agent.NewPropertyFilterType(false, values...)
+	pft := agent.NewPropertyFilterType(false, values, true)
 
 	for i := range pft.ExcludeValues {
 		if pft.ExcludeValues[i] != i {
@@ -63,18 +71,26 @@ func TestPropertyFilterTypeExcludeValues(t *testing.T) {
 	if pft.Values != nil {
 		t.Errorf("PropertyFilterType.Values should not be set: %v", pft.Values)
 	}
+
+	if !*pft.RequireEveryValue {
+		t.Errorf("PropertyFilterType.RequireEveryValue invalid: %v", pft.RequireEveryValue)
+	}
 }
 
 func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 	af := agent.NewArchivesFilters()
-	af.ByAgents(true, "a").
+	af.ByAgents(true, []interface{}{"a"}, false).
 		ByGroups([]uint{1}).
 		ByQuery("query").
 		FromDate("11-09-2001").
 		ToDate("02-04-2137").
-		ByEventTypes(true, "filled_form", "file")
+		ByEventTypes(true, []string{"filled_form", "file"}, true)
 
 	if af.Agents.Values[0] != "a" {
+		t.Errorf("ArchivesFilters.Agents invalid: %v", af.Agents)
+	}
+
+	if af.Agents.RequireEveryValue == nil || *af.Agents.RequireEveryValue {
 		t.Errorf("ArchivesFilters.Agents invalid: %v", af.Agents)
 	}
 
@@ -97,6 +113,10 @@ func TestArchivesFiltersSimpleTypeFields(t *testing.T) {
 	if af.EventTypes.Values[0] != "filled_form" || af.EventTypes.Values[1] != "file" {
 		t.Errorf("ArchivesFilters.EventTypes.Values invalid: %v", af.EventTypes.Values)
 	}
+
+	if af.EventTypes == nil || !*af.EventTypes.RequireEveryValue {
+		t.Errorf("ArchivesFilters.EventTypes invalid: %v", af.EventTypes)
+	}
 }
 
 func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
@@ -105,9 +125,9 @@ func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
 		values[i] = i
 	}
 	af := agent.NewArchivesFilters()
-	af.ByTags(true, values...)
-	af.BySales(true, values...)
-	af.ByGoals(true, values...)
+	af.ByTags(true, values, true)
+	af.BySales(true, values, true)
+	af.ByGoals(true, values, true)
 
 	for i := range af.Tags.Values {
 		if af.Tags.Values[i] != i {
@@ -121,6 +141,10 @@ func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
 
 	if af.Tags.ExcludeValues != nil {
 		t.Errorf("ArchivesFilters.Tags.ExcludeValues should not be set: %v", af.Tags.ExcludeValues)
+	}
+
+	if !*af.Tags.RequireEveryValue {
+		t.Errorf("ArchivesFilters.Tags.RequireEveryValue should not be set: %v", af.Tags.RequireEveryValue)
 	}
 
 	for i := range af.Sales.Values {
@@ -137,6 +161,10 @@ func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
 		t.Errorf("ArchivesFilters.Sales.ExcludeValues should not be set: %v", af.Sales.ExcludeValues)
 	}
 
+	if !*af.Sales.RequireEveryValue {
+		t.Errorf("ArchivesFilters.Sales.RequireEveryValue should not be set: %v", af.Sales.RequireEveryValue)
+	}
+
 	for i := range af.Goals.Values {
 		if af.Goals.Values[i] != i {
 			t.Errorf("ArchivesFilters.Goals.Values invalid: %v", af.Goals.Values)
@@ -149,6 +177,10 @@ func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
 
 	if af.Goals.ExcludeValues != nil {
 		t.Errorf("ArchivesFilters.Goals.ExcludeValues should not be set: %v", af.Goals.ExcludeValues)
+	}
+
+	if !*af.Goals.RequireEveryValue {
+		t.Errorf("ArchivesFilters.Goals.RequireEveryValue should not be set: %v", af.Goals.RequireEveryValue)
 	}
 }
 
