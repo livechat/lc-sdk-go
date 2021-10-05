@@ -44,6 +44,7 @@ type archivesFilters struct {
 	ThreadIDs  []string            `json:"thread_ids,omitempty"`
 	Query      string              `json:"query,omitempty"`
 	EventTypes *eventTypesFilter   `json:"event_types,omitempty"`
+	Greetings  *GreetingsFilter    `json:"greetings,omitempty"`
 }
 
 type eventTypesFilter struct {
@@ -56,6 +57,16 @@ type eventTypesFilter struct {
 type SurveyFilter struct {
 	Type     string `json:"type"`
 	AnswerID string `json:"answer_id"`
+}
+
+// GreetingsFilter represents structure to match greetings when getting Archives
+type GreetingsFilter struct {
+	From          string         `json:"from,omitempty"`
+	To            string         `json:"to,omitempty"`
+	Values        []int64        `json:"values,omitempty"`
+	ExcludeValues []int64        `json:"exclude_values,omitempty"`
+	Exists        *bool          `json:"exists,omitempty"`
+	Groups        *integerFilter `json:"groups,omitempty"`
 }
 
 // NewArchivesFilters creates empty structure to aggregate filters for ListArchives method
@@ -146,6 +157,12 @@ func (af *archivesFilters) ByEventTypes(includes bool, vals []string, requireEve
 	}
 
 	af.EventTypes.RequireEveryValue = &requireEveryValue
+	return af
+}
+
+// ByGreetings extends archives filter with greetings to match
+func (af *archivesFilters) ByGreetings(filters *GreetingsFilter) *archivesFilters {
+	af.Greetings = filters
 	return af
 }
 
