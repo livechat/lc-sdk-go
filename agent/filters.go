@@ -32,19 +32,20 @@ func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue 
 // Archives filters
 
 type archivesFilters struct {
-	Agents     *propertyFilterType `json:"agents,omitempty"`
-	GroupIDs   []uint              `json:"group_ids,omitempty"`
-	From       string              `json:"from,omitempty"`
-	To         string              `json:"to,omitempty"`
-	Properties PropertiesFilters   `json:"properties,omitempty"`
-	Tags       *propertyFilterType `json:"tags,omitempty"`
-	Sales      *propertyFilterType `json:"sales,omitempty"`
-	Goals      *propertyFilterType `json:"goals,omitempty"`
-	Surveys    []SurveyFilter      `json:"surveys,omitempty"`
-	ThreadIDs  []string            `json:"thread_ids,omitempty"`
-	Query      string              `json:"query,omitempty"`
-	EventTypes *eventTypesFilter   `json:"event_types,omitempty"`
-	Greetings  *GreetingsFilter    `json:"greetings,omitempty"`
+	Agents        *propertyFilterType  `json:"agents,omitempty"`
+	GroupIDs      []uint               `json:"group_ids,omitempty"`
+	From          string               `json:"from,omitempty"`
+	To            string               `json:"to,omitempty"`
+	Properties    PropertiesFilters    `json:"properties,omitempty"`
+	Tags          *propertyFilterType  `json:"tags,omitempty"`
+	Sales         *propertyFilterType  `json:"sales,omitempty"`
+	Goals         *propertyFilterType  `json:"goals,omitempty"`
+	Surveys       []SurveyFilter       `json:"surveys,omitempty"`
+	ThreadIDs     []string             `json:"thread_ids,omitempty"`
+	Query         string               `json:"query,omitempty"`
+	EventTypes    *eventTypesFilter    `json:"event_types,omitempty"`
+	Greetings     *GreetingsFilter     `json:"greetings,omitempty"`
+	AgentResponse *AgentResponseFilter `json:"agent_response,omitempty"`
 }
 
 type eventTypesFilter struct {
@@ -67,6 +68,14 @@ type GreetingsFilter struct {
 	ExcludeValues []int64        `json:"exclude_values,omitempty"`
 	Exists        *bool          `json:"exists,omitempty"`
 	Groups        *integerFilter `json:"groups,omitempty"`
+}
+
+// AgentResponseFilter represents structure to match agent response when gettings Archives
+type AgentResponseFilter struct {
+	Exists *bool          `json:"exists,omitempty"`
+	First  *bool          `json:"first,omitempty"`
+	Groups *integerFilter `json:"groups,omitempty"`
+	Agents *stringFilter  `json:"agents,omitempty"`
 }
 
 // NewArchivesFilters creates empty structure to aggregate filters for ListArchives method
@@ -163,6 +172,12 @@ func (af *archivesFilters) ByEventTypes(includes bool, vals []string, requireEve
 // ByGreetings extends archives filter with greetings to match
 func (af *archivesFilters) ByGreetings(filters *GreetingsFilter) *archivesFilters {
 	af.Greetings = filters
+	return af
+}
+
+// ByAgentResponse extends archives filter with agent response to match
+func (af *archivesFilters) ByAgentResponse(filters *AgentResponseFilter) *archivesFilters {
+	af.AgentResponse = filters
 	return af
 }
 
