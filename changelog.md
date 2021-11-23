@@ -13,6 +13,7 @@
 * Renamed `GetWebhooksState` to `GetLicenseWebhooksState`.
 * Support LiveChat APIs v3.3.
 * Add `default_value` parameter to `RegisterProperty`.
+* Expanded `filters.surveys` parameter with `values`/`exclude_values`, `from`/`to`, `groups` and `exclude` in `ListArchives`.
 
 ### [v2.1.0]
 

@@ -55,8 +55,13 @@ type eventTypesFilter struct {
 
 // SurveyFilter represents structure to match surveys when getting Archives
 type SurveyFilter struct {
-	Type     string `json:"type"`
-	AnswerID string `json:"answer_id"`
+	Type          string         `json:"type"`
+	Values        []string       `json:"values,omitempty"`
+	ExcludeValues []string       `json:"exclude_values,omitempty"`
+	From          string         `json:"from,omitempty"`
+	To            string         `json:"to,omitempty"`
+	Exists        *bool          `json:"exists,omitempty"`
+	Groups        *integerFilter `json:"groups,omitempty"`
 }
 
 // GreetingsFilter represents structure to match greetings when getting Archives
