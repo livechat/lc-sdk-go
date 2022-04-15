@@ -177,11 +177,11 @@ func NewStringFilter(values []string, inclusive bool) *stringFilter {
 // GT  - greater than
 // EQ  - equal
 type RangeFilter struct {
-	LTE int `json:"lte,omitempty"`
-	LT  int `json:"lt,omitempty"`
-	GTE int `json:"gte,omitempty"`
-	GT  int `json:"gt,omitempty"`
-	EQ  int `json:"eq,omitempty"`
+	LTE int64 `json:"lte,omitempty"`
+	LT  int64 `json:"lt,omitempty"`
+	GTE int64 `json:"gte,omitempty"`
+	GT  int64 `json:"gt,omitempty"`
+	EQ  int64 `json:"eq,omitempty"`
 }
 
 // DateRangeFilter represents structure to define a range in which filtered dates should be matched
