@@ -2,8 +2,6 @@ package agent
 
 import (
 	"encoding/json"
-
-	"github.com/livechat/lc-sdk-go/objects"
 )
 
 type listChatsRequest struct {
@@ -42,8 +40,8 @@ type listArchivesRequest struct {
 
 type listArchivesResponse struct {
 	hashedPaginationResponse
-	Chats      []objects.Chat `json:"chats"`
-	FoundChats uint           `json:"found_chats"`
+	Chats      []Chat `json:"chats"`
+	FoundChats uint   `json:"found_chats"`
 }
 
 type startChatRequest struct {

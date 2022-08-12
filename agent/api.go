@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/objects"
 	"github.com/livechat/lc-sdk-go/v5/authorization"
 	i "github.com/livechat/lc-sdk-go/v5/internal"
 )
@@ -85,7 +84,7 @@ func (a *API) ListThreads(chatID, sortOrder, pageID string, limit, minEventsCoun
 }
 
 // ListArchives returns archived chats.
-func (a *API) ListArchives(filters *archivesFilters, pageID string, limit uint) (chats []objects.Chat, found uint, previousPage, nextPage string, err error) {
+func (a *API) ListArchives(filters *archivesFilters, pageID string, limit uint) (chats []Chat, found uint, previousPage, nextPage string, err error) {
 	var resp listArchivesResponse
 	err = a.Call("list_archives", &listArchivesRequest{
 		Filters: filters,
