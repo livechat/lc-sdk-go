@@ -40,13 +40,14 @@ type listThreadsResponse struct {
 }
 
 type listArchivesRequest struct {
-	Filters    *archivesFilters   `json:"filters,omitempty"`
-	Pagination *paginationRequest `json:"pagination,omitempty"`
+	*hashedPaginationRequest
+	Filters *archivesFilters `json:"filters,omitempty"`
 }
 
 type listArchivesResponse struct {
-	Chats      []Chat             `json:"chats"`
-	Pagination paginationResponse `json:"pagination"`
+	hashedPaginationResponse
+	Chats      []objects.Chat `json:"chats"`
+	FoundChats uint           `json:"found_chats"`
 }
 
 type startChatRequest struct {
@@ -246,16 +247,6 @@ type hashedPaginationRequest struct {
 type hashedPaginationResponse struct {
 	PreviousPageID string `json:"previous_page_id,omitempty"`
 	NextPageID     string `json:"next_page_id,omitempty"`
-}
-
-type paginationRequest struct {
-	Page  uint `json:"page,omitempty"`
-	Limit uint `json:"limit,omitempty"`
-}
-
-type paginationResponse struct {
-	Page  uint `json:"page,omitempty"`
-	Total uint `json:"total,omitempty"`
 }
 
 type listAgentsForTransferRequest struct {
