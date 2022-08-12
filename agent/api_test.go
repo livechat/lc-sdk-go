@@ -261,10 +261,8 @@ var mockedResponses = map[string]string{
 				"threads": []
 			}
 		],
-		"pagination": {
-			"page": 1,
-			"total": 3
-		}
+		"found_chats": 1,
+		"next_page_id": "nextpagehash"
 	}`,
 	"deactivate_chat":       `{}`,
 	"follow_chat":           `{}`,
@@ -678,7 +676,7 @@ func TestListArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	chats, page, total, rErr := api.ListArchives(agent.NewArchivesFilters(), 1, 20)
+	chats, found, prevPageID, nextPageID, rErr := api.ListArchives(agent.NewArchivesFilters(), "MTUxNzM5ODEzMTQ5Ng==", 20)
 	if rErr != nil {
 		t.Errorf("ListArchives failed: %v", rErr)
 	}
@@ -686,11 +684,14 @@ func TestListArchivesShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	if chats[0].ID != "PJ0MRSHTDG" {
 		t.Errorf("Received chat.ID invalid: %v", chats[0].ID)
 	}
-	if page != 1 {
-		t.Errorf("Received pagination.page invalid: %v", page)
+	if found != 1 {
+		t.Errorf("Received found invalid: %v", found)
 	}
-	if total != 3 {
-		t.Errorf("Received pagination.total invalid: %v", total)
+	if prevPageID != "" {
+		t.Errorf("Received prevPageID invalid: %v", prevPageID)
+	}
+	if nextPageID == "" {
+		t.Errorf("Received nextPageID invalid: %v", nextPageID)
 	}
 }
 
@@ -1175,7 +1176,7 @@ func TestListArchivesShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	_, _, _, rErr := api.ListArchives(agent.NewArchivesFilters(), 1, 20)
+	_, _, _, _, rErr := api.ListArchives(agent.NewArchivesFilters(), "", 20)
 	verifyErrorResponse("ListArchives", rErr, t)
 }
 
