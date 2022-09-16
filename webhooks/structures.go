@@ -276,6 +276,12 @@ type BotDeleted struct {
 	ID string `json:"id"`
 }
 
+// ListGroupsProperties represents payload of list_groups_properties webhook.
+type ListGroupsProperties struct {
+	ID         int        `json:"id"`
+	Properties Properties `json:"properties"`
+}
+
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
 func (p *IncomingChat) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChat

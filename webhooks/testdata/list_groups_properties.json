@@ -1,0 +1,15 @@
+{
+	"webhook_id": "2c0b13904e79b2aca271e5f84b898f35",
+	"secret_key": "dummy_key",
+	"action": "list_groups_properties",
+	"organization_id": "390e44e6-f1e6-0368c-z6ddb-74g14508c2ex",
+	"payload": {
+		"id": 42,
+		"properties":{
+			"namespace":{
+				"name": "sales"
+			}
+		}
+	},
+	"additional_data": {}
+}
