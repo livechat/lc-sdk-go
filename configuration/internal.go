@@ -234,3 +234,9 @@ type updateTagRequest struct {
 	Name     string `json:"name"`
 	GroupIDs []int  `json:"group_ids"`
 }
+
+type listGroupsPropertiesRequest struct {
+	Namespace       string `json:"namespace,omitempty"`
+	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	GroupIDs        []int  `json:"group_ids,omitempty"`
+}
