@@ -1292,7 +1292,7 @@ func TestListGroupsProperties(t *testing.T) {
 	}
 
 	if resp[0].Properties["abc"]["a_property"] != "a" {
-		t.Errorf("Invalid response id: %v", resp[0].ID)
+		t.Errorf("Invalid response: %v", resp[0].ID)
 	}
 
 }
