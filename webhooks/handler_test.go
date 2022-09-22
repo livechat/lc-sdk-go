@@ -50,7 +50,6 @@ var verifiers = map[string]webhooks.Handler{
 	"bot_created":                     botCreated,
 	"bot_updated":                     botUpdated,
 	"bot_deleted":                     botDeleted,
-	"list_groups_properties":          listGroupsProperties,
 }
 
 func TestRejectWebhooksIfNoHandlersAreConnected(t *testing.T) {

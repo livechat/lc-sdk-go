@@ -240,3 +240,8 @@ type listGroupsPropertiesRequest struct {
 	NamespacePrefix string `json:"namespace_prefix,omitempty"`
 	GroupIDs        []int  `json:"group_ids,omitempty"`
 }
+
+type listGroupsPropertiesResponse struct {
+	ID         int        `json:"id"`
+	Properties Properties `json:"properties"`
+}

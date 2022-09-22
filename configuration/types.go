@@ -41,7 +41,6 @@ const (
 	BotCreated                   WebhookAction = "bot_created"
 	BotUpdated                   WebhookAction = "bot_updated"
 	BotDeleted                   WebhookAction = "bot_deleted"
-	ListGroupsProperties         WebhookAction = "list_groups_properties"
 )
 
 // GroupPriority represents priority of assigning chats in group

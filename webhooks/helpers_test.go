@@ -788,19 +788,3 @@ func autoAccessDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 	return nil
 }
-
-func listGroupsProperties(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.ListGroupsProperties)
-	if !ok {
-		return fmt.Errorf("invalid payload type: %T", wh.Payload)
-	}
-	var propEqErrors string
-	propEq("ID", payload.ID, 42, &propEqErrors)
-
-	propEq("Properties.Namespace.Name.Value", payload.Properties["namespace"]["name"], "sales", &propEqErrors)
-
-	if propEqErrors != "" {
-		return errors.New(propEqErrors)
-	}
-	return nil
-}

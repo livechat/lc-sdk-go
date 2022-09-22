@@ -515,8 +515,8 @@ func (a *API) UpdateTag(name string, groupIDs []int) error {
 }
 
 // Lists properties of groups
-func (a *API) ListGroupsProperties(namespace string, namespacePrefix string, groupIDs []int) ([]*Group, error) {
-	var resp []*Group
+func (a *API) ListGroupsProperties(namespace string, namespacePrefix string, groupIDs []int) ([]listGroupsPropertiesResponse, error) {
+	var resp []listGroupsPropertiesResponse
 	err := a.Call("list_groups_properties", &listGroupsPropertiesRequest{
 		Namespace:       namespace,
 		NamespacePrefix: namespacePrefix,
