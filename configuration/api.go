@@ -21,6 +21,11 @@ type API struct {
 	configurationAPI
 }
 
+type GroupProperties struct {
+	ID         int32
+	Properties Properties
+}
+
 // NewAPI returns ready to use Configuration API.
 //
 // If provided client is nil, then default http client with 20s timeout is used.
@@ -515,12 +520,12 @@ func (a *API) UpdateTag(name string, groupIDs []int) error {
 }
 
 // Lists properties of groups
-func (a *API) ListGroupsProperties(namespace string, namespacePrefix string, groupIDs []int) ([]listGroupsPropertiesResponse, error) {
-	var resp []listGroupsPropertiesResponse
+func (a *API) ListGroupsProperties(namespace string, namePrefix string, groupIDs []int) ([]GroupProperties, error) {
+	var resp []GroupProperties
 	err := a.Call("list_groups_properties", &listGroupsPropertiesRequest{
-		Namespace:       namespace,
-		NamespacePrefix: namespacePrefix,
-		GroupIDs:        groupIDs,
+		GroupIDs:   groupIDs,
+		Namespace:  namespace,
+		NamePrefix: namePrefix,
 	}, &resp)
 	return resp, err
 }
