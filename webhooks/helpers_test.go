@@ -399,7 +399,12 @@ func agentCreated(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("Notifications[0]", payload.Notifications[0], "new_visitor", &propEqErrors)
 	propEq("Notifications[1]", payload.Notifications[1], "new_goal", &propEqErrors)
 	propEq("EmailSubscriptions[0]", payload.EmailSubscriptions[0], "weekly_summary", &propEqErrors)
-	propEq("WorkScheduler.Monday.Start", payload.WorkScheduler[configuration.Monday].Start, "08:30", &propEqErrors)
+	propEq("WorkScheduler.Timezone", payload.WorkScheduler.Timezone, "Europe/Warsaw", &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Start", payload.WorkScheduler.Schedule[0].Start, "08:30", &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Day", payload.WorkScheduler.Schedule[0].Day, configuration.Monday, &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Enabled", payload.WorkScheduler.Schedule[0].Enabled, true, &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Start", payload.WorkScheduler.Schedule[0].Start, "08:30", &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].End", payload.WorkScheduler.Schedule[0].End, "12:30", &propEqErrors)
 
 	if propEqErrors != "" {
 		return errors.New(propEqErrors)
@@ -415,9 +420,15 @@ func agentUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 
 	var propEqErrors string
 	propEq("ID", payload.ID, "smith@example.com", &propEqErrors)
-	propEq("WorkScheduler.Monday.End", payload.WorkScheduler[configuration.Monday].End, "12:30", &propEqErrors)
-	propEq("WorkScheduler.Friday.Start", payload.WorkScheduler[configuration.Friday].Start, "07:30", &propEqErrors)
-	propEq("WorkScheduler.Friday.End", payload.WorkScheduler[configuration.Friday].End, "21:30", &propEqErrors)
+	propEq("WorkScheduler.Timezone", payload.WorkScheduler.Timezone, "Europe/Warsaw", &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Day", payload.WorkScheduler.Schedule[0].Day, configuration.Monday, &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Enabled", payload.WorkScheduler.Schedule[0].Enabled, true, &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].Start", payload.WorkScheduler.Schedule[0].Start, "08:30", &propEqErrors)
+	propEq("WorkScheduler.Schedule[0].End", payload.WorkScheduler.Schedule[0].End, "12:30", &propEqErrors)
+	propEq("WorkScheduler.Schedule[1].Day", payload.WorkScheduler.Schedule[1].Day, configuration.Friday, &propEqErrors)
+	propEq("WorkScheduler.Schedule[1].Enabled", payload.WorkScheduler.Schedule[1].Enabled, true, &propEqErrors)
+	propEq("WorkScheduler.Schedule[1].Start", payload.WorkScheduler.Schedule[1].Start, "07:30", &propEqErrors)
+	propEq("WorkScheduler.Schedule[1].End", payload.WorkScheduler.Schedule[1].End, "21:30", &propEqErrors)
 
 	if propEqErrors != "" {
 		return errors.New(propEqErrors)

@@ -6,14 +6,21 @@
 	"payload": {
 		"id": "smith@example.com",
 		"work_scheduler": {
-			"monday": {
-				"start": "08:30",
-				"end": "12:30"
-			},
-			"friday": {
-				"start": "07:30",
-				"end": "21:30"
-			}
+			"timezone": "Europe/Warsaw",
+			"schedule": [
+				{
+				  "day": "monday",
+				  "enabled": true,
+				  "start": "08:30",
+				  "end": "12:30"
+				},
+				{
+				  "day": "friday",
+				  "enabled": true,
+				  "start": "07:30",
+				  "end": "21:30"
+				}
+			  ]
 		}
 	},
 	"additional_data": {}

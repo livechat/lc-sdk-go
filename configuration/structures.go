@@ -164,13 +164,25 @@ type AgentFields struct {
 }
 
 // WorkScheduler represents work schedule data
-type WorkScheduler map[Weekday]WorkSchedulerDay
+type WorkScheduler struct {
+	Timezone string     `json:"timezone"`
+	Schedule []Schedule `json:"schedule"`
+}
 
-// WorkSchedulerDay represents single day work schedule
+// Schedule represent a single day work schedule
+
+type Schedule struct {
+	Enabled bool    `json:"enabled"`
+	Day     Weekday `json:"day"`
+	Start   string  `json:"start"`
+	End     string  `json:"end"`
+}
+
+/* // WorkSchedulerDay represents single day work schedule
 type WorkSchedulerDay struct {
 	Start string `json:"start"`
 	End   string `json:"end"`
-}
+}*/
 
 // Weekday represents allowed weekday names for work scheduler
 type Weekday string
