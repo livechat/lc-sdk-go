@@ -171,7 +171,7 @@ type WorkScheduler struct {
 
 // Schedule represent a single day work schedule
 type Schedule struct {
-	Enabled bool    `json:"enabled"`
+	Enabled *bool   `json:"enabled"`
 	Day     Weekday `json:"day"`
 	Start   string  `json:"start"`
 	End     string  `json:"end"`

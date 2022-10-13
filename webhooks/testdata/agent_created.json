@@ -34,10 +34,10 @@
 			"timezone": "Europe/Warsaw",
 			"schedule": [
 				{
-				  "day": "monday",
-				  "enabled": true,
-				  "start": "08:30",
-				  "end": "12:30"
+					"day": "monday",
+				  	"enabled": true,
+				  	"start": "08:30",
+				  	"end": "12:30"
 				}
 			]
 		}
