@@ -340,17 +340,6 @@ func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (Propert
 	return resp, err
 }
 
-// ListGroupProperties returns the properties set within a group.
-func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix string) (Properties, error) {
-	var resp Properties
-	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
-		ID:              groupID,
-		NamespacePrefix: namespacePrefix,
-		NamePrefix:      namePrefix,
-	}, &resp)
-	return resp, err
-}
-
 // ListWebhookNames returns list of webhooks available in given API version.
 func (a *API) ListWebhookNames(version string) ([]*WebhookData, error) {
 	var resp []*WebhookData

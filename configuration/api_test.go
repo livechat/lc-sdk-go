@@ -116,11 +116,6 @@ var mockedResponses = map[string]string{
 				"string_property": "string value"
 		}
 	}`,
-	"list_group_properties": `{
-		"0805e283233042b37f460ed8fbf22160": {
-				"string_property": "string value"
-		}
-	}`,
 	"create_agent": `{
 		"id": "smith@example.com"
 	}`,
@@ -644,28 +639,6 @@ func TestListLicensePropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) 
 
 	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
 		t.Errorf("Invalid license property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
-	}
-}
-
-func TestListGroupPropertiesShouldReturnDataReceivedFromConfApi(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "list_group_properties"))
-
-	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
-	if err != nil {
-		t.Error("API creation failed")
-	}
-
-	resp, rErr := api.ListGroupProperties(0, "", "")
-	if rErr != nil {
-		t.Errorf("ListGroupProperties failed: %v", rErr)
-	}
-
-	if len(resp) != 1 {
-		t.Errorf("Invalid group properties: %v", resp)
-	}
-
-	if resp["0805e283233042b37f460ed8fbf22160"]["string_property"] != "string value" {
-		t.Errorf("Invalid group property 0805e283233042b37f460ed8fbf22160.string_property: %v", resp["0805e283233042b37f460ed8fbf22160"]["string_property"])
 	}
 }
 
