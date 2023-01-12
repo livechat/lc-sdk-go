@@ -9,7 +9,6 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -73,7 +72,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		httpEndpointGenerator: r,
 		customHeaders:         make(http.Header),
 		statsSink:             func(metrics.APICallStats) {},
-		logger:                log.New(os.Stdout, "", log.LstdFlags),
+		logger:                log.Default(),
 	}, nil
 }
 
