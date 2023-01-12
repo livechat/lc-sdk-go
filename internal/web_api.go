@@ -6,8 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -38,6 +40,7 @@ type api struct {
 	customHeaders         http.Header
 	retryStrategy         RetryStrategyFunc
 	statsSink             StatsSinkFunc
+	logger                *log.Logger
 }
 
 // HTTPRequestGenerator is called by each API method to generate api http url.
@@ -70,6 +73,7 @@ func NewAPI(t authorization.TokenGetter, client *http.Client, clientID string, r
 		httpEndpointGenerator: r,
 		customHeaders:         make(http.Header),
 		statsSink:             func(metrics.APICallStats) {},
+		logger:                log.New(os.Stdout, "", log.LstdFlags),
 	}, nil
 }
 
@@ -280,4 +284,9 @@ func DefaultHTTPRequestGenerator(name string) HTTPEndpointGenerator {
 	return func(token *authorization.Token, host, action string) string {
 		return fmt.Sprintf("%s/v%s/%s/action/%s", host, apiVersion, name, action)
 	}
+}
+
+// SetLogger allows to set a custom logger. When it's not called, a default logger will be used.
+func (a *api) SetLogger(logger *log.Logger) {
+	a.logger = logger
 }
