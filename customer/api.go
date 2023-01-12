@@ -2,6 +2,7 @@ package customer
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -15,6 +16,7 @@ type customerAPI interface {
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)
+	SetLogger(*log.Logger)
 }
 
 // API provides the API operation methods for making requests to Customer Chat API via Web API.
