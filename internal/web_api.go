@@ -255,6 +255,13 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 			return err
 		}
 
+		if h := resp.Header.Get("Legacy"); h != "" {
+			a.logger.Printf("[Notice] This is a legacy version. It will be deprecated after %s.", h)
+		}
+		if h := resp.Header.Get("Deprecation"); h != "" {
+			a.logger.Printf("[Warning] This version is deprecated. It will be decommissioned after %s.", h)
+		}
+
 		return json.Unmarshal(bodyBytes, respPayload)
 	}
 
