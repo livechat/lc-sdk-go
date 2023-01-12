@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/livechat/lc-sdk-go/v4/authorization"
@@ -13,6 +14,7 @@ type configurationAPI interface {
 	SetCustomHost(string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)
+	SetLogger(*log.Logger)
 }
 
 // API provides the API operation methods for making requests to Livechat Configuration API via Web API.
