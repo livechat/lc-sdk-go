@@ -2,6 +2,7 @@ package agent
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -16,6 +17,7 @@ type agentAPI interface {
 	SetCustomHeader(string, string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)
+	SetLogger(*log.Logger)
 }
 
 // API provides the API operation methods for making requests to Agent Chat API via Web API.
