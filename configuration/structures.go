@@ -157,6 +157,7 @@ type AgentFields struct {
 	Mobile             string         `json:"mobile,omitempty"`
 	MaxChatsCount      uint           `json:"max_chats_count,omitempty"`
 	AwaitingApproval   bool           `json:"awaiting_approval,omitempty"`
+	Suspended          bool           `json:"suspended,omitempty"`
 	Groups             []GroupConfig  `json:"groups,omitempty"`
 	WorkScheduler      *WorkScheduler `json:"work_scheduler,omitempty"`
 	Notifications      []string       `json:"notifications,omitempty"`
