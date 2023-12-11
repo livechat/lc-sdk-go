@@ -47,6 +47,58 @@ type getBotRequest struct {
 
 type getBotResponse *Bot
 
+type createBotTemplateRequest struct {
+	Name string `json:"name"`
+	CreateBotTemplateRequestOptions
+}
+
+type createBotTemplateResponse struct {
+	BotTemplateID string `json:"id"`
+	Secret        string `json:"secret"`
+}
+
+type updateBotTemplateRequest struct {
+	BotTemplateID string `json:"id"`
+	UpdateBotTemplateRequestOptions
+}
+
+type deleteBotTemplateRequest struct {
+	BotTemplateID               string `json:"id"`
+	AffectExistingInstallations bool   `json:"affect_existing_installations"`
+}
+
+type listBotTemplatesResponse []BotTemplate
+
+type resetBotSecretRequest struct {
+	BotID         string `json:"id"`
+	OwnerClientID string `json:"owner_client_id,omitempty"`
+}
+
+type resetBotSecretResponse struct {
+	Secret string `json:"secret"`
+}
+
+type issueBotTokenRequest struct {
+	BotID          string `json:"bot_id"`
+	BotSecret      string `json:"bot_secret"`
+	OrganizationID string `json:"organization_id"`
+	ClientID       string `json:"client_id"`
+}
+
+type issueBotTokenResponse struct {
+	Token string `json:"token"`
+}
+
+type resetBotTemplateSecretRequest struct {
+	BotTemplateID               string `json:"id"`
+	OwnerClientID               string `json:"owner_client_id,omitempty"`
+	AffectExistingInstallations bool   `json:"affect_existing_installations"`
+}
+
+type resetBotTemplateSecretResponse struct {
+	Secret string `json:"secret"`
+}
+
 type unregisterPropertyRequest struct {
 	Name          string `json:"name"`
 	OwnerClientID string `json:"owner_client_id,omitempty"`

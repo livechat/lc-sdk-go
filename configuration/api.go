@@ -139,6 +139,76 @@ func (a *API) GetBot(id string, fields []string) (*Bot, error) {
 	return resp, err
 }
 
+// ResetBotSecret resets value of secret used to get bot token.
+func (a *API) ResetBotSecret(id, ownerClientID string) (string, error) {
+	var resp resetBotSecretResponse
+	err := a.Call("reset_bot_secret", &resetBotSecretRequest{
+		BotID:         id,
+		OwnerClientID: ownerClientID,
+	}, &resp)
+
+	return resp.Secret, err
+}
+
+// IssueBotToken issues a token for bot with given ID.
+func (a *API) IssueBotToken(botID, botSecret, organizationID, clientID string) (string, error) {
+	var resp issueBotTokenResponse
+	err := a.Call("issue_bot_token", &issueBotTokenRequest{
+		BotID:          botID,
+		BotSecret:      botSecret,
+		OrganizationID: organizationID,
+		ClientID:       clientID,
+	}, resp)
+	return resp.Token, err
+}
+
+// CreateBotTemplate allows to create bot template and returns its' ID.
+func (a *API) CreateBotTemplate(name string, opts *CreateBotTemplateRequestOptions) (string, error) {
+	req := createBotTemplateRequest{Name: name}
+	if opts != nil {
+		req.CreateBotTemplateRequestOptions = *opts
+	}
+	var resp createBotTemplateResponse
+	err := a.Call("create_bot_template", &req, &resp)
+	return resp.BotTemplateID, err
+}
+
+// UpdateBotTemplate allows to update bot template.
+func (a *API) UpdateBotTemplate(id string, opts *UpdateBotTemplateRequestOptions) error {
+	req := updateBotTemplateRequest{BotTemplateID: id}
+	if opts != nil {
+		req.UpdateBotTemplateRequestOptions = *opts
+	}
+	return a.Call("update_bot_template", &req, &emptyResponse{})
+}
+
+// DeleteBotTemplate deletes bot template with given ID.
+func (a *API) DeleteBotTemplate(id string, affectExistingInstallations bool) error {
+	return a.Call("delete_bot_template", &deleteBotTemplateRequest{
+		BotTemplateID:               id,
+		AffectExistingInstallations: affectExistingInstallations,
+	}, &emptyResponse{})
+}
+
+// ListBotTemplates returns list of bot templates.
+func (a *API) ListBotTemplates() (listBotTemplatesResponse, error) {
+	var resp listBotTemplatesResponse
+	err := a.Call("list_bot_templates", struct{}{}, &resp)
+	return resp, err
+}
+
+// ResetBotTemplateSecret resets value of secret used to get bot token.
+func (a *API) ResetBotTemplateSecret(id, ownerClientID string, affectExistingInstallations bool) (string, error) {
+	var resp resetBotTemplateSecretResponse
+	err := a.Call("reset_bot_template_secret", &resetBotTemplateSecretRequest{
+		BotTemplateID:               id,
+		OwnerClientID:               ownerClientID,
+		AffectExistingInstallations: affectExistingInstallations,
+	}, &resp)
+
+	return resp.Secret, err
+}
+
 // CreateAgent creates a new Agent with specified parameters within a license.
 func (a *API) CreateAgent(id string, fields *AgentFields) (string, error) {
 	var resp createAgentResponse
