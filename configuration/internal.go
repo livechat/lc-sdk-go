@@ -20,10 +20,6 @@ type createBotRequest struct {
 	CreateBotRequestOptions
 }
 
-type createBotResponse struct {
-	BotID string `json:"id"`
-}
-
 type deleteBotRequest struct {
 	BotID string `json:"id"`
 }
@@ -52,11 +48,6 @@ type createBotTemplateRequest struct {
 	CreateBotTemplateRequestOptions
 }
 
-type createBotTemplateResponse struct {
-	BotTemplateID string `json:"id"`
-	Secret        string `json:"secret"`
-}
-
 type updateBotTemplateRequest struct {
 	BotTemplateID string `json:"id"`
 	UpdateBotTemplateRequestOptions
@@ -64,7 +55,12 @@ type updateBotTemplateRequest struct {
 
 type deleteBotTemplateRequest struct {
 	BotTemplateID               string `json:"id"`
+	OwnerClientID               string `json:"owner_client_id,omitempty"`
 	AffectExistingInstallations bool   `json:"affect_existing_installations"`
+}
+
+type listBotTemplatesRequest struct {
+	OwnerClientID string `json:"owner_client_id,omitempty"`
 }
 
 type listBotTemplatesResponse []BotTemplate
@@ -76,13 +72,6 @@ type resetBotSecretRequest struct {
 
 type resetBotSecretResponse struct {
 	Secret string `json:"secret"`
-}
-
-type issueBotTokenRequest struct {
-	BotID          string `json:"bot_id"`
-	BotSecret      string `json:"bot_secret"`
-	OrganizationID string `json:"organization_id"`
-	ClientID       string `json:"client_id"`
 }
 
 type issueBotTokenResponse struct {

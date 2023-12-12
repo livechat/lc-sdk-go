@@ -90,7 +90,8 @@ var mockedResponses = map[string]string{
 	]`,
 	"unregister_webhook": `{}`,
 	"create_bot": `{
-		"id": "5c9871d5372c824cbf22d860a707a578"
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"secret": "laudla991lamda0pnoaa0"
 	}`,
 	"update_bot": `{}`,
 	"delete_bot": `{}`,
@@ -124,6 +125,36 @@ var mockedResponses = map[string]string{
 			"priority": "first"
 		}]
 	}`,
+	"reset_bot_secret": `{
+		"secret": "laudla991lamda0pnoaa0"
+	}`,
+	"issue_bot_token": `{
+		"token": "bbd8924fcbcdbddbeaf60c19b238b0b0"
+	}`,
+	"create_bot_template": `{
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"secret": "laudla991lamda0pnoaa0"
+	}`,
+	"update_bot_template": `{}`,
+	"delete_bot_template": `{}`,
+	"list_bot_templates": `[
+		{
+			"id": "5c9871d5372c824cbf22d860a707a578",
+			"name": "John Doe",
+			"avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+			"max_chats_count": 2137,
+			"default_group_priority": "first",
+			"job_title": "b0t"
+		},
+		{
+			"id": "8g1231ss112c013cbf11d530b595h987",
+			"name": "Jason Brown",
+			"avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/wff9482gkdjanzjgdsf88a184jsskaz1.jpg",
+			"max_chats_count": 69,
+			"default_group_priority": "first",
+			"job_title": "b0t"
+		}
+	]`,
 	"register_property":   `{}`,
 	"unregister_property": `{}`,
 	"publish_property":    `{}`,
@@ -351,7 +382,7 @@ var mockedResponses = map[string]string{
 			}
 		}
 	]`,
-	"reactivate_email": `{}`,
+	"reactivate_email":       `{}`,
 	"update_company_details": `{}`,
 }
 
@@ -466,26 +497,29 @@ func TestCreateBotOK(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	checkAPIrespondedOK := func(t *testing.T, botID string, rErr error) {
+	checkAPIrespondedOK := func(t *testing.T, res *configuration.CreateBotResponse, rErr error) {
 		t.Helper()
 		if rErr != nil {
 			t.Errorf("CreateBot failed: %v", rErr)
 		}
-		if botID != "5c9871d5372c824cbf22d860a707a578" {
-			t.Errorf("Invalid botID: %v", botID)
+		if res.BotID != "5c9871d5372c824cbf22d860a707a578" {
+			t.Errorf("Invalid botID: %v", res.BotID)
+		}
+		if res.Secret != "laudla991lamda0pnoaa0" {
+			t.Errorf("Invalid secret: %v", res.Secret)
 		}
 	}
 
 	t.Run("Only required fields", func(t *testing.T) {
-		botID, rErr := api.CreateBot("John Doe", nil)
+		res, rErr := api.CreateBot("John Doe", nil)
 		wantReq := `{"name":"John Doe"}`
 
-		checkAPIrespondedOK(t, botID, rErr)
+		checkAPIrespondedOK(t, res, rErr)
 		validateRequestBody(t, wantReq, serverMock.LastRequest.Body)
 	})
 
 	t.Run("All optional fields", func(t *testing.T) {
-		botID, rErr := api.CreateBot("John Doe", &configuration.CreateBotRequestOptions{
+		res, rErr := api.CreateBot("John Doe", &configuration.CreateBotRequestOptions{
 			Avatar: "https://example.com/avatar.png",
 			Groups: []configuration.GroupConfig{
 				{ID: 6, Priority: "first"},
@@ -505,17 +539,17 @@ func TestCreateBotOK(t *testing.T) {
 		})
 		wantReq := `{"name":"John Doe","avatar":"https://example.com/avatar.png","groups":[{"id":6,"priority":"first"}],"owner_client_id":"dummy_client_id","work_scheduler":{"timezone":"dummy/timezone","schedule":[{"enabled":true,"day":"monday","start":"09:00","end":"17:00"}]}}`
 
-		checkAPIrespondedOK(t, botID, rErr)
+		checkAPIrespondedOK(t, res, rErr)
 		validateRequestBody(t, wantReq, serverMock.LastRequest.Body)
 	})
 
 	t.Run("No work scheduler provided", func(t *testing.T) {
-		botID, rErr := api.CreateBot("John Doe", &configuration.CreateBotRequestOptions{
+		res, rErr := api.CreateBot("John Doe", &configuration.CreateBotRequestOptions{
 			Avatar: "https://example.com/avatar.png",
 		})
 		wantReq := `{"name":"John Doe","avatar":"https://example.com/avatar.png"}`
 
-		checkAPIrespondedOK(t, botID, rErr)
+		checkAPIrespondedOK(t, res, rErr)
 		validateRequestBody(t, wantReq, serverMock.LastRequest.Body)
 	})
 
@@ -654,6 +688,195 @@ func TestGetBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 	if resp.ID != "5c9871d5372c824cbf22d860a707a578" {
 		t.Errorf("Invalid bot: %v", resp)
 	}
+}
+
+func TestResetBotSecretOK(t *testing.T) {
+	serverMock := newServerMock(t, "reset_bot_secret")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+	res, rErr := api.ResetBotSecret("5c9871d5372c824cbf22d860a707a578", nil)
+	if rErr != nil {
+		t.Errorf("ResetBotSecret failed: %v", rErr)
+	}
+	if res != "laudla991lamda0pnoaa0" {
+		t.Error("Invalid secret returned")
+	}
+
+	validateRequestBody(t, `{"id":"5c9871d5372c824cbf22d860a707a578"}`, serverMock.LastRequest.Body)
+}
+
+func TestIssueBotTokenOK(t *testing.T) {
+	serverMock := newServerMock(t, "issue_bot_token")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+	res, rErr := api.IssueBotToken(configuration.IssueBotTokenRequest{
+		BotID:          "5c9871d5372c824cbf22d860a707a578",
+		BotSecret:      "laudla991lamda0pnoaa0",
+		OrganizationID: "aaabbbcccdddeeefff",
+		ClientID:       "dummy_client_id",
+	})
+	if rErr != nil {
+		t.Errorf("IssueBotToken failed: %v", rErr)
+	}
+	if res != "bbd8924fcbcdbddbeaf60c19b238b0b0" {
+		t.Error("Invalid token returned")
+	}
+
+	validateRequestBody(t, `{"bot_id":"5c9871d5372c824cbf22d860a707a578","bot_secret":"laudla991lamda0pnoaa0","organization_id":"aaabbbcccdddeeefff","client_id":"dummy_client_id"}`, serverMock.LastRequest.Body)
+}
+
+func TestCreateBotTemplateOK(t *testing.T) {
+	serverMock := newServerMock(t, "create_bot_template")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+	t.Run("Only required fields", func(t *testing.T) {
+		res, rErr := api.CreateBotTemplate("John Doe", nil)
+		wantReq := `{"name":"John Doe"}`
+
+		if rErr != nil {
+			t.Errorf("CreateBotTemplate failed: %v", rErr)
+		}
+		if res.BotTemplateID != "5c9871d5372c824cbf22d860a707a578" {
+			t.Errorf("Invalid botTemplateID: %v", res.BotTemplateID)
+		}
+		if res.Secret != "laudla991lamda0pnoaa0" {
+			t.Errorf("Invalid secret: %v", res.Secret)
+		}
+		validateRequestBody(t, wantReq, serverMock.LastRequest.Body)
+	})
+
+	t.Run("All optional fields", func(t *testing.T) {
+		maxChatsCount := uint(420)
+		res, rErr := api.CreateBotTemplate("John Doe", &configuration.CreateBotTemplateRequestOptions{
+			Avatar:                      "https://example.com/avatar.png",
+			MaxChatsCount:               &maxChatsCount,
+			DefaultGroupPriority:        "first",
+			JobTitle:                    "b0t",
+			OwnerClientID:               "dummy_client_id",
+			AffectExistingInstallations: true})
+		wantReq := `{"name":"John Doe","avatar":"https://example.com/avatar.png","max_chats_count":420,"default_group_priority":"first","job_title":"b0t","owner_client_id":"dummy_client_id","affect_existing_installations":true}`
+
+		if rErr != nil {
+			t.Errorf("CreateBotTemplate failed: %v", rErr)
+		}
+		if res.BotTemplateID != "5c9871d5372c824cbf22d860a707a578" {
+			t.Errorf("Invalid botTemplateID: %v", res.BotTemplateID)
+		}
+		if res.Secret != "laudla991lamda0pnoaa0" {
+			t.Errorf("Invalid secret: %v", res.Secret)
+		}
+		validateRequestBody(t, wantReq, serverMock.LastRequest.Body)
+	})
+
+}
+
+func TestUpdateBotTemplateOK(t *testing.T) {
+	serverMock := newServerMock(t, "update_bot_template")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+	t.Run("Only required fields", func(t *testing.T) {
+		if rErr := api.UpdateBotTemplate("5c9871d5372c824cbf22d860a707a578", nil); rErr != nil {
+			t.Errorf("UpdateBotTemplate failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":"5c9871d5372c824cbf22d860a707a578"}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("All optional fields", func(t *testing.T) {
+		maxChatsCount := uint(420)
+		if rErr := api.UpdateBotTemplate("5c9871d5372c824cbf22d860a707a578", &configuration.UpdateBotTemplateRequestOptions{
+			Avatar:                      "https://example.com/avatar.png",
+			MaxChatsCount:               &maxChatsCount,
+			DefaultGroupPriority:        "first",
+			JobTitle:                    "b0t",
+			OwnerClientID:               "dummy_client_id",
+			AffectExistingInstallations: true}); rErr != nil {
+			t.Errorf("UpdateBotTemplate failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":"5c9871d5372c824cbf22d860a707a578","avatar":"https://example.com/avatar.png","max_chats_count":420,"default_group_priority":"first","job_title":"b0t","owner_client_id":"dummy_client_id","affect_existing_installations":true}`, serverMock.LastRequest.Body)
+	})
+}
+
+func TestDeleteBotTemplateOK(t *testing.T) {
+	serverMock := newServerMock(t, "delete_bot_template")
+	client := NewTestClient(serverMock)
+
+	t.Run("ID only", func(t *testing.T) {
+		api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+		if err != nil {
+			t.Error("API creation failed")
+		}
+		if rErr := api.DeleteBotTemplate("5c9871d5372c824cbf22d860a707a578", nil); rErr != nil {
+			t.Errorf("DeleteBotTemplate failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":"5c9871d5372c824cbf22d860a707a578","affect_existing_installations":false}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("reqeust with ID, ownerClientID and affectExistingInstallations", func(t *testing.T) {
+		api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+		if err != nil {
+			t.Error("API creation failed")
+		}
+		if rErr := api.DeleteBotTemplate("5c9871d5372c824cbf22d860a707a578", &configuration.DeleteBotTemplateRequestOptions{OwnerClientID: "dummy_client_id", AffectExistingInstallations: true}); rErr != nil {
+			t.Errorf("DeleteBotTemplate failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":"5c9871d5372c824cbf22d860a707a578","owner_client_id":"dummy_client_id","affect_existing_installations":true}`, serverMock.LastRequest.Body)
+	})
+}
+
+func TestListBotTemplatesOK(t *testing.T) {
+	serverMock := newServerMock(t, "list_bot_templates")
+	client := NewTestClient(serverMock)
+
+	t.Run("No optional fields", func(t *testing.T) {
+		api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+		if err != nil {
+			t.Error("API creation failed")
+		}
+		res, rErr := api.ListBotTemplates(nil)
+		if rErr != nil {
+			t.Errorf("ListBotTemplates failed: %v", rErr)
+		}
+		if len(res) != 2 {
+			t.Errorf("Invalid number of bots: %v", len(res))
+		}
+		if res[0].ID != "5c9871d5372c824cbf22d860a707a578" {
+			t.Errorf("Invalid botTemplateID: %v", res[0].ID)
+		}
+		if res[0].JobTitle != "b0t" {
+			t.Errorf("Invalid job title: %v", res[0].JobTitle)
+		}
+		validateRequestBody(t, "{}", serverMock.LastRequest.Body)
+	})
+	t.Run("With optional fields", func(t *testing.T) {
+		api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+		if err != nil {
+			t.Error("API creation failed")
+		}
+		res, rErr := api.ListBotTemplates(&configuration.ListBotTemplatesRequestOptions{OwnerClientID: "dummy_client_id"})
+		if rErr != nil {
+			t.Errorf("ListBotTemplates failed: %v", rErr)
+		}
+		if len(res) != 2 {
+			t.Errorf("Invalid number of bots: %v", len(res))
+		}
+		validateRequestBody(t, `{"owner_client_id":"dummy_client_id"}`, serverMock.LastRequest.Body)
+	})
 }
 
 func TestRegisterPropertyShouldReturnDataReceivedFromConfApi(t *testing.T) {
