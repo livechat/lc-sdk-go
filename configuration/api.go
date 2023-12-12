@@ -83,7 +83,7 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 	}, &emptyResponse{})
 }
 
-// CreateBot allows to create bot and returns response containing its' ID and secret.
+// CreateBot allows to create bot and returns response containing its ID and secret.
 func (a *API) CreateBot(name string, opts *CreateBotRequestOptions) (*CreateBotResponse, error) {
 	req := createBotRequest{Name: name}
 	if opts != nil {
@@ -161,7 +161,7 @@ func (a *API) IssueBotToken(req IssueBotTokenRequest) (string, error) {
 	return resp.Token, err
 }
 
-// CreateBotTemplate allows to create bot template and returns response containing its' ID and secret.
+// CreateBotTemplate allows to create bot template and returns response containing its ID and secret.
 func (a *API) CreateBotTemplate(name string, opts *CreateBotTemplateRequestOptions) (*CreateBotTemplateResponse, error) {
 	req := createBotTemplateRequest{Name: name}
 	if opts != nil {
