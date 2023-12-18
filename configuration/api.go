@@ -83,19 +83,19 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 	}, &emptyResponse{})
 }
 
-// CreateBot allows to create bot and returns its ID.
-func (a *API) CreateBot(name string, opts *CreateBotRequestOptions) (string, error) {
+// CreateBot allows to create bot and returns response containing its ID and secret.
+func (a *API) CreateBot(name string, opts *CreateBotRequestOptions) (*CreateBotResponse, error) {
 	req := createBotRequest{Name: name}
 	if opts != nil {
 		req.CreateBotRequestOptions = *opts
 	}
 
 	if err := validateBotGroupsAssignment(req.Groups); err != nil {
-		return "", err
+		return nil, err
 	}
-	var resp createBotResponse
+	var resp CreateBotResponse
 	err := a.Call("create_bot", &req, &resp)
-	return resp.BotID, err
+	return &resp, err
 }
 
 // UpdateBot allows to update bot.
@@ -137,6 +137,92 @@ func (a *API) GetBot(id string, fields []string) (*Bot, error) {
 	}, &resp)
 
 	return resp, err
+}
+
+// ResetBotSecret resets value of secret used to get bot token.
+func (a *API) ResetBotSecret(id string, opts *ResetBotSecretRequestOptions) (string, error) {
+	var resp resetBotSecretResponse
+	var ownerClientID string
+	if opts != nil {
+		ownerClientID = opts.OwnerClientID
+	}
+	err := a.Call("reset_bot_secret", &resetBotSecretRequest{
+		BotID:         id,
+		OwnerClientID: ownerClientID,
+	}, &resp)
+
+	return resp.Secret, err
+}
+
+// IssueBotToken issues a token for bot with given ID.
+func (a *API) IssueBotToken(req IssueBotTokenRequest) (string, error) {
+	var resp issueBotTokenResponse
+	err := a.Call("issue_bot_token", &req, &resp)
+	return resp.Token, err
+}
+
+// CreateBotTemplate allows to create bot template and returns response containing its ID and secret.
+func (a *API) CreateBotTemplate(name string, opts *CreateBotTemplateRequestOptions) (*CreateBotTemplateResponse, error) {
+	req := createBotTemplateRequest{Name: name}
+	if opts != nil {
+		req.CreateBotTemplateRequestOptions = *opts
+	}
+	var resp CreateBotTemplateResponse
+	err := a.Call("create_bot_template", &req, &resp)
+	return &resp, err
+}
+
+// UpdateBotTemplate allows to update bot template.
+func (a *API) UpdateBotTemplate(id string, opts *UpdateBotTemplateRequestOptions) error {
+	req := updateBotTemplateRequest{BotTemplateID: id}
+	if opts != nil {
+		req.UpdateBotTemplateRequestOptions = *opts
+	}
+	return a.Call("update_bot_template", &req, &emptyResponse{})
+}
+
+// DeleteBotTemplate deletes bot template with given ID.
+func (a *API) DeleteBotTemplate(id string, opts *DeleteBotTemplateRequestOptions) error {
+	var ownerClientID string
+	var affectExistingInstallations bool
+	if opts != nil {
+		ownerClientID = opts.OwnerClientID
+		affectExistingInstallations = opts.AffectExistingInstallations
+	}
+	return a.Call("delete_bot_template", &deleteBotTemplateRequest{
+		BotTemplateID:               id,
+		OwnerClientID:               ownerClientID,
+		AffectExistingInstallations: affectExistingInstallations,
+	}, &emptyResponse{})
+}
+
+// ListBotTemplates returns list of bot templates.
+func (a *API) ListBotTemplates(opts *ListBotTemplatesRequestOptions) (listBotTemplatesResponse, error) {
+	var resp listBotTemplatesResponse
+	var ownerClientID string
+	if opts != nil {
+		ownerClientID = opts.OwnerClientID
+	}
+	err := a.Call("list_bot_templates", &listBotTemplatesRequest{OwnerClientID: ownerClientID}, &resp)
+	return resp, err
+}
+
+// ResetBotTemplateSecret resets value of secret used to get bot token.
+func (a *API) ResetBotTemplateSecret(id string, opts *ResetBotTemplateSecretRequestOptions) (string, error) {
+	var resp resetBotTemplateSecretResponse
+	var ownerClientID string
+	var affectExistingInstallations bool
+	if opts != nil {
+		ownerClientID = opts.OwnerClientID
+		affectExistingInstallations = opts.AffectExistingInstallations
+	}
+	err := a.Call("reset_bot_template_secret", &resetBotTemplateSecretRequest{
+		BotTemplateID:               id,
+		OwnerClientID:               ownerClientID,
+		AffectExistingInstallations: affectExistingInstallations,
+	}, &resp)
+
+	return resp.Secret, err
 }
 
 // CreateAgent creates a new Agent with specified parameters within a license.

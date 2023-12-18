@@ -113,6 +113,16 @@ type Bot struct {
 	WorkScheduler        *WorkScheduler `json:"work_scheduler,omitempty"`
 }
 
+// BotTemplate represents basic bot template information
+type BotTemplate struct {
+	ID                   string        `json:"id"`
+	Name                 string        `json:"name,omitempty"`
+	Avatar               string        `json:"avatar,omitempty"`
+	MaxChatsCount        uint          `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority GroupPriority `json:"default_group_priority,omitempty"`
+	JobTitle             string        `json:"job_title,omitempty"`
+}
+
 type CreateBotRequestOptions struct {
 	Avatar               string         `json:"avatar,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
@@ -121,6 +131,11 @@ type CreateBotRequestOptions struct {
 	Groups               []GroupConfig  `json:"groups,omitempty"`
 	OwnerClientID        string         `json:"owner_client_id,omitempty"`
 	WorkScheduler        *WorkScheduler `json:"work_scheduler,omitempty"`
+}
+
+type CreateBotResponse struct {
+	BotID  string `json:"id"`
+	Secret string `json:"secret"`
 }
 
 type UpdateBotRequestOptions struct {
@@ -132,6 +147,55 @@ type UpdateBotRequestOptions struct {
 	Groups               []GroupConfig  `json:"groups,omitempty"`
 	OwnerClientID        string         `json:"owner_client_id,omitempty"`
 	WorkScheduler        *WorkScheduler `json:"work_scheduler,omitempty"`
+}
+
+type ResetBotSecretRequestOptions struct {
+	OwnerClientID string `json:"owner_client_id,omitempty"`
+}
+
+type IssueBotTokenRequest struct {
+	BotID          string `json:"bot_id"`
+	BotSecret      string `json:"bot_secret"`
+	OrganizationID string `json:"organization_id"`
+	ClientID       string `json:"client_id"`
+}
+
+type CreateBotTemplateRequestOptions struct {
+	Avatar                      string        `json:"avatar,omitempty"`
+	MaxChatsCount               *uint         `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority        GroupPriority `json:"default_group_priority,omitempty"`
+	JobTitle                    string        `json:"job_title,omitempty"`
+	OwnerClientID               string        `json:"owner_client_id,omitempty"`
+	AffectExistingInstallations bool          `json:"affect_existing_installations,omitempty"`
+}
+
+type CreateBotTemplateResponse struct {
+	BotTemplateID string `json:"id"`
+	Secret        string `json:"secret"`
+}
+
+type UpdateBotTemplateRequestOptions struct {
+	Name                        string        `json:"name,omitempty"`
+	Avatar                      string        `json:"avatar,omitempty"`
+	MaxChatsCount               *uint         `json:"max_chats_count,omitempty"`
+	DefaultGroupPriority        GroupPriority `json:"default_group_priority,omitempty"`
+	JobTitle                    string        `json:"job_title,omitempty"`
+	OwnerClientID               string        `json:"owner_client_id,omitempty"`
+	AffectExistingInstallations bool          `json:"affect_existing_installations,omitempty"`
+}
+
+type DeleteBotTemplateRequestOptions struct {
+	OwnerClientID               string `json:"owner_client_id,omitempty"`
+	AffectExistingInstallations bool   `json:"affect_existing_installations,omitempty"`
+}
+
+type ListBotTemplatesRequestOptions struct {
+	OwnerClientID string `json:"owner_client_id,omitempty"`
+}
+
+type ResetBotTemplateSecretRequestOptions struct {
+	OwnerClientID               string `json:"owner_client_id,omitempty"`
+	AffectExistingInstallations bool   `json:"affect_existing_installations,omitempty"`
 }
 
 // GroupConfig defines bot's priority and membership in group
