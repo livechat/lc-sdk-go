@@ -236,3 +236,7 @@ type followCustomerRequest struct {
 type listRoutingStatusesRequest struct {
 	Filters *routingStatusesFilter `json:"filters"`
 }
+
+type logoutRequest struct {
+	AgentID string `json:"agent_id"`
+}
