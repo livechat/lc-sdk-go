@@ -414,7 +414,7 @@ func (a *API) ListRoutingStatuses(groupIDs []int) ([]AgentStatus, error) {
 }
 
 // Logout logs out the specified agent
-func (a *API) Logout(agentID, status string) error {
+func (a *API) Logout(agentID string) error {
 	return a.Call("logout", &logoutRequest{
 		AgentID: agentID,
 	}, &emptyResponse{})
