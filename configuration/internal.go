@@ -176,16 +176,10 @@ type deleteGroupPropertiesRequest struct {
 }
 
 type addAutoAccessRequest struct {
-	Access struct {
-		Groups []int `json:"groups"`
-	} `json:"access"`
-	Conditions struct {
-		Url         *Condition            `json:"url,omitempty"`
-		Domain      *Condition            `json:"domain,omitempty"`
-		Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
-	} `json:"conditions"`
-	Description string `json:"description,omitempty"`
-	NextID      string `json:"next_id,omitempty"`
+	Access      Access     `json:"access"`
+	Conditions  Conditions `json:"conditions"`
+	Description string     `json:"description"`
+	NextID      string     `json:"next_id"`
 }
 
 type addAutoAccessResponse struct {
@@ -193,8 +187,11 @@ type addAutoAccessResponse struct {
 }
 
 type updateAutoAccessRequest struct {
-	addAutoAccessRequest
-	ID string `json:"id"`
+	ID          string      `json:"id"`
+	Access      *Access     `json:"access,omitempty"`
+	Conditions  *Conditions `json:"conditions,omitempty"`
+	Description *string     `json:"description,omitempty"`
+	NextID      *string     `json:"next_id,omitempty"`
 }
 
 type deleteAutoAccessRequest struct {

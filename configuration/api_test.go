@@ -1047,7 +1047,7 @@ func TestUpdateAutoAccessShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	err = api.UpdateAutoAccess("foo", []int{}, nil, nil, nil, "", "")
+	err = api.UpdateAutoAccess("foo", []int{}, nil, nil, nil)
 	if err != nil {
 		t.Errorf("UpdateAutoAccess failed: %v", err)
 	}

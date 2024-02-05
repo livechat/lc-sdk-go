@@ -426,27 +426,37 @@ func (a *API) DeleteGroupProperties(id int, props map[string][]string) error {
 func (a *API) AddAutoAccess(groupIDs []int, url, domain *Condition, geolocation *GeolocationCondition, desc, nextID string) (string, error) {
 	var resp addAutoAccessResponse
 	req := addAutoAccessRequest{
+		Access: Access{
+			Groups: groupIDs,
+		},
+		Conditions: Conditions{
+			Url:         url,
+			Domain:      domain,
+			Geolocation: geolocation,
+		},
 		Description: desc,
 		NextID:      nextID,
 	}
-	req.Access.Groups = groupIDs
-	req.Conditions.Url = url
-	req.Conditions.Domain = domain
-	req.Conditions.Geolocation = geolocation
 	err := a.Call("add_auto_access", &req, &resp)
-
 	return resp.ID, err
 }
 
 // UpdateAutoAccess updates an existing auto access.
-func (a *API) UpdateAutoAccess(id string, groupIDs []int, url, domain *Condition, geolocation *GeolocationCondition, desc, nextID string) error {
-	req := updateAutoAccessRequest{}
-	req.Description = desc
-	req.NextID = nextID
-	req.Access.Groups = groupIDs
-	req.Conditions.Url = url
-	req.Conditions.Domain = domain
-	req.Conditions.Geolocation = geolocation
+func (a *API) UpdateAutoAccess(id string, groupIDs []int, conditions *Conditions, desc, nextID *string) error {
+	req := updateAutoAccessRequest{
+		ID: id,
+
+		Conditions:  conditions,
+		Description: desc,
+		NextID:      nextID,
+	}
+
+	if len(groupIDs) > 0 {
+		req.Access = &Access{
+			Groups: groupIDs,
+		}
+	}
+
 	return a.Call("update_auto_access", &req, &emptyResponse{})
 }
 

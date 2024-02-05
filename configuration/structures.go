@@ -202,11 +202,18 @@ type ManageWebhooksDefinitionOptions struct {
 	ClientID string
 }
 
+// Conditions represents logic in a given auto access rule
+type Conditions struct {
+	Url         *Condition            `json:"url,omitempty"`
+	Domain      *Condition            `json:"domain,omitempty"`
+	Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
+}
+
 // Condition is option for methods responsible for auto access management:
 // AddAutoAccess, UpdateAutoAccess
 type Condition struct {
-	Values        []Match `json:"values"`
-	ExcludeValues []Match `json:"exclude_values"`
+	Values        []Match `json:"values,omitempty"`
+	ExcludeValues []Match `json:"exclude_values,omitempty"`
 }
 
 // Match represents possible match conditions for Condition
@@ -229,18 +236,16 @@ type GeolocationMatch struct {
 	City        string `json:"city,omitempty"`
 }
 
+type Access struct {
+	Groups []int `json:"groups"`
+}
+
 type AutoAccess struct {
-	ID     string `json:"id"`
-	Access struct {
-		Groups []int `json:"groups"`
-	} `json:"access"`
-	Conditions struct {
-		Url         *Condition            `json:"url,omitempty"`
-		Domain      *Condition            `json:"domain,omitempty"`
-		Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
-	} `json:"conditions"`
-	Description string `json:"description,omitempty"`
-	NextID      string `json:"next_id,omitempty"`
+	ID          string     `json:"id"`
+	Access      Access     `json:"access"`
+	Conditions  Conditions `json:"conditions"`
+	Description string     `json:"description,omitempty"`
+	NextID      string     `json:"next_id,omitempty"`
 }
 
 type PlanLimits []struct {
