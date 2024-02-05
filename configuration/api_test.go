@@ -1443,6 +1443,10 @@ func TestAddAutoAccessOK(t *testing.T) {
 
 }
 
+func addressOf(in string) *string {
+	return &in
+}
+
 func TestUpdateAutoAccessOK(t *testing.T) {
 	serverMock := newServerMock(t, "update_auto_access")
 	client := NewTestClient(serverMock)
@@ -1460,23 +1464,30 @@ func TestUpdateAutoAccessOK(t *testing.T) {
 		validateRequestBody(t, `{"id":"foo"}`, serverMock.LastRequest.Body)
 	})
 	t.Run("only description", func(t *testing.T) {
-		err := api.UpdateAutoAccess("foo", &configuration.UpdateAutoAccessRequestOptions{Description: "bar"})
+		err := api.UpdateAutoAccess("foo", &configuration.UpdateAutoAccessRequestOptions{Description: addressOf("bar")})
 		if err != nil {
 			t.Errorf("UpdateAutoAccess failed: %v", err)
 		}
 		validateRequestBody(t, `{"id":"foo","description":"bar"}`, serverMock.LastRequest.Body)
 	})
 	t.Run("all optional fields", func(t *testing.T) {
-		err := api.UpdateAutoAccess("foo", &configuration.UpdateAutoAccessRequestOptions{Description: "bar", Access: &configuration.Access{Groups: []int{420}}, Conditions: &configuration.AutoAccessConditions{}, NextID: "baz"})
+		err := api.UpdateAutoAccess("foo", &configuration.UpdateAutoAccessRequestOptions{Description: addressOf("bar"), Access: &configuration.Access{Groups: []int{420}}, Conditions: &configuration.AutoAccessConditions{}, NextID: addressOf("baz")})
 		if err != nil {
 			t.Errorf("UpdateAutoAccess failed: %v", err)
 		}
 		validateRequestBody(t, `{"id":"foo","access":{"groups":[420]},"conditions":{},"description":"bar","next_id":"baz"}`, serverMock.LastRequest.Body)
 	})
+	t.Run("clearing next_id", func(t *testing.T) {
+		err := api.UpdateAutoAccess("foo", &configuration.UpdateAutoAccessRequestOptions{NextID: addressOf("")})
+		if err != nil {
+			t.Errorf("UpdateAutoAccess failed: %v", err)
+		}
+		validateRequestBody(t, `{"id":"foo","next_id":""}`, serverMock.LastRequest.Body)
+	})
 
 	updateAutoAccessOKOpts := []*configuration.UpdateAutoAccessRequestOptions{
-		{Description: "baz", Access: &configuration.Access{}, Conditions: &configuration.AutoAccessConditions{}, NextID: "bar"},
-		{Description: "baz"},
+		{Description: addressOf("baz"), Access: &configuration.Access{}, Conditions: &configuration.AutoAccessConditions{}, NextID: addressOf("bar")},
+		{Description: addressOf("baz")},
 		nil,
 	}
 

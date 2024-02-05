@@ -346,15 +346,11 @@ type Access struct {
 }
 
 type AutoAccess struct {
-	ID         string `json:"id"`
-	Access     Access `json:"access"`
-	Conditions struct {
-		Url         *Condition            `json:"url,omitempty"`
-		Domain      *Condition            `json:"domain,omitempty"`
-		Geolocation *GeolocationCondition `json:"geolocation,omitempty"`
-	} `json:"conditions"`
-	Description string `json:"description,omitempty"`
-	NextID      string `json:"next_id,omitempty"`
+	ID          string               `json:"id"`
+	Access      Access               `json:"access"`
+	Conditions  AutoAccessConditions `json:"conditions"`
+	Description string               `json:"description,omitempty"`
+	NextID      string               `json:"next_id,omitempty"`
 }
 
 type AddAutoAccessRequestOptions struct {
@@ -365,8 +361,8 @@ type AddAutoAccessRequestOptions struct {
 type UpdateAutoAccessRequestOptions struct {
 	Access      *Access               `json:"access,omitempty"`
 	Conditions  *AutoAccessConditions `json:"conditions,omitempty"`
-	Description string                `json:"description,omitempty"`
-	NextID      string                `json:"next_id,omitempty"`
+	Description *string               `json:"description,omitempty"`
+	NextID      *string               `json:"next_id,omitempty"`
 }
 
 type PlanLimits []struct {
