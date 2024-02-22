@@ -63,8 +63,6 @@ type listBotTemplatesRequest struct {
 	OwnerClientID string `json:"owner_client_id,omitempty"`
 }
 
-type listBotTemplatesResponse []BotTemplate
-
 type resetBotSecretRequest struct {
 	BotID         string `json:"id"`
 	OwnerClientID string `json:"owner_client_id,omitempty"`

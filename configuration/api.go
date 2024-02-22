@@ -197,8 +197,8 @@ func (a *API) DeleteBotTemplate(id string, opts *DeleteBotTemplateRequestOptions
 }
 
 // ListBotTemplates returns list of bot templates.
-func (a *API) ListBotTemplates(opts *ListBotTemplatesRequestOptions) (listBotTemplatesResponse, error) {
-	var resp listBotTemplatesResponse
+func (a *API) ListBotTemplates(opts *ListBotTemplatesRequestOptions) ([]BotTemplate, error) {
+	var resp []BotTemplate
 	var ownerClientID string
 	if opts != nil {
 		ownerClientID = opts.OwnerClientID
