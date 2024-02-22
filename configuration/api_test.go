@@ -54,7 +54,8 @@ var mockedResponses = map[string]string{
 	]`,
 	"unregister_webhook": `{}`,
 	"create_bot": `{
-		"id": "5c9871d5372c824cbf22d860a707a578"
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"secret": "laudla991lamda0pnoaa0"
 	}`,
 	"update_bot": `{}`,
 	"delete_bot": `{}`,
@@ -315,6 +316,36 @@ var mockedResponses = map[string]string{
 			}
 		}
 	]`,
+	"reset_bot_secret": `{
+		"secret": "laudla991lamda0pnoaa0"
+	}`,
+	"issue_bot_token": `{
+		"token": "bbd8924fcbcdbddbeaf60c19b238b0b0"
+	}`,
+	"create_bot_template": `{
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"secret": "laudla991lamda0pnoaa0"
+	}`,
+	"update_bot_template": `{}`,
+	"delete_bot_template": `{}`,
+	"list_bot_templates": `[
+		{
+			"id": "5c9871d5372c824cbf22d860a707a578",
+			"name": "John Doe",
+			"avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+			"max_chats_count": 2137,
+			"default_group_priority": "first",
+			"job_title": "b0t"
+		},
+		{
+			"id": "8g1231ss112c013cbf11d530b595h987",
+			"name": "Jason Brown",
+			"avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/wff9482gkdjanzjgdsf88a184jsskaz1.jpg",
+			"max_chats_count": 69,
+			"default_group_priority": "first",
+			"job_title": "b0t"
+		}
+	]`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
@@ -434,13 +465,13 @@ func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id", "dummy/timezone", &configuration.WorkScheduler{})
+	bot, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id", "dummy/timezone", &configuration.WorkScheduler{})
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
 
-	if botID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid botID: %v", botID)
+	if bot.BotID != "5c9871d5372c824cbf22d860a707a578" {
+		t.Errorf("Invalid botID: %v", bot.BotID)
 	}
 }
 
