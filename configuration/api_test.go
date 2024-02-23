@@ -465,13 +465,13 @@ func TestCreateBotShouldReturnDataReceivedFromConfApi(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	bot, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id", "dummy/timezone", &configuration.WorkScheduler{})
+	botID, rErr := api.CreateBot("John Doe", "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg", 6, "first", []*configuration.GroupConfig{}, "dummy_client_id", "dummy/timezone", &configuration.WorkScheduler{})
 	if rErr != nil {
 		t.Errorf("CreateBot failed: %v", rErr)
 	}
 
-	if bot.BotID != "5c9871d5372c824cbf22d860a707a578" {
-		t.Errorf("Invalid botID: %v", bot.BotID)
+	if botID != "5c9871d5372c824cbf22d860a707a578" {
+		t.Errorf("Invalid botID: %v", botID)
 	}
 }
 
