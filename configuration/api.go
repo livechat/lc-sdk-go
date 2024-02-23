@@ -83,8 +83,17 @@ func (a *API) UnregisterWebhook(id string, opts *ManageWebhooksDefinitionOptions
 	}, &emptyResponse{})
 }
 
-// CreateBot allows to create bot and returns response containing its ID and secret.
-func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID, timezone string, workScheduler *WorkScheduler) (*CreateBotResponse, error) {
+// CreateBot allows to create bot and returns response containing its ID.
+func (a *API) CreateBot(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID, timezone string, workScheduler *WorkScheduler) (string, error) {
+	resp, err := a.CreateBotWithSecret(name, avatar, maxChats, defaultPriority, groups, ownerClientID, timezone, workScheduler)
+	if err != nil {
+		return "", err
+	}
+	return resp.BotID, nil
+}
+
+// CreateBotWithSecret allows to create bot and returns response containing its ID and secret.
+func (a *API) CreateBotWithSecret(name, avatar string, maxChats uint, defaultPriority GroupPriority, groups []*GroupConfig, ownerClientID, timezone string, workScheduler *WorkScheduler) (*CreateBotResponse, error) {
 	var resp CreateBotResponse
 	if err := validateBotGroupsAssignment(groups); err != nil {
 		return nil, err
