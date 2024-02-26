@@ -54,7 +54,8 @@ var mockedResponses = map[string]string{
 	]`,
 	"unregister_webhook": `{}`,
 	"create_bot": `{
-		"id": "5c9871d5372c824cbf22d860a707a578"
+		"id": "5c9871d5372c824cbf22d860a707a578",
+		"secret": "laudla991lamda0pnoaa0"
 	}`,
 	"update_bot": `{}`,
 	"delete_bot": `{}`,
