@@ -596,10 +596,14 @@ type Event struct {
 // FilledForm represents LiveChat filled form event.
 type FilledForm struct {
 	Fields []struct {
-		ID    string `json:"id"`
-		Label string `json:"label"`
-		Type  string `json:"type"`
-		Value string `json:"value"`
+		ID      string      `json:"id"`
+		Label   string      `json:"label"`
+		Type    string      `json:"type"`
+		Answer  interface{} `json:"answer,omitempty"` // Answer can be string or a JSON object
+		Answers []struct {
+			ID    string `json:"id"`
+			Label string `json:"label"`
+		} `json:"answers,omitempty"`
 	} `json:"fields"`
 	Event
 }
