@@ -439,7 +439,6 @@ func (e *Event) FilledForm() *FilledForm {
 	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
 		return nil
 	}
-	f.FormType = string(e.FormType)
 	return &f
 }
 
@@ -513,8 +512,7 @@ func (f *FilledFormField) Single() *FilledFormFieldSingle {
 		return nil
 	}
 	var s FilledFormFieldSingle
-	s.ID = f.ID
-	s.Label = f.Label
+	s.ID, s.Label = f.ID, f.Label
 	if err := json.Unmarshal(f.Answer, &s.Answer); err != nil {
 		return nil
 	}
@@ -533,8 +531,7 @@ func (f *FilledFormField) SingleChoice() *FilledFormFieldSingleChoice {
 		return nil
 	}
 	var sc FilledFormFieldSingleChoice
-	sc.ID = f.ID
-	sc.Label = f.Label
+	sc.ID, sc.Label = f.ID, f.Label
 	if err := json.Unmarshal(f.Answer, &sc.Answer); err != nil {
 		return nil
 	}
@@ -549,8 +546,7 @@ func (f *FilledFormField) MultiChoice() *FilledFormFieldMultiChoice {
 		return nil
 	}
 	var mc FilledFormFieldMultiChoice
-	mc.ID = f.ID
-	mc.Label = f.Label
+	mc.ID, mc.Label = f.ID, f.Label
 	if err := json.Unmarshal(f.Answers, &mc.Answers); err != nil {
 		return nil
 	}
@@ -565,8 +561,7 @@ func (f *FilledFormField) EmailCheckbox() *FilledFormEmailCheckbox {
 		return nil
 	}
 	var ec FilledFormEmailCheckbox
-	ec.ID = f.ID
-	ec.Label = f.Label
+	ec.ID, ec.Label = f.ID, f.Label
 	if err := json.Unmarshal(f.Answer, &ec.Answer); err != nil {
 		return nil
 	}
@@ -581,8 +576,7 @@ func (f *FilledFormField) GroupChooser() *FilledFormFieldGroupChooser {
 		return nil
 	}
 	var gc FilledFormFieldGroupChooser
-	gc.ID = f.ID
-	gc.Label = f.Label
+	gc.ID, gc.Label = f.ID, f.Label
 	if err := json.Unmarshal(f.Answer, &gc.Answer); err != nil {
 		return nil
 	}
