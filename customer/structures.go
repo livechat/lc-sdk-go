@@ -303,7 +303,7 @@ type eventSpecific struct {
 	Text              json.RawMessage `json:"text"`
 	TextVars          json.RawMessage `json:"text_vars"`
 	Fields            json.RawMessage `json:"fields"`
-	FormType          json.RawMessage `json:"form_type,omitempty"`
+	FormType          json.RawMessage `json:"form_type"`
 	ContentType       json.RawMessage `json:"content_type"`
 	Name              json.RawMessage `json:"name"`
 	URL               json.RawMessage `json:"url"`
