@@ -429,6 +429,9 @@ func (e *Event) FilledForm() *FilledForm {
 	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
 		return nil
 	}
+	if err := json.Unmarshal(e.FormType, &f.FormType); err != nil {
+		return nil
+	}
 	return &f
 }
 

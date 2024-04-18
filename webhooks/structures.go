@@ -564,6 +564,7 @@ type eventSpecific struct {
 	Text              json.RawMessage `json:"text"`
 	TextVars          json.RawMessage `json:"text_vars"`
 	Fields            json.RawMessage `json:"fields"`
+	FormType          json.RawMessage `json:"form_type"`
 	ContentType       json.RawMessage `json:"content_type"`
 	Name              json.RawMessage `json:"name"`
 	URL               json.RawMessage `json:"url"`
@@ -610,6 +611,9 @@ func (e *Event) FilledForm() *FilledForm {
 
 	f.Event = *e
 	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.FormType, &f.FormType); err != nil {
 		return nil
 	}
 	return &f
