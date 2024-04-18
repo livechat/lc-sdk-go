@@ -439,9 +439,11 @@ func (e *Event) FilledForm() *FilledForm {
 	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
 		return nil
 	}
+	if err := json.Unmarshal(e.FormType, &f.FormType); err != nil {
+		return nil
+	}
 	return &f
 }
-
 
 // FilledFormField represents a field in LiveChat filled form event.
 type FilledFormField struct {
@@ -495,7 +497,6 @@ type FilledFormFieldGroupChooser struct {
 		GroupID int    `json:"group_id"`
 	} `json:"answer"`
 }
-
 
 // Single method converts FilledFormField object to FilledFormFieldSingle object
 // if FilledFormField's Type is one of "name", "email", "question", "textarea", "subject".
@@ -582,7 +583,6 @@ func (f *FilledFormField) GroupChooser() *FilledFormFieldGroupChooser {
 	}
 	return &gc
 }
-
 
 // Postback represents postback data in LiveChat message event.
 type Postback struct {
