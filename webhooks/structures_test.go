@@ -2,10 +2,45 @@ package webhooks_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/livechat/lc-sdk-go/v5/webhooks"
 )
+
+func TestFilledFormTypesOK(t *testing.T) {
+	rawFields := json.RawMessage(`[{"id": "42", "type": "email", "answer":"foo@bar.eu"}]`)
+	testCases := []struct {
+		name             string
+		expectedFormType string
+		rawFormType      json.RawMessage
+	}{
+		{name: "Missing form_type", expectedFormType: "", rawFormType: nil},
+		{name: "Null form_type", expectedFormType: "", rawFormType: json.RawMessage(`null`)},
+		{name: "Empty string form_type", expectedFormType: "", rawFormType: json.RawMessage(`""`)},
+		{name: "Existing form_type", expectedFormType: "prechat", rawFormType: json.RawMessage(`"prechat"`)},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var suffixFormType string
+			if tc.rawFormType != nil {
+				suffixFormType = fmt.Sprintf(`,"form_type":%s`, tc.rawFormType)
+			}
+
+			rawEvent := json.RawMessage(fmt.Sprintf(`{"type":"filled_form","fields":%s%s}`, rawFields, suffixFormType))
+			filledForm := FilledFormFromJSON(t, rawEvent)
+
+			if filledForm.FormType != tc.expectedFormType {
+				t.Fatalf("FilledForm() did not set FormType correctly. Expected %q, got %q", tc.expectedFormType, filledForm.FormType)
+			}
+
+			if len(filledForm.Fields) != 1 {
+				t.Fatalf("FilledForm() did not return expected number of fields: %d", len(filledForm.Fields))
+			}
+		})
+	}
+}
 
 func TestFilledFormFieldTypesOK(t *testing.T) {
 	t.Run("Single-answer filled_form field", func(t *testing.T) {
@@ -60,16 +95,28 @@ func TestFilledFormFieldTypesOK(t *testing.T) {
 	})
 }
 
-func FilledFormFieldFromJSON(t *testing.T, rawFields json.RawMessage) *webhooks.FilledFormField {
+func FilledFormFromJSON(t *testing.T, rawEvent json.RawMessage) *webhooks.FilledForm {
 	t.Helper()
 
-	event := webhooks.Event{Type: "filled_form"}
-	event.Fields = rawFields
+	var event webhooks.Event
+	if err := json.Unmarshal(rawEvent, &event); err != nil {
+		t.Fatalf("unmarshalling base event failed: %s", err)
+	}
 
 	filledForm := event.FilledForm()
 	if filledForm == nil {
 		t.Fatalf("FilledForm() returned nil")
 	}
+
+	return filledForm
+}
+
+func FilledFormFieldFromJSON(t *testing.T, rawFields json.RawMessage) *webhooks.FilledFormField {
+	t.Helper()
+
+	rawEvent := json.RawMessage(fmt.Sprintf(`{"type":"filled_form","fields":%s}`, rawFields))
+	filledForm := FilledFormFromJSON(t, rawEvent)
+
 	if len(filledForm.Fields) != 1 {
 		t.Fatalf("FilledForm() did not return expected number of fields: %d", len(filledForm.Fields))
 	}
