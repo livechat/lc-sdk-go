@@ -53,6 +53,7 @@ func (h *InstallationHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		URL:         h.cfg.WebhookURL,
 		Description: "echo integration",
 		Filters:     &configuration.WebhookFilters{AuthorType: "customer"},
+		Type:        "license",
 	}
 
 	whID, err := api.RegisterWebhook(wh, nil)

@@ -22,7 +22,6 @@
 	4. Add `webhooks--all:rw` and `chats--all:rw` to the list of requested scopes.
 	5. Use `$NGROK_PUBLIC_URL/oauth` as the Direct installation URL in the Marketplace authorization flow settings section.
 
-**Attention!** For production applications, you can skip point 4.5.
 Having troubles? Visit docs dedicated page for [creating LiveChat apps](https://developers.livechatinc.com/docs/getting-started/guides/#creating-livechat-apps).
 
 ## Running this example
