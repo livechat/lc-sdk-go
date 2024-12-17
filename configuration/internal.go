@@ -119,7 +119,7 @@ type getGroupResponse *Group
 type emptyResponse struct{}
 
 type listLicensePropertiesRequest struct {
-	NamespacePrefix string `json:"namespace_prefix,omitempty"`
+	NamespacePrefix string `json:"namespace,omitempty"`
 	NamePrefix      string `json:"name_prefix,omitempty"`
 }
 
@@ -237,15 +237,13 @@ type deleteAutoAccessRequest struct {
 	ID string `json:"id"`
 }
 
-type listAutoAccessesRequest struct {
-}
+type listAutoAccessesRequest struct{}
 
 type checkProductLimitsForPlanRequest struct {
 	Plan string `json:"plan"`
 }
 
-type listChannelsRequest struct {
-}
+type listChannelsRequest struct{}
 
 type createTagRequest struct {
 	Name     string `json:"name"`
