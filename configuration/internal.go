@@ -80,8 +80,8 @@ type getGroupResponse *Group
 type emptyResponse struct{}
 
 type listLicensePropertiesRequest struct {
-	NamespacePrefix string `json:"namespace_prefix,omitempty"`
-	NamePrefix      string `json:"name_prefix,omitempty"`
+	Namespace  string `json:"namespace,omitempty"`
+	NamePrefix string `json:"name_prefix,omitempty"`
 }
 
 type listGroupPropertiesRequest struct {
