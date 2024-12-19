@@ -85,9 +85,9 @@ type listLicensePropertiesRequest struct {
 }
 
 type listGroupPropertiesRequest struct {
-	ID              uint   `json:"id"`
-	NamespacePrefix string `json:"namespace_prefix,omitempty"`
-	NamePrefix      string `json:"name_prefix,omitempty"`
+	ID         uint   `json:"id"`
+	Namespace  string `json:"namespace,omitempty"`
+	NamePrefix string `json:"name_prefix,omitempty"`
 }
 
 type createAgentResponse struct {

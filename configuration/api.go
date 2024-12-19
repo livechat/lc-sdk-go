@@ -328,22 +328,22 @@ func validateBotGroupsAssignment(groups []*GroupConfig) error {
 }
 
 // ListLicenseProperties returns the properties set within a license.
-func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (Properties, error) {
+func (a *API) ListLicenseProperties(namespace, namePrefix string) (Properties, error) {
 	var resp Properties
 	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
-		NamespacePrefix: namespacePrefix,
-		NamePrefix:      namePrefix,
+		Namespace:  namespace,
+		NamePrefix: namePrefix,
 	}, &resp)
 	return resp, err
 }
 
 // ListGroupProperties returns the properties set within a group.
-func (a *API) ListGroupProperties(groupID uint, namespacePrefix, namePrefix string) (Properties, error) {
+func (a *API) ListGroupProperties(groupID uint, namespace, namePrefix string) (Properties, error) {
 	var resp Properties
 	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
-		ID:              groupID,
-		NamespacePrefix: namespacePrefix,
-		NamePrefix:      namePrefix,
+		ID:         groupID,
+		Namespace:  namespace,
+		NamePrefix: namePrefix,
 	}, &resp)
 	return resp, err
 }
