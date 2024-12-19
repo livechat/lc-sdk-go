@@ -428,11 +428,11 @@ func validateBotGroupsAssignment(groups []*GroupConfig) error {
 }
 
 // ListLicenseProperties returns the properties set within a license.
-func (a *API) ListLicenseProperties(namespacePrefix, namePrefix string) (Properties, error) {
+func (a *API) ListLicenseProperties(namespace, namePrefix string) (Properties, error) {
 	var resp Properties
 	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
-		NamespacePrefix: namespacePrefix,
-		NamePrefix:      namePrefix,
+		Namespace:  namespace,
+		NamePrefix: namePrefix,
 	}, &resp)
 	return resp, err
 }
