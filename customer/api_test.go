@@ -269,81 +269,11 @@ var mockedResponses = map[string]string{
 		"image_height": 200,
 		"url": "https://livechatinc.com"
 	}`,
-	"mark_events_as_seen": `{}`,
-	"list_license_properties": `{
-		"0805e283233042b37f460ed8fbf22160": {
-				"string_property": "string value"
-		}
-	}`,
-	"list_group_properties": `{
-		"0805e283233042b37f460ed8fbf22160": {
-				"string_property": "string value"
-		}
-	}`,
+	"mark_events_as_seen":        `{}`,
 	"get_customer":               `{}`, //TODO - create some real structure here
 	"accept_greeting":            `{}`,
 	"cancel_greeting":            `{}`,
 	"request_email_verification": `{}`,
-	"get_dynamic_configuration": `{
-		"group_id": 0,
-		"client_limit_exceeded": false,
-		"domain_allowed": true,
-		"config_version": "84cc87cxza5ee24ed0f84fe3027fjf0c71",
-		"localization_version": "79cc87cea5ee24ed0f84fe3027fc0c74",
-		"language": "en"
-	}`,
-	"get_configuration": `{
-		"buttons": [
-			{
-				"id": "0466ba53cb",
-				"type": "image",
-				"online_value": "livechat.s3.amazonaws.com/default/buttons/button_online007.png",
-				"offline_value": "livechat.s3.amazonaws.com/default/buttons/button_offline007.png"
-			},
-			{
-				"id": "08ca886ba8",
-				"type": "image",
-				"online_value": "livechat.s3.amazonaws.com/default/buttons/button_online003.png",
-				"offline_value": "livechat.s3.amazonaws.com/default/buttons/button_offline003.png"
-			},
-			{
-				"id": "3344e63cad",
-				"type": "text",
-				"online_value": "Live chat now",
-				"offline_value": "Leave us a message"
-			}
-		],
-		"ticket_form": {
-			"id": "ticket_form_id",
-			"fields": [
-				{
-					"type": "name",
-					"id": "154417206262603539",
-					"label": "Your name",
-					"answer": "Thomas Anderson"
-				}
-			]
-		},
-		"prechat_form": {
-			"id": "prechat_form_id",
-			"fields": [
-				{
-					"type": "name",
-					"id": "154417206262603539",
-					"label": "Your name",
-					"answer": "Thomas Anderson"
-				}
-			]
-		},
-		"integrations": {},
-		"properties": {
-			"group": {},
-			"license": {}
-		}
-	}`,
-	"get_localization": `{
-		"Agents_currently_not_available": "Our agents are not available at the moment."
-	}`,
 }
 
 func createMockedResponder(t *testing.T, method string) roundTripFunc {
