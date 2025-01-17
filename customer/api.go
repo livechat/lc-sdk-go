@@ -352,27 +352,6 @@ func (a *API) GetCustomer() (*Customer, error) {
 	return &resp, err
 }
 
-// ListLicenseProperties returns the properties of a given license.
-func (a *API) ListLicenseProperties(namespace, name string) (Properties, error) {
-	var resp Properties
-	err := a.Call("list_license_properties", &listLicensePropertiesRequest{
-		Namespace: namespace,
-		Name:      name,
-	}, &resp, &i.CallOptions{Method: http.MethodGet})
-	return resp, err
-}
-
-// ListGroupProperties returns the properties of a given group.
-func (a *API) ListGroupProperties(groupID uint, namespace, name string) (Properties, error) {
-	var resp Properties
-	err := a.Call("list_group_properties", &listGroupPropertiesRequest{
-		ID:        groupID,
-		Namespace: namespace,
-		Name:      name,
-	}, &resp, &i.CallOptions{Method: http.MethodGet})
-	return resp, err
-}
-
 // AcceptGreeting marks an incoming greeting as seen.
 func (a *API) AcceptGreeting(greetingID int, uniqueID string) error {
 	return a.Call("accept_greeting", &acceptGreetingRequest{
@@ -393,37 +372,4 @@ func (a *API) RequestEmailVerification(callbackURI string) error {
 	return a.Call("request_email_verification", &requestEmailVerificationRequest{
 		CallbackURI: callbackURI,
 	}, &emptyResponse{})
-}
-
-// GetDynamicConfiguration returns the dynamic configuration of a given group. It provides data to call Get Configuration and Get Localization.
-func (a *API) GetDynamicConfiguration(groupID int, url, channelType string, isTest bool) (*DynamicConfiguration, error) {
-	var resp DynamicConfiguration
-	err := a.Call("get_dynamic_configuration", &getDynamicConfigurationRequest{
-		GroupID:     groupID,
-		URL:         url,
-		ChannelType: channelType,
-		Test:        isTest,
-	}, &resp, &i.CallOptions{Method: http.MethodGet})
-	return &resp, err
-}
-
-// GetConfiguration returns the configuration of a given group in a given version.
-func (a *API) GetConfiguration(groupID int, version string) (*Configuration, error) {
-	var resp Configuration
-	err := a.Call("get_configuration", &getConfigurationRequest{
-		GroupID: groupID,
-		Version: version,
-	}, &resp, &i.CallOptions{Method: http.MethodGet})
-	return &resp, err
-}
-
-// GetLocalization returns the localization of a given language and group in a given version.
-func (a *API) GetLocalization(groupID int, language, version string) (map[string]string, error) {
-	var resp map[string]string
-	err := a.Call("get_localization", &getLocalizationRequest{
-		GroupID:  groupID,
-		Language: language,
-		Version:  version,
-	}, &resp, &i.CallOptions{Method: http.MethodGet})
-	return resp, err
 }
