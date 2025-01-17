@@ -164,17 +164,6 @@ type markEventsAsSeenRequest struct {
 
 type emptyResponse struct{}
 
-type listLicensePropertiesRequest struct {
-	Namespace string `url:"namespace,omitempty"`
-	Name      string `url:"name,omitempty"`
-}
-
-type listGroupPropertiesRequest struct {
-	ID        uint   `url:"id"`
-	Namespace string `url:"namespace,omitempty"`
-	Name      string `url:"name,omitempty"`
-}
-
 type acceptGreetingRequest struct {
 	GreetingID int    `json:"greeting_id"`
 	UniqueID   string `json:"unique_id"`
@@ -197,22 +186,4 @@ type hashedPaginationResponse struct {
 
 type requestEmailVerificationRequest struct {
 	CallbackURI string `json:"callback_uri"`
-}
-
-type getDynamicConfigurationRequest struct {
-	GroupID     int    `url:"group_id"`
-	URL         string `url:"url"`
-	ChannelType string `url:"channel_type"`
-	Test        bool   `url:"test"`
-}
-
-type getConfigurationRequest struct {
-	GroupID int    `url:"group_id"`
-	Version string `url:"version"`
-}
-
-type getLocalizationRequest struct {
-	GroupID  int    `url:"group_id"`
-	Language string `url:"language"`
-	Version  string `url:"version"`
 }

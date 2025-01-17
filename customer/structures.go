@@ -51,33 +51,11 @@ type URLInfo struct {
 	ImageHeight      int    `json:"image_height"`
 }
 
-type DynamicConfiguration struct {
-	GroupID             int    `json:"group_id"`
-	OrganizationID      string `json:"organization_id"`
-	ClientLimitExceeded bool   `json:"client_limit_exceeded"`
-	DomainAllowed       bool   `json:"domain_allowed"`
-	ConfigVersion       string `json:"config_version"`
-	LocalizationVersion string `json:"localization_version"`
-	Language            string `json:"language"`
-}
-
 type ConfigButton struct {
 	ID           string `json:"id"`
 	Type         string `json:"type"`
 	OnlineValue  string `json:"online_value"`
 	OfflineValue string `json:"offline_value"`
-}
-
-type Configuration struct {
-	Buttons        []ConfigButton               `json:"buttons"`
-	TicketForm     *Form                        `json:"ticket_form,omitempty"`
-	PrechatForm    *Form                        `json:"prechat_form,omitempty"`
-	AllowedDomains []string                     `json:"allowed_domains,omitempty"`
-	Integrations   map[string]map[string]string `json:"integrations"`
-	Properties     struct {
-		Group   Properties `json:"group"`
-		License Properties `json:"license"`
-	} `json:"properties"`
 }
 
 // User represents base of both Customer and Agent
