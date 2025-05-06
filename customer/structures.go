@@ -265,11 +265,13 @@ func ValidateEvent(e interface{}) error {
 	case *Message:
 	case *RichMessage:
 	case *SystemMessage:
+	case *System:
 	case Event:
 	case File:
 	case Message:
 	case RichMessage:
 	case SystemMessage:
+	case System:
 	default:
 		return fmt.Errorf("event type %T not supported", v)
 	}
@@ -295,6 +297,10 @@ type eventSpecific struct {
 	Postback          json.RawMessage `json:"postback"`
 	AlternativeText   json.RawMessage `json:"alternative_text"`
 	SystemMessageType json.RawMessage `json:"system_message_type"`
+	Source            json.RawMessage `json:"source"`
+	Subtype           json.RawMessage `json:"subtype"`
+	Details           json.RawMessage `json:"details"`
+	Version           json.RawMessage `json:"version"`
 }
 
 // Event represents base of all LiveChat chat events.
@@ -648,6 +654,39 @@ func (e *Event) RichMessage() *RichMessage {
 	}
 
 	return &rm
+}
+
+// System represents LiveChat system event (replacement for the system_message)
+type System struct {
+	Event
+	Source  string `json:"source"`
+	Subtype string `json:"subtype"`
+	Details string `json:"details"`
+	Version int32  `json:"version"`
+}
+
+// System function converts Event object to System object if Event's Type is "system".
+// If Type is different or Event is malformed, then it returns nil.
+func (e *Event) System() *System {
+	if e.Type != "system" {
+		return nil
+	}
+	var s System
+
+	s.Event = *e
+	if err := json.Unmarshal(e.Source, &s.Source); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.Subtype, &s.Subtype); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.Details, &s.Details); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(e.Version, &s.Version); err != nil {
+		return nil
+	}
+	return &s
 }
 
 type AgentStatus struct {
