@@ -42,6 +42,13 @@ type EventUpdated struct {
 	Event    Event  `json:"event"`
 }
 
+// EventDeleted represents payload of event_deleted webhook.
+type EventDeleted struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+	EventID  string `json:"event_id"`
+}
+
 // IncomingRichMessagePostback represents payload of incoming_rich_message_postback webhook.
 type IncomingRichMessagePostback struct {
 	UserID   string `json:"user_id"`

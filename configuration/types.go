@@ -8,6 +8,7 @@ const (
 	IncomingChat                 WebhookAction = "incoming_chat"
 	IncomingEvent                WebhookAction = "incoming_event"
 	EventUpdated                 WebhookAction = "event_updated"
+	EventDeleted                 WebhookAction = "event_deleted"
 	IncomingRichMessagePostback  WebhookAction = "incoming_rich_message_postback"
 	ChatDeactivated              WebhookAction = "chat_deactivated"
 	ChatPropertiesUpdated        WebhookAction = "chat_properties_updated"

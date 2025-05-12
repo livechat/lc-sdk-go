@@ -254,6 +254,15 @@ func (a *API) DeleteEventProperties(chatID, threadID, eventID string, properties
 	}, &emptyResponse{})
 }
 
+// DeleteEvent deletes given event.
+func (a *API) DeleteEvent(chatID, threadID, eventID string) error {
+	return a.Call("delete_event", &deleteEventRequest{
+		ChatID:   chatID,
+		ThreadID: threadID,
+		EventID:  eventID,
+	}, &emptyResponse{})
+}
+
 // UpdateCustomer updates current customer's info.
 func (a *API) UpdateCustomer(name, email, avatarURL string, sessionFields []map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{

@@ -435,6 +435,7 @@ type Event struct {
 	Properties Properties `json:"properties,omitempty"`
 	Visibility string     `json:"visibility,omitempty"`
 	Type       string     `json:"type,omitempty"`
+	Deleted    bool       `json:"deleted,omitempty"`
 	eventSpecific
 }
 

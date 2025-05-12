@@ -156,6 +156,23 @@ func eventUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	return nil
 }
 
+func eventDeleted(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.EventDeleted)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+
+	var propEqErrors string
+	propEq("ChatID", payload.ChatID, "123-123-123-123", &propEqErrors)
+	propEq("ThreadID", payload.ThreadID, "E2WDHA8A", &propEqErrors)
+	propEq("EventID", payload.EventID, "PZ070E0W1B_3", &propEqErrors)
+
+	if propEqErrors != "" {
+		return errors.New(propEqErrors)
+	}
+	return nil
+}
+
 func incomingRichMessagePostback(ctx context.Context, wh *webhooks.Webhook) error {
 	payload, ok := wh.Payload.(*webhooks.IncomingRichMessagePostback)
 	if !ok {
