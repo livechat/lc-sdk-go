@@ -17,6 +17,7 @@ var verifiers = map[string]webhooks.Handler{
 	"incoming_chat":                   incomingChat,
 	"incoming_event":                  incomingEvent,
 	"event_updated":                   eventUpdated,
+	"event_deleted":                   eventDeleted,
 	"incoming_rich_message_postback":  incomingRichMessagePostback,
 	"chat_deactivated":                chatDeactivated,
 	"chat_properties_updated":         chatPropertiesUpdated,

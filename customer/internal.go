@@ -117,6 +117,12 @@ type deleteEventPropertiesRequest struct {
 	Properties map[string][]string `json:"properties"`
 }
 
+type deleteEventRequest struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+	EventID  string `json:"event_id"`
+}
+
 type updateCustomerRequest struct {
 	Name          string              `json:"name,omitempty"`
 	Email         string              `json:"email,omitempty"`

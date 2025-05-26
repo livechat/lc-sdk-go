@@ -193,6 +193,7 @@ var mockedResponses = map[string]string{
 	"delete_thread_properties":    `{}`,
 	"update_event_properties":     `{}`,
 	"delete_event_properties":     `{}`,
+	"delete_event":                `{}`,
 	"update_customer":             `{}`,
 	"set_customer_session_fields": `{}`,
 	"list_group_statuses": `{
@@ -726,6 +727,20 @@ func TestDeleteEventPropertiesShouldReturnDataReceivedFromCustomerAPI(t *testing
 	}
 }
 
+func TestDeleteEventShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "delete_event"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.DeleteEvent("stubChatID", "stubThreadID", "stubEventID")
+	if rErr != nil {
+		t.Errorf("DeleteEvent failed: %v", rErr)
+	}
+}
+
 func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_customer"))
 
@@ -1096,6 +1111,18 @@ func TestUpdateEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	rErr := api.UpdateEventProperties("stubChatID", "stubThreadID", "stubEventID", customer.Properties{})
 	verifyErrorResponse("UpdateEventProperties", rErr, t)
+}
+
+func TestDeleteEventShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "delete_event"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.DeleteEvent("stubChatID", "stubThreadID", "stubEventID")
+	verifyErrorResponse("DeleteEvent", rErr, t)
 }
 
 func TestDeleteEventPropertiesShouldNotCrashOnErrorResponse(t *testing.T) {

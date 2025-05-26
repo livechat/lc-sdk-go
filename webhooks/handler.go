@@ -97,6 +97,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &IncomingEvent{}
 		case "event_updated":
 			payload = &EventUpdated{}
+		case "event_deleted":
+			payload = &EventDeleted{}
 		case "incoming_rich_message_postback":
 			payload = &IncomingRichMessagePostback{}
 		case "chat_deactivated":
