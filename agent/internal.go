@@ -200,6 +200,11 @@ type markEventsAsSeenRequest struct {
 	SeenUpTo string `json:"seen_up_to"`
 }
 
+type sendThinkingIndicatorRequest struct {
+	ChatID string `json:"chat_id"`
+	SendThinkingIndicatorRequestOptions
+}
+
 type sendTypingIndicatorRequest struct {
 	ChatID     string `json:"chat_id"`
 	Visibility string `json:"visibility,omitempty"`

@@ -815,3 +815,10 @@ type AgentStatus struct {
 	AgentID string `json:"agent_id,omitempty"`
 	Status  string `json:"status,omitempty"`
 }
+
+type SendThinkingIndicatorRequestOptions struct {
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Visibility  string `json:"visibility,omitempty"`
+	CustomID    string `json:"custom_id,omitempty"`
+}

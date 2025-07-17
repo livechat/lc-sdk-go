@@ -361,6 +361,15 @@ func (a *API) MarkEventsAsSeen(chatID string, seenUpTo time.Time) error {
 	}, &emptyResponse{})
 }
 
+// SendThinkingIndicator sends a notification about preparing a response to defined recipients.
+func (a *API) SendThinkingIndicator(chatID string, opts *SendThinkingIndicatorRequestOptions) error {
+	req := &sendThinkingIndicatorRequest{ChatID: chatID}
+	if opts != nil {
+		req.SendThinkingIndicatorRequestOptions = *opts
+	}
+	return a.Call("send_thinking_indicator", req, &emptyResponse{})
+}
+
 // SendTypingIndicator sends a notification about typing to defined recipients.
 func (a *API) SendTypingIndicator(chatID, visibility string, isTyping bool) error {
 	return a.Call("send_typing_indicator", &sendTypingIndicatorRequest{

@@ -341,13 +341,14 @@ var mockedResponses = map[string]string{
 	"create_customer": `{
 		"customer_id": "mister_customer"
 	}`,
-	"update_customer":       `{}`,
-	"ban_customer":          `{}`,
-	"mark_events_as_seen":   `{}`,
-	"set_routing_status":    `{}`,
-	"send_typing_indicator": `{}`,
-	"multicast":             `{}`,
-	"transfer_chat":         `{}`,
+	"update_customer":         `{}`,
+	"ban_customer":            `{}`,
+	"mark_events_as_seen":     `{}`,
+	"set_routing_status":      `{}`,
+	"send_thinking_indicator": `{}`,
+	"send_typing_indicator":   `{}`,
+	"multicast":               `{}`,
+	"transfer_chat":           `{}`,
 	"list_agents_for_transfer": `[
 		{
 			"agent_id": "agent1@example.com",
@@ -1014,6 +1015,34 @@ func TestMarkEventsAsSeenShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
+func TestSendThinkingIndicatorShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "send_thinking_indicator"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	t.Run("only required fields", func(t *testing.T) {
+		rErr := api.SendThinkingIndicator("stubChatID", nil)
+		if rErr != nil {
+			t.Errorf("SendThinkingIndicator failed: %v", rErr)
+		}
+	})
+
+	t.Run("all opt fields", func(t *testing.T) {
+		rErr := api.SendThinkingIndicator("stubChatID", &agent.SendThinkingIndicatorRequestOptions{
+			Title:       "Thinking...",
+			Description: "about all the good things",
+			Visibility:  "all",
+			CustomID:    "some-custom-id",
+		})
+		if rErr != nil {
+			t.Errorf("SendThinkingIndicator failed: %v", rErr)
+		}
+	})
+}
+
 func TestSendTypingIndicatorShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "send_typing_indicator"))
 
@@ -1385,6 +1414,23 @@ func TestMarkEventsAsSeenShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("MarkEventsAsSeen", rErr, t)
 }
 
+func TestSendThinkingIndicatorShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "send_thinking_indicator"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.SendThinkingIndicator("stubChatID", &agent.SendThinkingIndicatorRequestOptions{
+		Title:       "Thinking...",
+		Description: "about all the bad things",
+		Visibility:  "all",
+		CustomID:    "some-custom-id",
+	})
+	verifyErrorResponse("SendThinkingIndicator", rErr, t)
+}
+
 func TestSendTypingIndicatorShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "send_typing_indicator"))
 
@@ -1419,7 +1465,7 @@ func TestTransferChatShouldNotCrashOnErrorResponse(t *testing.T) {
 	ids := make([]interface{}, 1)
 	ids[0] = 1
 	rErr := api.TransferChat("stubChatID", "group", ids, agent.TransferChatOptions{})
-	verifyErrorResponse("SendTypingIndicator", rErr, t)
+	verifyErrorResponse("TransferChat", rErr, t)
 }
 
 func TestListAgentsForTransferShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
