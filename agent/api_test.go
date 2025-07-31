@@ -47,6 +47,7 @@ var mockedResponses = map[string]string{
 	"resume_chat": `{
 		"thread_id": "PGDGHT5G"
 	}`,
+	"send_event_preview": `{}`,
 	"send_event": `{
 		"event_id": "K600PKZON8"
 	}`,
@@ -515,6 +516,20 @@ func TestStartChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 
 	if threadID != "PGDGHT5G" {
 		t.Errorf("Invalid threadID: %v", threadID)
+	}
+}
+
+func TestSendEventPreviewShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "send_event_preview"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.SendEventPreview("stubChatID", agent.Message{})
+	if rErr != nil {
+		t.Errorf("SendEventPreview failed: %v", rErr)
 	}
 }
 
@@ -1079,6 +1094,18 @@ func TestStartChatShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	_, _, _, rErr := api.StartChat(&agent.InitialChat{}, true, true)
 	verifyErrorResponse("StartChat", rErr, t)
+}
+
+func TestSendEventPreviewShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "send_event_preview"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.SendEventPreview("stubChatID", &agent.Message{})
+	verifyErrorResponse("SendEventPreview", rErr, t)
 }
 
 func TestSendEventShouldNotCrashOnErrorResponse(t *testing.T) {

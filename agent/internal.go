@@ -102,6 +102,11 @@ type removeUserFromChatRequest struct {
 	IgnoreRequesterPresence bool   `json:"ignore_requester_presence,omitempty"`
 }
 
+type sendEventPreviewRequest struct {
+	ChatID string      `json:"chat_id"`
+	Event  interface{} `json:"event"`
+}
+
 type sendEventRequest struct {
 	ChatID             string      `json:"chat_id"`
 	Event              interface{} `json:"event"`

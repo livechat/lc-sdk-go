@@ -378,6 +378,18 @@ func (chat *InitialChat) Validate() error {
 	return nil
 }
 
+// ValidateEventPreview checks if given interface resolves into supported event type
+func ValidateEventPreview(e interface{}) error {
+	switch v := e.(type) {
+	case *Message:
+	case Message:
+	default:
+		return fmt.Errorf("event type %T not supported", v)
+	}
+
+	return nil
+}
+
 // ValidateEvent checks if given interface resolves into supported event type
 func ValidateEvent(e interface{}) error {
 	switch v := e.(type) {

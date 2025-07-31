@@ -197,6 +197,21 @@ func (a *API) RemoveUserFromChat(chatID, userID, userType string, ignoreRequeste
 	}, &emptyResponse{})
 }
 
+// SendEventPreview sends event of supported type to given chat. This event is not saved in the chat.
+// Supports only message type.
+func (a *API) SendEventPreview(chatID string, event interface{}) error {
+	if err := ValidateEventPreview(event); err != nil {
+		return err
+	}
+
+	err := a.Call("send_event_preview", &sendEventPreviewRequest{
+		ChatID: chatID,
+		Event:  event,
+	}, &emptyResponse{})
+
+	return err
+}
+
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
