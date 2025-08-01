@@ -166,17 +166,6 @@ type getCustomersRequest struct {
 	ID string `json:"id"`
 }
 
-type createCustomerRequest struct {
-	Name          string              `json:"name,omitempty"`
-	Email         string              `json:"email,omitempty"`
-	Avatar        string              `json:"avatar,omitempty"`
-	SessionFields []map[string]string `json:"session_fields,omitempty"`
-}
-
-type createCustomerResponse struct {
-	CustomerID string `json:"customer_id"`
-}
-
 type updateCustomerRequest struct {
 	ID            string              `json:"id"`
 	Name          string              `json:"name,omitempty"`
