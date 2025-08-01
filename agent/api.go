@@ -311,19 +311,6 @@ func (a *API) GetCustomer(customerID string) (customer Customer, err error) {
 	return resp, err
 }
 
-// CreateCustomer creates new Customer.
-func (a *API) CreateCustomer(name, email, avatar string, sessionFields []map[string]string) (string, error) {
-	var resp createCustomerResponse
-	err := a.Call("create_customer", &createCustomerRequest{
-		Name:          name,
-		Email:         email,
-		Avatar:        avatar,
-		SessionFields: sessionFields,
-	}, &resp)
-
-	return resp.CustomerID, err
-}
-
 // UpdateCustomer updates customer's info.
 func (a *API) UpdateCustomer(customerID, name, email, avatar string, sessionFields []map[string]string) error {
 	return a.Call("update_customer", &updateCustomerRequest{
