@@ -338,9 +338,6 @@ var mockedResponses = map[string]string{
 				"PWJ8Y4THAV"
 		]
 	}`,
-	"create_customer": `{
-		"customer_id": "mister_customer"
-	}`,
 	"update_customer":         `{}`,
 	"ban_customer":            `{}`,
 	"mark_events_as_seen":     `{}`,
@@ -942,23 +939,6 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	}
 }
 
-func TestCreateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "create_customer"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Error("API creation failed")
-	}
-
-	customerID, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
-	if rErr != nil {
-		t.Errorf("CreateCustomer failed: %v", rErr)
-	}
-
-	if customerID != "mister_customer" {
-		t.Errorf("Invalid customer ID: %v", customerID)
-	}
-}
 func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "update_customer"))
 
@@ -1355,17 +1335,6 @@ func TestUntagThreadShouldNotCrashOnErrorResponse(t *testing.T) {
 	verifyErrorResponse("UntagThread", rErr, t)
 }
 
-func TestCreateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
-	client := NewTestClient(createMockedErrorResponder(t, "create_customer"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Error("API creation failed")
-	}
-
-	_, rErr := api.CreateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
-	verifyErrorResponse("CreateCustomer", rErr, t)
-}
 func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	client := NewTestClient(createMockedErrorResponder(t, "update_customer"))
 
