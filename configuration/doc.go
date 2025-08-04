@@ -2,9 +2,9 @@
 //
 // Detailed documentation of Configuration API is available here: https://developers.livechat.com/docs/management/configuration-api/.
 //
-// All the methods of API have their analogue in Configuration API
+// # All the methods of API have their analogue in Configuration API
 //
-// Configuration API Version
+// # Configuration API Version
 //
-// This API Client uses Configuration API in version 3.6.
+// This API Client uses Configuration API in version 3.7.
 package configuration

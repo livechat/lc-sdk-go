@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/v6/internal"
+	"github.com/livechat/lc-sdk-go/v7/internal"
 )
 
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.

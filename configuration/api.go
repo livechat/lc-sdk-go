@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/livechat/lc-sdk-go/v6/authorization"
-	i "github.com/livechat/lc-sdk-go/v6/internal"
+	"github.com/livechat/lc-sdk-go/v7/authorization"
+	i "github.com/livechat/lc-sdk-go/v7/internal"
 )
 
 type configurationAPI interface {

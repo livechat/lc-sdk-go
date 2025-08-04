@@ -3,7 +3,7 @@ package agent_test
 import (
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/v6/agent"
+	"github.com/livechat/lc-sdk-go/v7/agent"
 )
 
 func TestPropertyFilterTypeExistenceOnly(t *testing.T) {

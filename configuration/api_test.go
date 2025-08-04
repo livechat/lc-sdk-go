@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/v6/authorization"
-	"github.com/livechat/lc-sdk-go/v6/configuration"
+	"github.com/livechat/lc-sdk-go/v7/authorization"
+	"github.com/livechat/lc-sdk-go/v7/configuration"
 )
 
 const (
@@ -34,7 +34,7 @@ func (s *serverMock) RoundTrip(req *http.Request) (*http.Response, error) {
 // Performs validation of common parameters. Returns nil if everything is OK.
 // Does not validate body of the request which is specific for each method.
 func (s *serverMock) validateCommon(req *http.Request) *http.Response {
-	if req.URL.String() != "https://api.livechatinc.com/v3.6/configuration/action/"+s.Method {
+	if req.URL.String() != "https://api.livechatinc.com/v3.7/configuration/action/"+s.Method {
 		return getMockResponseNOK("Invalid URL")
 	}
 
@@ -1298,7 +1298,7 @@ func TestListWebhookNamesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	resp, rErr := api.ListWebhookNames("3.6")
+	resp, rErr := api.ListWebhookNames("3.7")
 	if rErr != nil {
 		t.Errorf("ListWebhookNames failed: %v", rErr)
 	}

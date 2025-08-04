@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/v6/authorization"
-	"github.com/livechat/lc-sdk-go/v6/customer"
+	"github.com/livechat/lc-sdk-go/v7/authorization"
+	"github.com/livechat/lc-sdk-go/v7/customer"
 )
 
 // TEST HELPERS
@@ -294,7 +294,7 @@ func createMockedResponder(t *testing.T, method string) roundTripFunc {
 			}
 		}
 
-		if !strings.Contains(req.URL.String(), "https://api.livechatinc.com/v3.6/customer/action/"+method) {
+		if !strings.Contains(req.URL.String(), "https://api.livechatinc.com/v3.7/customer/action/"+method) {
 			t.Errorf("Invalid URL for Customer API request: %s", req.URL.String())
 			return createServerError("Invalid URL")
 		}

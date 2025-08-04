@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/livechat/lc-sdk-go/v6/authorization"
-	i "github.com/livechat/lc-sdk-go/v6/internal"
+	"github.com/livechat/lc-sdk-go/v7/authorization"
+	i "github.com/livechat/lc-sdk-go/v7/internal"
 )
 
 type agentAPI interface {

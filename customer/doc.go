@@ -5,7 +5,7 @@
 // All the methods of API have their analogue in Customer Chat API except for SendMessage and SendSystemMessage, which are
 // specializations of SendEvent.
 //
-// Customer Chat API Version
+// # Customer Chat API Version
 //
-// This API Client uses Customer Chat API in version 3.6.
+// This API Client uses Customer Chat API in version 3.7.
 package customer

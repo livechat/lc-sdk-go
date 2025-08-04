@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/v6/webhooks"
+	"github.com/livechat/lc-sdk-go/v7/webhooks"
 )
 
 func TestFilledFormTypesOK(t *testing.T) {

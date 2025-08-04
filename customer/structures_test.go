@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/livechat/lc-sdk-go/v6/customer"
+	"github.com/livechat/lc-sdk-go/v7/customer"
 )
 
 func TestFilledFormTypesOK(t *testing.T) {
