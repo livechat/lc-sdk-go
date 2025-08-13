@@ -31,7 +31,6 @@ const (
 	EventPropertiesDeleted       WebhookAction = "event_properties_deleted"
 	RoutingStatusSet             WebhookAction = "routing_status_set"
 	ChatTransferred              WebhookAction = "chat_transferred"
-	IncomingCustomer             WebhookAction = "incoming_customer"
 	CustomerSessionFieldsUpdated WebhookAction = "customer_session_fields_updated"
 	GroupCreated                 WebhookAction = "group_created"
 	GroupUpdated                 WebhookAction = "group_updated"

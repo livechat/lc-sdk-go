@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/livechat/lc-sdk-go/v6/configuration"
 	"github.com/livechat/lc-sdk-go/v6/webhooks"
@@ -540,33 +539,6 @@ func chatAccessUpdated(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("ID", payload.ID, "PJ0MRSHTDX", &propEqErrors)
 	propEq("Access.GroupIDs.length", len(payload.Access.GroupIDs), 1, &propEqErrors)
 	propEq("Access.GroupIDs[0]", payload.Access.GroupIDs[0], 2, &propEqErrors)
-
-	if propEqErrors != "" {
-		return errors.New(propEqErrors)
-	}
-	return nil
-}
-
-func incomingCustomer(ctx context.Context, wh *webhooks.Webhook) error {
-	payload, ok := wh.Payload.(*webhooks.IncomingCustomer)
-	if !ok {
-		return fmt.Errorf("invalid payload type: %T", wh.Payload)
-	}
-	var propEqErrors string
-	if payload.User == nil {
-		return errors.New("`Customer.User` is nil")
-	}
-	propEq("User.ID", payload.User.ID, "baf3cf72-4768-42e4-6140-26dd36c962cc", &propEqErrors)
-	t, err := time.Parse(time.RFC3339Nano, "2019-11-14T14:27:24.410018Z")
-	if err != nil {
-		return fmt.Errorf("Couldn't parse time: %v", err)
-	}
-	propEq("CreatedAt", payload.CreatedAt, t, &propEqErrors)
-	propEq("Email", payload.Email, "customer1@example.com", &propEqErrors)
-	propEq("Avatar", payload.Avatar, "https://example.com/avatars/1.jpg", &propEqErrors)
-	propEq("SessionFields", len(payload.SessionFields), 2, &propEqErrors)
-	propEq("SessionFields[0][some_key]", payload.SessionFields[0]["some_key"], "some_value", &propEqErrors)
-	propEq("SessionFields[1][some_other_key]", payload.SessionFields[1]["some_other_key"], "some_other_value", &propEqErrors)
 
 	if propEqErrors != "" {
 		return errors.New(propEqErrors)
