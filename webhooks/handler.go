@@ -143,8 +143,6 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &RoutingStatusSet{}
 		case "chat_transferred":
 			payload = &ChatTransferred{}
-		case "incoming_customer":
-			payload = &IncomingCustomer{}
 		case "customer_session_fields_updated":
 			payload = &CustomerSessionFieldsUpdated{}
 		case "group_created":

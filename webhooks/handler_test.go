@@ -40,7 +40,6 @@ var verifiers = map[string]webhooks.Handler{
 	"event_properties_deleted":        eventPropertiesDeleted,
 	"routing_status_set":              routingStatusSet,
 	"chat_transferred":                chatTransferred,
-	"incoming_customer":               incomingCustomer,
 	"customer_session_fields_updated": customerSessionFieldsUpdated,
 	"group_created":                   groupCreated,
 	"group_updated":                   groupUpdated,
