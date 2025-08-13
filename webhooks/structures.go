@@ -167,9 +167,6 @@ type ChatAccessUpdated struct {
 	Access Access `json:"access"`
 }
 
-// IncomingCustomer represents payload of incoming_customer webhook.
-type IncomingCustomer Customer
-
 // EventPropertiesUpdated represents payload of event_properties_updated webhook.
 type EventPropertiesUpdated struct {
 	ChatID     string     `json:"chat_id"`
