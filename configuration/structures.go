@@ -402,3 +402,26 @@ type CompanyDetails struct {
 	Audience     *string `json:"audience,omitempty"`
 	Industry     *string `json:"industry,omitempty"`
 }
+
+type CannedResponse struct {
+	ID        string   `json:"id"`
+	Text      string   `json:"text"`
+	Tags      []string `json:"tags,omitempty"`
+	GroupID   int32    `json:"group_id"`
+	CreatedAt string   `json:"created_at"`
+	UpdatedAt string   `json:"updated_at"`
+	AuthorID  string   `json:"author_id"`
+}
+
+type AddCannedResponseRequestOptions struct {
+	Text    string   `json:"text"`
+	Tags    []string `json:"tags,omitempty"`
+	GroupID int32    `json:"group_id"`
+}
+
+type UpdateCannedResponseRequestOptions struct {
+	ID      string   `json:"id"`
+	Text    *string  `json:"text,omitempty"`
+	Tags    []string `json:"tags,omitempty"`
+	GroupID *int32   `json:"group_id,omitempty"`
+}

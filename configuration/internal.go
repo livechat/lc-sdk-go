@@ -265,3 +265,15 @@ type updateCompanyDetailsRequest struct {
 	CompanyDetails
 	Enrich bool `json:"enrich"`
 }
+
+type addCannedResponseResponse struct {
+	ID string `json:"id"`
+}
+
+type listCannedResponsesRequest struct{}
+
+type listCannedResponsesResponse []*CannedResponse
+
+type deleteCannedResponseRequest struct {
+	ID string `json:"id"`
+}

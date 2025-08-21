@@ -601,3 +601,29 @@ func (a *API) UpdateCompanyDetails(companyDetails CompanyDetails, enrich bool) e
 		Enrich:         enrich,
 	}, &emptyResponse{})
 }
+
+// AddCannedResponse creates a new canned response
+func (a *API) AddCannedResponse(req *AddCannedResponseRequestOptions) (string, error) {
+	var resp addCannedResponseResponse
+	err := a.Call("add_canned_response", req, &resp)
+	return resp.ID, err
+}
+
+// ListCannedResponses returns all canned responses
+func (a *API) ListCannedResponses() ([]*CannedResponse, error) {
+	var resp listCannedResponsesResponse
+	err := a.Call("list_canned_responses", &listCannedResponsesRequest{}, &resp)
+	return resp, err
+}
+
+// UpdateCannedResponse updates an existing canned response
+func (a *API) UpdateCannedResponse(req *UpdateCannedResponseRequestOptions) error {
+	return a.Call("update_canned_response", req, &emptyResponse{})
+}
+
+// DeleteCannedResponse deletes a canned response
+func (a *API) DeleteCannedResponse(id string) error {
+	return a.Call("delete_canned_response", &deleteCannedResponseRequest{
+		ID: id,
+	}, &emptyResponse{})
+}
