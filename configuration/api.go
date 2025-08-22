@@ -603,17 +603,24 @@ func (a *API) UpdateCompanyDetails(companyDetails CompanyDetails, enrich bool) e
 }
 
 // AddCannedResponse creates a new canned response
-func (a *API) AddCannedResponse(req *AddCannedResponseRequestOptions) (string, error) {
+func (a *API) AddCannedResponse(req *AddCannedResponseRequestOptions) (int64, error) {
 	var resp addCannedResponseResponse
 	err := a.Call("add_canned_response", req, &resp)
 	return resp.ID, err
 }
 
-// ListCannedResponses returns all canned responses
-func (a *API) ListCannedResponses() ([]*CannedResponse, error) {
-	var resp listCannedResponsesResponse
-	err := a.Call("list_canned_responses", &listCannedResponsesRequest{}, &resp)
-	return resp, err
+// ListCannedResponses returns canned responses with optional filtering and pagination
+func (a *API) ListCannedResponses(opts *ListCannedResponsesRequestOptions) (*ListCannedResponsesResponse, error) {
+	req := listCannedResponsesRequest{}
+	if opts != nil {
+		req.GroupIDs = opts.GroupIDs
+		req.IncludePrivate = opts.IncludePrivate
+		req.Limit = opts.Limit
+		req.PageID = opts.PageID
+	}
+	var resp ListCannedResponsesResponse
+	err := a.Call("list_canned_responses", &req, &resp)
+	return &resp, err
 }
 
 // UpdateCannedResponse updates an existing canned response
@@ -622,7 +629,7 @@ func (a *API) UpdateCannedResponse(req *UpdateCannedResponseRequestOptions) erro
 }
 
 // DeleteCannedResponse deletes a canned response
-func (a *API) DeleteCannedResponse(id string) error {
+func (a *API) DeleteCannedResponse(id int64) error {
 	return a.Call("delete_canned_response", &deleteCannedResponseRequest{
 		ID: id,
 	}, &emptyResponse{})

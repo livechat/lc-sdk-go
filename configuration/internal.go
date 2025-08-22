@@ -267,13 +267,16 @@ type updateCompanyDetailsRequest struct {
 }
 
 type addCannedResponseResponse struct {
-	ID string `json:"id"`
+	ID int64 `json:"id"`
 }
 
-type listCannedResponsesRequest struct{}
-
-type listCannedResponsesResponse []*CannedResponse
+type listCannedResponsesRequest struct {
+	GroupIDs       []int32 `json:"group_ids,omitempty"`
+	IncludePrivate bool    `json:"include_private,omitempty"`
+	Limit          *int    `json:"limit,omitempty"`
+	PageID         *string `json:"page_id,omitempty"`
+}
 
 type deleteCannedResponseRequest struct {
-	ID string `json:"id"`
+	ID int64 `json:"id"`
 }
