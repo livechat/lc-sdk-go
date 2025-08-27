@@ -414,7 +414,7 @@ type CannedResponse struct {
 	IsPrivate bool     `json:"is_private"`
 }
 
-type AddCannedResponseRequestOptions struct {
+type CreateCannedResponseRequestOptions struct {
 	Name      string   `json:"name"`
 	Text      string   `json:"text"`
 	Tags      []string `json:"tags,omitempty"`

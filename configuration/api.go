@@ -602,10 +602,10 @@ func (a *API) UpdateCompanyDetails(companyDetails CompanyDetails, enrich bool) e
 	}, &emptyResponse{})
 }
 
-// AddCannedResponse creates a new canned response
-func (a *API) AddCannedResponse(req *AddCannedResponseRequestOptions) (int64, error) {
-	var resp addCannedResponseResponse
-	err := a.Call("add_canned_response", req, &resp)
+// CreateCannedResponse creates a new canned response
+func (a *API) CreateCannedResponse(req *CreateCannedResponseRequestOptions) (int64, error) {
+	var resp createCannedResponseResponse
+	err := a.Call("create_canned_response", req, &resp)
 	return resp.ID, err
 }
 

@@ -266,7 +266,7 @@ type updateCompanyDetailsRequest struct {
 	Enrich bool `json:"enrich"`
 }
 
-type addCannedResponseResponse struct {
+type createCannedResponseResponse struct {
 	ID int64 `json:"id"`
 }
 
