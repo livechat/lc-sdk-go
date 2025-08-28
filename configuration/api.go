@@ -12,6 +12,7 @@ import (
 type configurationAPI interface {
 	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	SetCustomHost(string)
+	SetCustomHeader(string, string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)
 	SetLogger(*log.Logger)
