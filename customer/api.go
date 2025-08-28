@@ -14,6 +14,7 @@ type customerAPI interface {
 	Call(string, interface{}, interface{}, ...*i.CallOptions) error
 	UploadFile(string, []byte) (string, error)
 	SetCustomHost(string)
+	SetCustomHeader(string, string)
 	SetRetryStrategy(i.RetryStrategyFunc)
 	SetStatsSink(i.StatsSinkFunc)
 	SetLogger(*log.Logger)
