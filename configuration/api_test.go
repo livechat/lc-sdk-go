@@ -384,6 +384,16 @@ var mockedResponses = map[string]string{
 	]`,
 	"reactivate_email":       `{}`,
 	"update_company_details": `{}`,
+	"create_canned_response": `{"id": 2137}`,
+	"delete_canned_response": `{}`,
+	"list_canned_responses": `
+		{"canned_responses": [
+			{"id": 1, "text": "text", "tags": ["tag"], "group_id": 0, "is_private": false, "author_id": "author_id"},
+			{"id": 3, "text": "text2", "tags": ["tag2","tag3"], "group_id": 1, "is_private": true, "author_id": "author_id2"}
+		],
+		"found_canned_responses": 10,
+		"next_page_id": "next_page=="
+	}`,
 }
 
 func getMockResponseOK(method string) *http.Response {
@@ -1765,4 +1775,80 @@ func TestUpdateCompanyDetails(t *testing.T) {
 	}
 
 	validateRequestBody(t, `{"company":"Text","url":"","enrich":true}`, serverMock.LastRequest.Body)
+}
+
+func TestCreateCannedResponseShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	serverMock := newServerMock(t, "create_canned_response")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	id, rErr := api.CreateCannedResponse("text", []string{"tag"}, 0, false)
+	if rErr != nil {
+		t.Errorf("CreateCannedResponse failed: %v", rErr)
+	}
+	if id != 2137 {
+		t.Errorf("Invalid response id: %v", id)
+	}
+
+	validateRequestBody(t, `{"text":"text","tags":["tag"],"group_id":0,"is_private":false}`, serverMock.LastRequest.Body)
+}
+
+func TestDeleteCannedResponseShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	serverMock := newServerMock(t, "delete_canned_response")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	if rErr := api.DeleteCannedResponse(2137); rErr != nil {
+		t.Errorf("DeleteCannedResponse failed: %v", rErr)
+	}
+
+	validateRequestBody(t, `{"id":2137}`, serverMock.LastRequest.Body)
+}
+
+func TestListCannedResponsesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	serverMock := newServerMock(t, "list_canned_responses")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	limit := 2
+	pageID := "some_page=="
+	resp, rErr := api.ListCannedResponses(&configuration.ListCannedResponsesRequestOptions{
+		GroupIDs:       []int32{0, 1},
+		IncludePrivate: true,
+		Limit:          &limit,
+		PageID:         &pageID,
+	})
+	if rErr != nil {
+		t.Errorf("ListCannedResponses failed: %v", rErr)
+	}
+
+	if len(resp.CannedResponses) != 2 {
+		t.Errorf("Invalid response length: %v", len(resp.CannedResponses))
+	}
+
+	if resp.CannedResponses[0].ID != 1 {
+		t.Errorf("Invalid response id: %v", resp.CannedResponses[0].ID)
+	}
+
+	if resp.CannedResponses[1].ID != 3 {
+		t.Errorf("Invalid response id: %v", resp.CannedResponses[1].ID)
+	}
+
+	if resp.CannedResponses[0].Text != "text" {
+		t.Errorf("Invalid response text: %v", resp.CannedResponses[0].Text)
+	}
+
+	validateRequestBody(t, `{"group_ids":[0,1],"include_private":true,"limit":2,"page_id":"some_page=="}`, serverMock.LastRequest.Body)
 }

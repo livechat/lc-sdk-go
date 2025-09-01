@@ -603,7 +603,13 @@ func (a *API) UpdateCompanyDetails(companyDetails CompanyDetails, enrich bool) e
 }
 
 // CreateCannedResponse creates a new canned response
-func (a *API) CreateCannedResponse(req *CreateCannedResponseRequestOptions) (int64, error) {
+func (a *API) CreateCannedResponse(text string, tags []string, groupID int32, isPrivate bool) (int64, error) {
+	req := createCannedResponseRequest{
+		Text:      text,
+		Tags:      tags,
+		GroupID:   groupID,
+		IsPrivate: isPrivate,
+	}
 	var resp createCannedResponseResponse
 	err := a.Call("create_canned_response", req, &resp)
 	return resp.ID, err

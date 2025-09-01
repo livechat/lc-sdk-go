@@ -266,6 +266,13 @@ type updateCompanyDetailsRequest struct {
 	Enrich bool `json:"enrich"`
 }
 
+type createCannedResponseRequest struct {
+	Text      string   `json:"text"`
+	Tags      []string `json:"tags,omitempty"`
+	GroupID   int32    `json:"group_id"`
+	IsPrivate bool     `json:"is_private"`
+}
+
 type createCannedResponseResponse struct {
 	ID int64 `json:"id"`
 }
