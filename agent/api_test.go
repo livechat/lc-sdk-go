@@ -114,8 +114,9 @@ var mockedResponses = map[string]string{
 						"threads_count": 3,
 						"visits_count": 6,
 						"page_views_count": 2,
-						"greetings_shown_count": 2,
-						"greetings_accepted_count": 1
+						"greetings_converted_count": 2,
+						"greetings_accepted_count": 1,
+						"tickets_count": 10
 					},
 					"agent_last_event_created_at": "2020-05-12T11:42:47.393002Z",
 					"customer_last_event_created_at": "2020-05-12T12:31:46.463000Z"
@@ -329,8 +330,9 @@ var mockedResponses = map[string]string{
 			"threads_count": 9,
 			"visits_count": 5,
 			"page_views_count": 1337,
-			"greetings_shown_count": 69,
-			"greetings_accepted_count": 42
+			"greetings_converted_count": 69,
+			"greetings_accepted_count": 42,
+			"tickets_count": 10
 		},
 		"__priv_lc2_customer_id": "S1525771305.dafea66e5c",
 		"agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
