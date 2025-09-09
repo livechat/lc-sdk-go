@@ -63,8 +63,9 @@ func incomingChat(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("Statistics.ThreadsCount", statistics.ThreadsCount, 18, &propEqErrors)
 	propEq("Statistics.ChatsCount", statistics.ChatsCount, 1, &propEqErrors)
 	propEq("Statistics.PageViewsCount", statistics.PageViewsCount, 5, &propEqErrors)
-	propEq("Statistics.GreetingsShownCount", statistics.GreetingsShownCount, 6, &propEqErrors)
+	propEq("Statistics.GreetingsConvertedCount", statistics.GreetingsConvertedCount, 6, &propEqErrors)
 	propEq("Statistics.GreetingsAcceptedCount", statistics.GreetingsAcceptedCount, 8, &propEqErrors)
+	propEq("Statistics.TicketsCount", statistics.TicketsCount, 0, &propEqErrors)
 
 	propEq("Customer.AgentLastEventCreatedAt", customer.AgentLastEventCreatedAt.String(), "2019-10-11 09:40:59.249 +0000 UTC", &propEqErrors)
 	propEq("Customer.CustomerLastEventCreatedAt", customer.CustomerLastEventCreatedAt.String(), "2019-10-11 09:40:59.219001 +0000 UTC", &propEqErrors)
@@ -332,8 +333,9 @@ func userAddedToChat(ctx context.Context, wh *webhooks.Webhook) error {
 	propEq("Statistics.ThreadsCount", statistics.ThreadsCount, 18, &propEqErrors)
 	propEq("Statistics.ChatsCount", statistics.ChatsCount, 1, &propEqErrors)
 	propEq("Statistics.PageViewsCount", statistics.PageViewsCount, 5, &propEqErrors)
-	propEq("Statistics.GreetingsShownCount", statistics.GreetingsShownCount, 6, &propEqErrors)
+	propEq("Statistics.GreetingsConvertedCount", statistics.GreetingsConvertedCount, 6, &propEqErrors)
 	propEq("Statistics.GreetingsAcceptedCount", statistics.GreetingsAcceptedCount, 8, &propEqErrors)
+	propEq("Statistics.TicketsCount", statistics.TicketsCount, 0, &propEqErrors)
 
 	propEq("Customer.AgentLastEventCreatedAt", customer.AgentLastEventCreatedAt.String(), "2019-10-11 09:40:59.249 +0000 UTC", &propEqErrors)
 	propEq("Customer.CustomerLastEventCreatedAt", customer.CustomerLastEventCreatedAt.String(), "2019-10-11 09:40:59.219001 +0000 UTC", &propEqErrors)
