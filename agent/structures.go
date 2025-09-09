@@ -290,12 +290,13 @@ type Customer struct {
 	EmailVerified bool  `json:"email_verified"`
 	LastVisit     Visit `json:"last_visit"`
 	Statistics    struct {
-		VisitsCount            int `json:"visits_count"`
-		ThreadsCount           int `json:"threads_count"`
-		ChatsCount             int `json:"chats_count"`
-		PageViewsCount         int `json:"page_views_count"`
-		GreetingsShownCount    int `json:"greetings_shown_count"`
-		GreetingsAcceptedCount int `json:"greetings_accepted_count"`
+		VisitsCount             int `json:"visits_count"`
+		ThreadsCount            int `json:"threads_count"`
+		ChatsCount              int `json:"chats_count"`
+		PageViewsCount          int `json:"page_views_count"`
+		GreetingsAcceptedCount  int `json:"greetings_accepted_count"`
+		GreetingsConvertedCount int `json:"greetings_converted_count"`
+		TicketsCount            int `json:"tickets_count"`
 	} `json:"statistics"`
 	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`
 	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`

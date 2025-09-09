@@ -39,8 +39,9 @@
 						"threads_count": 18,
 						"chats_count": 1,
 						"page_views_count": 5,
-						"greetings_shown_count": 6,
-						"greetings_accepted_count": 8
+						"greetings_converted_count": 6,
+						"greetings_accepted_count": 8,
+						"tickets_count": 10
 					},
 					"agent_last_event_created_at": "2019-10-11T09:40:59.249000Z",
 					"customer_last_event_created_at": "2019-10-11T09:40:59.219001Z"
