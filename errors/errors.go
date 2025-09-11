@@ -15,5 +15,5 @@ func (e *ErrAPI) Error() string {
 	if e.Details == nil {
 		return ""
 	}
-	return fmt.Sprintf("API error: %s - %s", e.Details.Type, e.Details.Message)
+	return fmt.Sprintf("API responded with status code %d: error: %s - %s", e.StatusCode, e.Details.Type, e.Details.Message)
 }
