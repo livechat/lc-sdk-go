@@ -355,7 +355,8 @@ func verifyErrorResponse(method string, resp error, t *testing.T) {
 		return
 	}
 
-	if resp.Error() != "API error: Validation - Wrong format of request" {
+	expected := "API responded with status code 400: error: Validation - Wrong format of request"
+	if resp.Error() != expected {
 		t.Errorf("%v failed with wrong error: %v", method, resp)
 	}
 }
