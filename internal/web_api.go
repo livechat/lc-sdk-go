@@ -220,13 +220,14 @@ func (a *api) send(req *http.Request, respPayload interface{}) error {
 		}
 		defer resp.Body.Close()
 		bodyBytes, err := io.ReadAll(resp.Body)
-		if resp.StatusCode != http.StatusOK {
-			apiErr := &api_errors.ErrAPI{}
+		statusCode := resp.StatusCode
+		if statusCode != http.StatusOK {
+			apiErr := &api_errors.ErrAPI{StatusCode: statusCode}
 			if err := json.Unmarshal(bodyBytes, apiErr); err != nil {
-				return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), resp.StatusCode, string(bodyBytes))
+				return fmt.Errorf("couldn't unmarshal error response: %s (code: %d, raw body: %s)", err.Error(), statusCode, string(bodyBytes))
 			}
 			if apiErr.Error() == "" {
-				return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", resp.StatusCode, string(bodyBytes))
+				return fmt.Errorf("couldn't unmarshal error response (code: %d, raw body: %s)", statusCode, string(bodyBytes))
 			}
 
 			if a.retryStrategy == nil || !a.retryStrategy(attempts, apiErr) {
