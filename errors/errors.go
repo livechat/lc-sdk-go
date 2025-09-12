@@ -4,11 +4,13 @@ import "fmt"
 
 // ErrAPI represents structure of errors returned by all LiveChat APIs (configuration, agent chat and customer chat APIs).
 type ErrAPI struct {
-	Details *struct {
-		Type    string `json:"type"`
-		Message string `json:"message"`
-	} `json:"error"`
+	Details    *ErrDetails `json:"error"`
 	StatusCode int
+}
+
+type ErrDetails struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
 }
 
 func (e *ErrAPI) Error() string {
