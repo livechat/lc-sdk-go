@@ -94,7 +94,7 @@ func (cpf *chatPresenceFilter) WithUserIDs(user_ids []string, inclusive bool) *c
 type Bot struct {
 	ID                   string         `json:"id"`
 	Name                 string         `json:"name,omitempty"`
-	AvatarPath           string         `json:"avatar_path,omitempty"`
+	AvatarPath           string         `json:"avatar,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	ClientID             string         `json:"owner_client_id,omitempty"`
 	MaxChatsCount        uint           `json:"max_chats_count,omitempty"`
