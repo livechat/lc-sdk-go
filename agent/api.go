@@ -430,3 +430,11 @@ func (a *API) Logout(agentID string) error {
 		AgentID: agentID,
 	}, &emptyResponse{})
 }
+
+// RequestThreadSummary requests a summary for given thread in a chat
+func (a *API) RequestThreadSummary(chatID, threadID string) error {
+	return a.Call("request_thread_summary", &requestThreadSummaryRequest{
+		ChatID:   chatID,
+		ThreadID: threadID,
+	}, &emptyResponse{})
+}

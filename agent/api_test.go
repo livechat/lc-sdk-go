@@ -266,16 +266,17 @@ var mockedResponses = map[string]string{
 		"found_chats": 1,
 		"next_page_id": "nextpagehash"
 	}`,
-	"deactivate_chat":       `{}`,
-	"follow_chat":           `{}`,
-	"unfollow_chat":         `{}`,
-	"grant_chat_access":     `{}`,
-	"revoke_chat_access":    `{}`,
-	"set_chat_access":       `{}`,
-	"add_user_to_chat":      `{}`,
-	"remove_user_from_chat": `{}`,
-	"tag_thread":            `{}`,
-	"untag_thread":          `{}`,
+	"deactivate_chat":        `{}`,
+	"follow_chat":            `{}`,
+	"unfollow_chat":          `{}`,
+	"grant_chat_access":      `{}`,
+	"revoke_chat_access":     `{}`,
+	"set_chat_access":        `{}`,
+	"add_user_to_chat":       `{}`,
+	"remove_user_from_chat":  `{}`,
+	"tag_thread":             `{}`,
+	"untag_thread":           `{}`,
+	"request_thread_summary": `{}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
@@ -1647,4 +1648,30 @@ func TestListRoutingStatusesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	if resp[0].Status != "accepting_chats" {
 		t.Errorf("Invalid status response: %v", resp[0].Status)
 	}
+}
+
+func TestRequestThreadSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "request_thread_summary"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.RequestThreadSummary("stubChatID", "stubThreadID")
+	if rErr != nil {
+		t.Errorf("RequestThreadSummary failed: %v", rErr)
+	}
+}
+
+func TestRequestThreadSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "request_thread_summary"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.RequestThreadSummary("stubChatID", "stubThreadID")
+	verifyErrorResponse("RequestThreadSummary", rErr, t)
 }

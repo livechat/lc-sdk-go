@@ -239,3 +239,8 @@ type listRoutingStatusesRequest struct {
 type logoutRequest struct {
 	AgentID string `json:"agent_id"`
 }
+
+type requestThreadSummaryRequest struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+}
