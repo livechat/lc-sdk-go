@@ -176,6 +176,7 @@ type updateCustomerRequest struct {
 	Name          string              `json:"name,omitempty"`
 	Email         string              `json:"email,omitempty"`
 	Avatar        string              `json:"avatar,omitempty"`
+	PhoneNumber   string              `json:"phone_number,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
 }
 
