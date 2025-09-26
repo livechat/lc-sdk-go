@@ -265,3 +265,25 @@ type updateCompanyDetailsRequest struct {
 	CompanyDetails
 	Enrich bool `json:"enrich"`
 }
+
+type createCannedResponseRequest struct {
+	Text      string   `json:"text"`
+	Tags      []string `json:"tags,omitempty"`
+	GroupID   int32    `json:"group_id"`
+	IsPrivate bool     `json:"is_private"`
+}
+
+type createCannedResponseResponse struct {
+	ID int64 `json:"id"`
+}
+
+type listCannedResponsesRequest struct {
+	GroupIDs       []int32 `json:"group_ids,omitempty"`
+	IncludePrivate bool    `json:"include_private,omitempty"`
+	Limit          *int    `json:"limit,omitempty"`
+	PageID         *string `json:"page_id,omitempty"`
+}
+
+type deleteCannedResponseRequest struct {
+	ID int64 `json:"id"`
+}

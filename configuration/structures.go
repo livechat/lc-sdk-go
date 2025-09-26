@@ -402,3 +402,35 @@ type CompanyDetails struct {
 	Audience     *string `json:"audience,omitempty"`
 	Industry     *string `json:"industry,omitempty"`
 }
+
+type CannedResponse struct {
+	ID        int64    `json:"id"`
+	Text      string   `json:"text"`
+	Tags      []string `json:"tags,omitempty"`
+	GroupID   int32    `json:"group_id"`
+	CreatedAt string   `json:"created_at"`
+	UpdatedAt string   `json:"updated_at"`
+	AuthorID  string   `json:"author_id"`
+	IsPrivate bool     `json:"is_private"`
+}
+
+type UpdateCannedResponseRequestOptions struct {
+	ID        int64    `json:"id"`
+	Text      *string  `json:"text,omitempty"`
+	Tags      []string `json:"tags,omitempty"`
+	GroupID   *int32   `json:"group_id,omitempty"`
+	IsPrivate *bool    `json:"is_private,omitempty"`
+}
+
+type ListCannedResponsesRequestOptions struct {
+	GroupIDs       []int32 `json:"group_ids,omitempty"`
+	IncludePrivate bool    `json:"include_private,omitempty"`
+	Limit          *int    `json:"limit,omitempty"`
+	PageID         *string `json:"page_id,omitempty"`
+}
+
+type ListCannedResponsesResponse struct {
+	CannedResponses      []*CannedResponse `json:"canned_responses"`
+	FoundCannedResponses uint64            `json:"found_canned_responses"`
+	NextPageID           *string           `json:"next_page_id,omitempty"`
+}
