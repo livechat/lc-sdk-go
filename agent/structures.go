@@ -87,6 +87,7 @@ type userSpecific struct {
 	CreatedAt                  json.RawMessage `json:"created_at"`
 	Visibility                 json.RawMessage `json:"visibility"`
 	Chats                      json.RawMessage `json:"chats"`
+	PhoneNumber                json.RawMessage `json:"phone_number"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -147,6 +148,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := json.Unmarshal(u.GroupIDs, &c.GroupIDs); err != nil {
+		return nil
+	}
+	if err := json.Unmarshal(u.PhoneNumber, &c.PhoneNumber); err != nil {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Chats, &c.Chats); err != nil {
@@ -307,6 +311,7 @@ type Customer struct {
 	State                      string              `json:"state"`
 	GroupIDs                   []int               `json:"group_ids"`
 	Chats                      []*CustomerChat     `json:"chats,omitempty"`
+	PhoneNumber                string              `json:"phone_number"`
 }
 
 // CustomerChat represents LiveChat customer's chat

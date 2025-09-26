@@ -293,6 +293,7 @@ var mockedResponses = map[string]string{
 		"name": "John Smith",
 		"email": "customer1@example.com",
 		"avatar": "example.com/avatars/1.jpg",
+		"phone_number": "+48123123123",
 		"session_fields": [{
 			"custom_key": "custom_value"
 		}, {
@@ -952,6 +953,10 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("Invalid customer avatar: %v", customer.Avatar)
 	}
 
+	if customer.PhoneNumber != "+48123123123" {
+		t.Errorf("Invalid customer phone number: %v", customer.PhoneNumber)
+	}
+
 	if len(customer.SessionFields) != 2 {
 		t.Errorf("Invalid customer session fields: %+v", customer.SessionFields)
 	}
@@ -965,7 +970,7 @@ func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
+	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{})
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1373,7 +1378,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
+	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{})
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
