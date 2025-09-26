@@ -276,6 +276,7 @@ var mockedResponses = map[string]string{
 	"remove_user_from_chat":  `{}`,
 	"tag_thread":             `{}`,
 	"untag_thread":           `{}`,
+	"logout":                 `{}`,
 	"request_thread_summary": `{}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
@@ -1648,6 +1649,32 @@ func TestListRoutingStatusesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	if resp[0].Status != "accepting_chats" {
 		t.Errorf("Invalid status response: %v", resp[0].Status)
 	}
+}
+
+func TestLogoutShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "logout"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.Logout("stubAgentID")
+	if rErr != nil {
+		t.Errorf("Logout failed: %v", rErr)
+	}
+}
+
+func TestLogoutShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "logout"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	rErr := api.Logout("stubAgentID")
+	verifyErrorResponse("Logout", rErr, t)
 }
 
 func TestRequestThreadSummaryShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
