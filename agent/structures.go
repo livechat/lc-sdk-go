@@ -269,6 +269,7 @@ type Thread struct {
 	NextAccessibleThreadID    string     `json:"next_accessible_thread_id,omitempty"`
 	Queue                     *Queue     `json:"queue,omitempty"`
 	QueuesDuration            *int       `json:"queues_duration,omitempty"`
+	Summary                   *Summary   `json:"summary,omitempty"`
 	CustomerVisit             *struct {
 		IP          string      `json:"ip"`
 		UserAgent   string      `json:"user_agent"`
@@ -338,6 +339,13 @@ type ThreadSummary struct {
 	Tags       []string   `json:"tags,omitempty"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Queue      *Queue     `json:"queue,omitempty"`
+}
+
+// Summary represents summary for a thread
+type Summary struct {
+	Summary   string    `json:"summary"`
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // ChatSummary represents a short summary of a chat
