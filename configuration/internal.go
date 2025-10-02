@@ -227,6 +227,21 @@ type deleteAutoAccessRequest struct {
 type listAutoAccessesRequest struct {
 }
 
+type addAllowedDomainRequest struct {
+	Domain string `json:"domain"`
+}
+
+type deleteAllowedDomainRequest struct {
+	Domain string `json:"domain"`
+}
+
+type listAllowedDomainsRequest struct {
+}
+
+type listAllowedDomainsResponse struct {
+	Domains []string `json:"domains"`
+}
+
 type checkProductLimitsForPlanRequest struct {
 	Plan string `json:"plan"`
 }

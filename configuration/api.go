@@ -529,6 +529,23 @@ func (a *API) ListAutoAccesses() ([]*AutoAccess, error) {
 	return resp, err
 }
 
+// AddAllowedDomain adds a domain to the allowed domains list.
+func (a *API) AddAllowedDomain(domain string) error {
+	return a.Call("add_allowed_domain", &addAllowedDomainRequest{Domain: domain}, &emptyResponse{})
+}
+
+// DeleteAllowedDomain removes a domain from the allowed domains list.
+func (a *API) DeleteAllowedDomain(domain string) error {
+	return a.Call("delete_allowed_domain", &deleteAllowedDomainRequest{Domain: domain}, &emptyResponse{})
+}
+
+// ListAllowedDomains returns all allowed domains.
+func (a *API) ListAllowedDomains() ([]string, error) {
+	var resp listAllowedDomainsResponse
+	err := a.Call("list_allowed_domains", &listAllowedDomainsRequest{}, &resp)
+	return resp.Domains, err
+}
+
 // CheckProductLimitsForPlan compares your organization's current resources with a given plan and returns those which exceeded the called plan's limits.
 func (a *API) CheckProductLimitsForPlan(plan string) (PlanLimits, error) {
 	var resp PlanLimits
