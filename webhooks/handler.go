@@ -163,6 +163,8 @@ func NewWebhookHandler(cfg *Configuration) http.HandlerFunc {
 			payload = &BotUpdated{}
 		case "bot_deleted":
 			payload = &BotDeleted{}
+		case "thread_summary_set":
+			payload = &ThreadSummarySet{}
 		default:
 			cfg.handleError(w, fmt.Sprintf("unknown webhook: %v", wh.Action), http.StatusBadRequest)
 			return

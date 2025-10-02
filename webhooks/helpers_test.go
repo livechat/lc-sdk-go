@@ -790,3 +790,21 @@ func autoAccessDeleted(ctx context.Context, wh *webhooks.Webhook) error {
 	}
 	return nil
 }
+
+func threadSummarySet(ctx context.Context, wh *webhooks.Webhook) error {
+	payload, ok := wh.Payload.(*webhooks.ThreadSummarySet)
+	if !ok {
+		return fmt.Errorf("invalid payload type: %T", wh.Payload)
+	}
+	var propEqErrors string
+	propEq("ChatID", payload.ChatID, "T30I2OAV50", &propEqErrors)
+	propEq("ThreadID", payload.ThreadID, "T30I2OAV60", &propEqErrors)
+	propEq("Summary.Status", payload.Summary.Status, "ok", &propEqErrors)
+	propEq("Summary.Text", payload.Summary.Text, "Customer asking about product pricing.", &propEqErrors)
+	propEq("Summary.UpdatedAt", payload.Summary.UpdatedAt, "2025-10-02T18:33:26.544000Z", &propEqErrors)
+
+	if propEqErrors != "" {
+		return errors.New(propEqErrors)
+	}
+	return nil
+}
