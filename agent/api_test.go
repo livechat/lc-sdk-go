@@ -193,7 +193,7 @@ var mockedResponses = map[string]string{
       "previous_thread_id": "K600PKZOM8",
       "next_thread_id": "K600PKZOO8",
       "summary": {
-        "summary": "Customer asking about product pricing",
+        "text": "Customer asking about product pricing",
         "status": "ok",
         "updated_at": "2019-12-17T08:53:20.693553+01:00"
       }
@@ -230,7 +230,7 @@ var mockedResponses = map[string]string{
 		  },
 		  "previous_thread_id": "K600PKZOM8",
 		  "summary": {
-			"summary": "Customer asking about product pricing",
+			"text": "Customer asking about product pricing",
 			"status": "ok",
 			"updated_at": "2019-12-17T08:53:20.693553+01:00"
 		  },
@@ -660,8 +660,8 @@ func TestGetChatShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("Received chat.ID invalid: %v", chat.ID)
 	}
 
-	if chat.Thread.Summary.Summary != "Customer asking about product pricing" {
-		t.Errorf("Invalid summary text '%v'", chat.Thread.Summary.Summary)
+	if chat.Thread.Summary.Text != "Customer asking about product pricing" {
+		t.Errorf("Invalid summary text '%v'", chat.Thread.Summary.Text)
 	}
 	if chat.Thread.Summary.Status != "ok" {
 		t.Errorf("Invalid summary status '%v'", chat.Thread.Summary.Status)
@@ -685,8 +685,8 @@ func TestListThreadsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Errorf("Received invalid threads length: %v", len(threads))
 	}
 
-	if threads[0].Summary.Summary != "Customer asking about product pricing" {
-		t.Errorf("Invalid summary text '%v'", threads[0].Summary.Summary)
+	if threads[0].Summary.Text != "Customer asking about product pricing" {
+		t.Errorf("Invalid summary text '%v'", threads[0].Summary.Text)
 	}
 	if threads[0].Summary.Status != "ok" {
 		t.Errorf("Invalid summary status '%v'", threads[0].Summary.Status)
