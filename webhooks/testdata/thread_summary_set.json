@@ -1,0 +1,16 @@
+{
+  "webhook_id": "c60e9768-ef5c-472d-bbe8-226696fe1586",
+  "secret_key": "dummy_key",
+  "action": "thread_summary_set",
+  "organization_id": "390e44e6-f1e6-0368c-z6ddb-74g14508c2ex",
+  "payload": {
+    "chat_id": "T30I2OAV50",
+    "thread_id": "T30I2OAV60",
+    "summary": {
+      "status": "ok",
+      "text": "Customer asking about product pricing.",
+      "updated_at": "2025-10-02T18:33:26.544000Z"
+    }
+  },
+  "additional_data": {}
+}
