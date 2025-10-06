@@ -280,8 +280,8 @@ type BotDeleted struct {
 	ID string `json:"id"`
 }
 
-// threadSummary represents a thread summary structure.
-type threadSummary struct {
+// ThreadSummary represents a thread summary structure.
+type ThreadSummary struct {
 	Status        string `json:"status"`
 	StatusDetails string `json:"status_details,omitempty"`
 	Text          string `json:"text,omitempty"`
@@ -292,7 +292,7 @@ type threadSummary struct {
 type ThreadSummarySet struct {
 	ChatID   string        `json:"chat_id"`
 	ThreadID string        `json:"thread_id"`
-	Summary  threadSummary `json:"summary"`
+	Summary  ThreadSummary `json:"summary"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
