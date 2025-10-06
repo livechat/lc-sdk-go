@@ -280,6 +280,21 @@ type BotDeleted struct {
 	ID string `json:"id"`
 }
 
+// ThreadSummary represents a thread summary structure.
+type ThreadSummary struct {
+	Status        string `json:"status"`
+	StatusDetails string `json:"status_details,omitempty"`
+	Text          string `json:"text,omitempty"`
+	UpdatedAt     string `json:"updated_at"`
+}
+
+// ThreadSummarySet represents payload of thread_summary_set webhook.
+type ThreadSummarySet struct {
+	ChatID   string        `json:"chat_id"`
+	ThreadID string        `json:"thread_id"`
+	Summary  ThreadSummary `json:"summary"`
+}
+
 // UnmarshalJSON implements json.Unmarshaler interface for IncomingChat.
 func (p *IncomingChat) UnmarshalJSON(data []byte) error {
 	type PayloadAlias IncomingChat
