@@ -2,6 +2,7 @@ package agent_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
@@ -87,7 +88,7 @@ var mockedResponses = map[string]string{
 					"type": "customer",
 					"present": true,
 					"created_at": "2019-11-02T19:19:50.625101Z",
-					"last_visit": {
+					"visit": {
 						"started_at": "2020-05-12T11:32:03.497479Z",
 						"ended_at": "2020-05-12T11:33:33.497000Z",
 						"ip": "<customer_ip>",
@@ -317,7 +318,7 @@ var mockedResponses = map[string]string{
 		}, {
 			"another_custom_key": "another_custom_value"
 		}],
-		"last_visit": {
+		"visit": {
 			"started_at": "2017-10-12T15:19:21.010200Z",
 			"referrer": "http://www.google.com/",
 			"ip": "194.181.146.130",
@@ -362,9 +363,72 @@ var mockedResponses = map[string]string{
 		"__priv_lc2_customer_id": "S1525771305.dafea66e5c",
 		"agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
 		"customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
-		"chat_ids": [
-				"PWJ8Y4THAV"
-		]
+    	"email_verified": false,
+    	"followed": false,
+		"online": true,
+		"chats": [
+			{
+				"chat_id": "T40F0L008J",
+				"thread_id": "T40F0L009J",
+				"last_thread_started_at": "2025-10-20T12:50:43.715000Z"
+			}
+		],
+		"tickets": [
+			{
+				"ticket_id": "5882e546-303a-4219-ba79-08962df174c9",
+				"silo": "inbox",
+				"created_at": "2025-10-17T12:49:30.000000Z"
+			},
+			{
+				"ticket_id": "5f11e252-728c-43db-8cf2-3af8e31db43d",
+				"silo": "inbox",
+				"created_at": "2025-10-17T13:37:49.000000Z"
+			},
+			{
+				"ticket_id": "e3f3d2e6-ce00-4a56-9dd9-ac6f6a204587",
+				"silo": "inbox",
+				"created_at": "2025-10-17T12:31:28.000000Z"
+			}
+		],
+		"orders": [
+			{
+				"store_platform": "shopify",
+				"store_uuid": "d0967e0f-4165-44d1-91df-3eecffac89ca",
+				"order_id": "gid://shopify/Order/1234567900",
+				"order_number": "#1002",
+				"currency": "USD",
+				"total_price": 123.45,
+				"created_at": "2007-10-05T14:48:00.000000Z"
+			},
+			{
+				"store_platform": "shopify",
+				"store_uuid": "d0967e0f-4165-44d1-91df-3eecffac89ca",
+				"order_id": "gid://shopify/Order/1234567901",
+				"order_number": "#1003",
+				"currency": "USD",
+				"total_price": 123.45,
+				"created_at": "2007-10-06T14:48:00.000000Z"
+			}
+		],
+		"omnichannel": {
+			"fbmessenger": [
+				{
+					"id": "1111111",
+					"name": "John Doe",
+					"first_name": "John",
+					"last_name": "Doe",
+					"profile_pic": "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=111111&width=1024&ext=11111&hash=AAAA",
+					"gender": "male",
+					"locale": "en_US",
+					"is_verified_user": true
+				}
+			],
+			"twilio": [
+				{
+					"phone_number": "+48123123123"
+				}
+			]
+		}
 	}`,
 	"update_customer":         `{}`,
 	"ban_customer":            `{}`,
@@ -969,8 +1033,28 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	customer, rErr := api.GetCustomer("b7eff798-f8df-4364-8059-649c35c9ed0c")
 	if rErr != nil {
 		t.Errorf("GetCustomer failed: %v", rErr)
+	} else {
+		checkGetCustomerResponse(t, customer)
+	}
+}
+
+func TestGetCustomerResponseShouldConvertFromUserToCustomer(t *testing.T) {
+	rawCustomerJson := mockedResponses["get_customer"]
+
+	var user agent.User
+	if err := json.Unmarshal([]byte(rawCustomerJson), &user); err != nil {
+		t.Errorf("Unmarshal user failed: %v", err)
 	}
 
+	customer := user.Customer()
+	if customer == nil {
+		t.Error("User conversion to customer failed")
+	} else {
+		checkGetCustomerResponse(t, *customer)
+	}
+}
+
+func checkGetCustomerResponse(t *testing.T, customer agent.Customer) {
 	if customer.ID != "b7eff798-f8df-4364-8059-649c35c9ed0c" {
 		t.Errorf("Invalid customer ID: %v", customer.ID)
 	}
@@ -997,6 +1081,40 @@ func TestGetCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 
 	if len(customer.SessionFields) != 2 {
 		t.Errorf("Invalid customer session fields: %+v", customer.SessionFields)
+	}
+
+	if len(customer.Chats) != 1 {
+		t.Errorf("Invalid number of customer chats: %d", len(customer.Chats))
+	} else if customer.Chats[0].ChatID != "T40F0L008J" || customer.Chats[0].ThreadID != "T40F0L009J" {
+		t.Errorf("Invalid customer chat: %v", customer.Chats[0])
+	}
+
+	if len(customer.Tickets) != 3 {
+		t.Errorf("Invalid number of customer tickets: %d", len(customer.Tickets))
+	} else if customer.Tickets[0].TicketID != "5882e546-303a-4219-ba79-08962df174c9" || customer.Tickets[0].Silo != "inbox" {
+		t.Errorf("Invalid customer ticket: %v", customer.Tickets[0])
+	}
+
+	if len(customer.Orders) != 2 {
+		t.Errorf("Invalid number of customer orders: %d", len(customer.Orders))
+	} else if customer.Orders[0].OrderID != "gid://shopify/Order/1234567900" || customer.Orders[0].StorePlatform != "shopify" {
+		t.Errorf("Invalid customer order: %v", customer.Tickets[0])
+	}
+
+	if customer.Omnichannel == nil {
+		t.Error("Missing omnichannel data")
+	} else {
+		if len(customer.Omnichannel.FBMessenger) != 1 {
+			t.Errorf("Invalid number of fbmessenger instances: %d", len(customer.Omnichannel.FBMessenger))
+		} else if customer.Omnichannel.FBMessenger[0].ID != "1111111" || customer.Omnichannel.FBMessenger[0].Name != "John Doe" {
+			t.Errorf("Invalid fbmessenger instance: %v", customer.Omnichannel.FBMessenger[0])
+		}
+
+		if len(customer.Omnichannel.Twilio) != 1 {
+			t.Errorf("Invalid number of twilio instances: %d", len(customer.Omnichannel.Twilio))
+		} else if customer.Omnichannel.Twilio[0].PhoneNumber != "+48123123123" {
+			t.Errorf("Invalid twilio instance: %v", customer.Omnichannel.Twilio[0])
+		}
 	}
 }
 

@@ -73,21 +73,25 @@ type User struct {
 }
 
 type userSpecific struct {
+	PhoneNumber                json.RawMessage `json:"phone_number"`
 	RoutingStatus              json.RawMessage `json:"routing_status"`
-	LastVisit                  json.RawMessage `json:"last_visit"`
+	Visit                      json.RawMessage `json:"visit"`
 	Statistics                 json.RawMessage `json:"statistics"`
 	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at"`
 	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at"`
 	SessionFields              json.RawMessage `json:"session_fields"`
 	Followed                   json.RawMessage `json:"followed"`
 	Online                     json.RawMessage `json:"online"`
+	EmailVerified              json.RawMessage `json:"email_verified"`
 	State                      json.RawMessage `json:"state"`
 	GroupIDs                   json.RawMessage `json:"group_ids"`
-	EmailVerified              json.RawMessage `json:"email_verified"`
+	GreetingID                 json.RawMessage `json:"greeting_id"`
 	CreatedAt                  json.RawMessage `json:"created_at"`
 	Visibility                 json.RawMessage `json:"visibility"`
 	Chats                      json.RawMessage `json:"chats"`
-	PhoneNumber                json.RawMessage `json:"phone_number"`
+	Tickets                    json.RawMessage `json:"tickets"`
+	Orders                     json.RawMessage `json:"orders"`
+	Omnichannel                json.RawMessage `json:"omnichannel"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -117,7 +121,7 @@ func (u *User) Customer() *Customer {
 	var c Customer
 
 	c.User = u
-	if err := json.Unmarshal(u.LastVisit, &c.LastVisit); err != nil {
+	if err := json.Unmarshal(u.Visit, &c.Visit); err != nil {
 		return nil
 	}
 	if err := json.Unmarshal(u.Statistics, &c.Statistics); err != nil {
@@ -141,19 +145,31 @@ func (u *User) Customer() *Customer {
 	if err := json.Unmarshal(u.Online, &c.Online); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(u.State, &c.State); err != nil {
+	if err := internal.UnmarshalOptionalRawField(u.State, &c.State); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(u.SessionFields, &c.SessionFields); err != nil {
+	if err := internal.UnmarshalOptionalRawField(u.SessionFields, &c.SessionFields); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(u.GroupIDs, &c.GroupIDs); err != nil {
+	if err := internal.UnmarshalOptionalRawField(u.GroupIDs, &c.GroupIDs); err != nil {
 		return nil
 	}
-	if err := json.Unmarshal(u.PhoneNumber, &c.PhoneNumber); err != nil {
+	if err := internal.UnmarshalOptionalRawField(u.GreetingID, &c.GreetingID); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.PhoneNumber, &c.PhoneNumber); err != nil {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Chats, &c.Chats); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.Tickets, &c.Tickets); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.Orders, &c.Orders); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.Omnichannel, &c.Omnichannel); err != nil {
 		return nil
 	}
 	return &c
@@ -292,8 +308,8 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
-	EmailVerified              bool                `json:"email_verified"`
-	LastVisit                  Visit               `json:"last_visit"`
+	PhoneNumber                string              `json:"phone_number"`
+	Visit                      Visit               `json:"visit"`
 	Statistics                 CustomerStatistics  `json:"statistics"`
 	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`
 	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`
@@ -301,12 +317,17 @@ type Customer struct {
 	SessionFields              []map[string]string `json:"session_fields"`
 	Followed                   bool                `json:"followed"`
 	Online                     bool                `json:"online"`
-	State                      string              `json:"state"`
+	EmailVerified              bool                `json:"email_verified"`
+	State                      string              `json:"state,omitempty"`
 	GroupIDs                   []int               `json:"group_ids"`
+	GreetingID                 int                 `json:"greeting_id,omitempty"`
 	Chats                      []*CustomerChat     `json:"chats,omitempty"`
-	PhoneNumber                string              `json:"phone_number"`
+	Tickets                    []*CustomerTicket   `json:"tickets,omitempty"`
+	Orders                     []*CustomerOrder    `json:"orders,omitempty"`
+	Omnichannel                *Omnichannel        `json:"omnichannel,omitempty"`
 }
 
+// CustomerStatistics represents customer's statistics.
 type CustomerStatistics struct {
 	ChatsCount              int `json:"chats_count"`
 	ThreadsCount            int `json:"threads_count"`
@@ -322,6 +343,47 @@ type CustomerStatistics struct {
 	OrdersCount             int `json:"orders_count"`
 
 	LastVisitStartedAt time.Time `json:"last_visit_started_at,omitempty"`
+}
+
+// CustomerTicket represents customer's ticket
+type CustomerTicket struct {
+	TicketID  string `json:"ticket_id"`
+	Silo      string `json:"silo"`
+	CreatedAt string `json:"created_at"`
+}
+
+// CustomerOrder represents customer's order
+type CustomerOrder struct {
+	StorePlatform string  `json:"store_platform"`
+	StoreUUID     string  `json:"store_uuid"`
+	OrderID       string  `json:"order_id"`
+	OrderNumber   string  `json:"order_number"`
+	Currency      string  `json:"currency"`
+	TotalPrice    float64 `json:"total_price"`
+	CreatedAt     string  `json:"created_at"`
+}
+
+// Omnichannel represents customer's integration data
+type Omnichannel struct {
+	FBMessenger []*FBMessenger `json:"fbmessenger,omitempty"`
+	Twilio      []*Twilio      `json:"twilio,omitempty"`
+}
+
+// FBMessenger represents customer's Facebook Messenger profile
+type FBMessenger struct {
+	ID             string `json:"id"`
+	Name           string `json:"name,omitempty"`
+	FirstName      string `json:"first_name,omitempty"`
+	LastName       string `json:"last_name,omitempty"`
+	ProfilePic     string `json:"profile_pic,omitempty"`
+	Gender         string `json:"gender,omitempty"`
+	Locale         string `json:"locale,omitempty"`
+	IsVerifiedUser *bool  `json:"is_verified_user,omitempty"`
+}
+
+// Twilio represents customer's Twilio profile
+type Twilio struct {
+	PhoneNumber string `json:"phone_number"`
 }
 
 // CustomerChat represents LiveChat customer's chat
