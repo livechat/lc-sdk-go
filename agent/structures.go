@@ -292,17 +292,9 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
-	EmailVerified bool  `json:"email_verified"`
-	LastVisit     Visit `json:"last_visit"`
-	Statistics    struct {
-		VisitsCount             int `json:"visits_count"`
-		ThreadsCount            int `json:"threads_count"`
-		ChatsCount              int `json:"chats_count"`
-		PageViewsCount          int `json:"page_views_count"`
-		GreetingsAcceptedCount  int `json:"greetings_accepted_count"`
-		GreetingsConvertedCount int `json:"greetings_converted_count"`
-		TicketsCount            int `json:"tickets_count"`
-	} `json:"statistics"`
+	EmailVerified              bool                `json:"email_verified"`
+	LastVisit                  Visit               `json:"last_visit"`
+	Statistics                 CustomerStatistics  `json:"statistics"`
 	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`
 	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`
 	CreatedAt                  time.Time           `json:"created_at"`
@@ -313,6 +305,23 @@ type Customer struct {
 	GroupIDs                   []int               `json:"group_ids"`
 	Chats                      []*CustomerChat     `json:"chats,omitempty"`
 	PhoneNumber                string              `json:"phone_number"`
+}
+
+type CustomerStatistics struct {
+	ChatsCount              int `json:"chats_count"`
+	ThreadsCount            int `json:"threads_count"`
+	VisitsCount             int `json:"visits_count"`
+	PageViewsCount          int `json:"page_views_count"`
+	GreetingsAcceptedCount  int `json:"greetings_accepted_count"`
+	GreetingsConvertedCount int `json:"greetings_converted_count"`
+	TicketsCount            int `json:"tickets_count"`
+	TicketsInboxCount       int `json:"tickets_inbox_count"`
+	TicketsArchiveCount     int `json:"tickets_archive_count"`
+	TicketsSpamCount        int `json:"tickets_spam_count"`
+	TicketsTrashCount       int `json:"tickets_trash_count"`
+	OrdersCount             int `json:"orders_count"`
+
+	LastVisitStartedAt time.Time `json:"last_visit_started_at,omitempty"`
 }
 
 // CustomerChat represents LiveChat customer's chat
