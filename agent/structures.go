@@ -327,7 +327,6 @@ type Customer struct {
 	Omnichannel                *Omnichannel        `json:"omnichannel,omitempty"`
 }
 
-// CustomerStatistics represents customer's statistics.
 type CustomerStatistics struct {
 	ChatsCount              int `json:"chats_count"`
 	ThreadsCount            int `json:"threads_count"`
@@ -345,14 +344,12 @@ type CustomerStatistics struct {
 	LastVisitStartedAt time.Time `json:"last_visit_started_at,omitempty"`
 }
 
-// CustomerTicket represents customer's ticket
 type CustomerTicket struct {
 	TicketID  string `json:"ticket_id"`
 	Silo      string `json:"silo"`
 	CreatedAt string `json:"created_at"`
 }
 
-// CustomerOrder represents customer's order
 type CustomerOrder struct {
 	StorePlatform string  `json:"store_platform"`
 	StoreUUID     string  `json:"store_uuid"`
@@ -363,13 +360,11 @@ type CustomerOrder struct {
 	CreatedAt     string  `json:"created_at"`
 }
 
-// Omnichannel represents customer's integration data
 type Omnichannel struct {
 	FBMessenger []*FBMessenger `json:"fbmessenger,omitempty"`
 	Twilio      []*Twilio      `json:"twilio,omitempty"`
 }
 
-// FBMessenger represents customer's Facebook Messenger profile
 type FBMessenger struct {
 	ID             string `json:"id"`
 	Name           string `json:"name,omitempty"`
@@ -381,12 +376,10 @@ type FBMessenger struct {
 	IsVerifiedUser *bool  `json:"is_verified_user,omitempty"`
 }
 
-// Twilio represents customer's Twilio profile
 type Twilio struct {
 	PhoneNumber string `json:"phone_number"`
 }
 
-// CustomerChat represents LiveChat customer's chat
 type CustomerChat struct {
 	ChatID              string    `json:"chat_id"`
 	ThreadID            string    `json:"thread_id,omitempty"`
