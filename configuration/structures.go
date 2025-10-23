@@ -110,6 +110,7 @@ type Bot struct {
 	MaxChatsCount        uint           `json:"max_chats_count,omitempty"`
 	Groups               []GroupConfig  `json:"groups,omitempty"`
 	JobTitle             string         `json:"job_title,omitempty"`
+	Type                 string         `json:"type,omitempty"`
 	WorkScheduler        *WorkScheduler `json:"work_scheduler,omitempty"`
 }
 
@@ -127,6 +128,7 @@ type CreateBotRequestOptions struct {
 	Avatar               string         `json:"avatar,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	JobTitle             string         `json:"job_title,omitempty"`
+	Type                 string         `json:"type,omitempty"`
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
 	Groups               []GroupConfig  `json:"groups,omitempty"`
 	OwnerClientID        string         `json:"owner_client_id,omitempty"`
@@ -143,6 +145,7 @@ type UpdateBotRequestOptions struct {
 	Avatar               string         `json:"avatar,omitempty"`
 	DefaultGroupPriority GroupPriority  `json:"default_group_priority,omitempty"`
 	JobTitle             string         `json:"job_title,omitempty"`
+	Type                 string         `json:"type,omitempty"`
 	MaxChatsCount        *uint          `json:"max_chats_count,omitempty"`
 	Groups               []GroupConfig  `json:"groups,omitempty"`
 	OwnerClientID        string         `json:"owner_client_id,omitempty"`
