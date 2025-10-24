@@ -318,6 +318,11 @@ var mockedResponses = map[string]string{
 			"next_id": "pqi8oasdjahuakndw9nsad9na"
 		}
 	]`,
+	"add_allowed_domain":    `{}`,
+	"delete_allowed_domain": `{}`,
+	"list_allowed_domains": `{
+		"domains": ["example.com", "test.com"]
+	}`,
 	"check_product_limits_for_plan": `[
 		{
 			"resource": "groups",
@@ -1851,4 +1856,64 @@ func TestListCannedResponsesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	}
 
 	validateRequestBody(t, `{"group_ids":[0,1],"include_private":true,"limit":2,"page_id":"some_page=="}`, serverMock.LastRequest.Body)
+}
+
+func TestAddAllowedDomainOK(t *testing.T) {
+	serverMock := newServerMock(t, "add_allowed_domain")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	err = api.AddAllowedDomain("example.com")
+	if err != nil {
+		t.Errorf("AddAllowedDomain failed: %v", err)
+	}
+
+	validateRequestBody(t, `{"domain":"example.com"}`, serverMock.LastRequest.Body)
+}
+
+func TestDeleteAllowedDomainOK(t *testing.T) {
+	serverMock := newServerMock(t, "delete_allowed_domain")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	err = api.DeleteAllowedDomain("example.com")
+	if err != nil {
+		t.Errorf("DeleteAllowedDomain failed: %v", err)
+	}
+
+	validateRequestBody(t, `{"domain":"example.com"}`, serverMock.LastRequest.Body)
+}
+
+func TestListAllowedDomainsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	client := NewTestClient(newServerMock(t, "list_allowed_domains"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	resp, err := api.ListAllowedDomains()
+	if err != nil {
+		t.Errorf("ListAllowedDomains failed: %v", err)
+	}
+
+	if len(resp) != 2 {
+		t.Errorf("Invalid response length: %v", len(resp))
+	}
+
+	if resp[0] != "example.com" {
+		t.Errorf("Invalid first domain: %v", resp[0])
+	}
+
+	if resp[1] != "test.com" {
+		t.Errorf("Invalid second domain: %v", resp[1])
+	}
 }
