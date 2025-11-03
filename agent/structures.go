@@ -407,10 +407,9 @@ type ThreadSummary struct {
 
 // Summary represents summary for a thread
 type Summary struct {
-	Text          string    `json:"text"`
-	Status        string    `json:"status"`
-	StatusDetails string    `json:"status_details,omitempty"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	Text      string    `json:"text"`
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // ChatSummary represents a short summary of a chat
