@@ -282,10 +282,9 @@ type BotDeleted struct {
 
 // ThreadSummary represents a thread summary structure.
 type ThreadSummary struct {
-	Status        string `json:"status"`
-	StatusDetails string `json:"status_details,omitempty"`
-	Text          string `json:"text,omitempty"`
-	UpdatedAt     string `json:"updated_at"`
+	Status    string `json:"status"`
+	Text      string `json:"text,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // ThreadSummarySet represents payload of thread_summary_set webhook.
