@@ -658,3 +658,23 @@ func (a *API) DeleteCannedResponse(id int64) error {
 		ID: id,
 	}, &emptyResponse{})
 }
+
+// UpdateTranslations updates translations for a specific group and language
+func (a *API) UpdateTranslations(groupID int32, language string, phrases map[string]string) error {
+	return a.Call("update_translations", &updateTranslationsRequest{
+		GroupID:  groupID,
+		Language: language,
+		Phrases:  phrases,
+	}, &emptyResponse{})
+}
+
+// ListTranslations retrieves translations for a specific group and language
+func (a *API) ListTranslations(groupID int32, language string) (map[string]string, error) {
+	var resp listTranslationsResponse
+	err := a.Call("list_translations", &listTranslationsRequest{
+		GroupID:  groupID,
+		Language: language,
+	}, &resp)
+
+	return resp.Phrases, err
+}

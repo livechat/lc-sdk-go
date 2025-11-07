@@ -399,6 +399,8 @@ var mockedResponses = map[string]string{
 		"found_canned_responses": 10,
 		"next_page_id": "next_page=="
 	}`,
+	"update_translations": `{}`,
+	"list_translations":   `{"phrases":{"hello":"cześć","bye":"do widzenia"}}`,
 }
 
 func getMockResponseOK(method string) *http.Response {
@@ -1915,5 +1917,47 @@ func TestListAllowedDomainsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 
 	if resp[1] != "test.com" {
 		t.Errorf("Invalid second domain: %v", resp[1])
+	}
+}
+
+func TestUpdateTranslationsOK(t *testing.T) {
+	serverMock := newServerMock(t, "update_translations")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	err = api.UpdateTranslations(1, "pl", map[string]string{
+		"hello": "cześć",
+	})
+	if err != nil {
+		t.Errorf("UpdateTranslations failed: %v", err)
+	}
+
+	validateRequestBody(t, `{"group_id":1,"language":"pl","phrases":{"hello":"cześć"}}`, serverMock.LastRequest.Body)
+}
+
+func TestListTranslationsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
+	serverMock := newServerMock(t, "list_translations")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	resp, err := api.ListTranslations(1, "pl")
+	if err != nil {
+		t.Errorf("ListTranslations failed: %v", err)
+	}
+
+	if len(resp) != 2 {
+		t.Errorf("Invalid response length: %v", len(resp))
+	}
+
+	if resp["hello"] != "cześć" {
+		t.Errorf("Invalid `hello` translation: %v", resp["hello"])
 	}
 }

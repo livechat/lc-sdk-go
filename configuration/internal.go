@@ -302,3 +302,18 @@ type listCannedResponsesRequest struct {
 type deleteCannedResponseRequest struct {
 	ID int64 `json:"id"`
 }
+
+type updateTranslationsRequest struct {
+	GroupID  int32             `json:"group_id"`
+	Language string            `json:"language"`
+	Phrases  map[string]string `json:"phrases"`
+}
+
+type listTranslationsRequest struct {
+	GroupID  int32  `json:"group_id"`
+	Language string `json:"language"`
+}
+
+type listTranslationsResponse struct {
+	Phrases map[string]string `json:"phrases"`
+}
