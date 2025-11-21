@@ -654,9 +654,7 @@ func (a *API) UpdateCannedResponse(req *UpdateCannedResponseRequestOptions) erro
 
 // DeleteCannedResponse deletes a canned response
 func (a *API) DeleteCannedResponse(id int64) error {
-	return a.Call("delete_canned_response", &deleteCannedResponseRequest{
-		ID: id,
-	}, &emptyResponse{})
+	return a.Call("delete_canned_response", &deleteCannedResponseRequest{ID: id}, &emptyResponse{})
 }
 
 // UpdateTranslations updates translations for a specific group and language
