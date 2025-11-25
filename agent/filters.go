@@ -32,19 +32,21 @@ func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue 
 // Archives filters
 
 type archivesFilters struct {
-	Agents     *propertyFilterType `json:"agents,omitempty"`
-	GroupIDs   []uint              `json:"group_ids,omitempty"`
-	From       string              `json:"from,omitempty"`
-	To         string              `json:"to,omitempty"`
-	Properties PropertiesFilters   `json:"properties,omitempty"`
-	Tags       *propertyFilterType `json:"tags,omitempty"`
-	Sales      *propertyFilterType `json:"sales,omitempty"`
-	Goals      *propertyFilterType `json:"goals,omitempty"`
-	Surveys    []SurveyFilter      `json:"surveys,omitempty"`
-	ThreadIDs  []string            `json:"thread_ids,omitempty"`
-	Query      string              `json:"query,omitempty"`
-	EventTypes *eventTypesFilter   `json:"event_types,omitempty"`
-	Greetings  *GreetingsFilter    `json:"greetings,omitempty"`
+	Agents        *propertyFilterType `json:"agents,omitempty"`
+	GroupIDs      []uint              `json:"group_ids,omitempty"`
+	From          string              `json:"from,omitempty"`
+	To            string              `json:"to,omitempty"`
+	Properties    PropertiesFilters   `json:"properties,omitempty"`
+	Tags          *propertyFilterType `json:"tags,omitempty"`
+	Sales         *propertyFilterType `json:"sales,omitempty"`
+	Goals         *propertyFilterType `json:"goals,omitempty"`
+	Surveys       []SurveyFilter      `json:"surveys,omitempty"`
+	ThreadIDs     []string            `json:"thread_ids,omitempty"`
+	Query         string              `json:"query,omitempty"`
+	EventTypes    *eventTypesFilter   `json:"event_types,omitempty"`
+	Greetings     *GreetingsFilter    `json:"greetings,omitempty"`
+	CustomerID    string              `json:"customer_id,omitempty"`
+	CustomerEmail string              `json:"customer_email,omitempty"`
 }
 
 type eventTypesFilter struct {
