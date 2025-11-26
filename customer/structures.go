@@ -215,8 +215,8 @@ type Customer struct {
 	SessionFields []map[string]string `json:"session_fields"`
 }
 
-// ChatSummary represents a short summary of a chat
-type ChatSummary struct {
+// ChatInfo represents a short summary of a chat
+type ChatInfo struct {
 	ID                  string    `json:"id"`
 	LastThreadCreatedAt time.Time `json:"last_thread_created_at"`
 	LastThreadID        string    `json:"last_thread_id,omitempty"`

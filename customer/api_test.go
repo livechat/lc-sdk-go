@@ -46,7 +46,7 @@ var mockedResponses = map[string]string{
 		"event_id": "K600PKZON8"
 	}`,
 	"list_chats": `{
-		"chats_summary": [{
+		"chats_info": [{
 			"id": "PJ0MRSHTDG",
 			"last_thread_created_at": "2020-05-07T07:11:28.288340Z",
 			"last_thread_id": "K600PKZON8",

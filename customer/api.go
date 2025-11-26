@@ -133,7 +133,7 @@ func (a *API) ResumeChat(initialChat *InitialChat, continuous, active bool) (thr
 }
 
 // ListChats returns chat summaries list.
-func (a *API) ListChats(sortOrder, pageID string, limit uint) (summary []ChatSummary, total uint, previousPage, nextPage string, err error) {
+func (a *API) ListChats(sortOrder, pageID string, limit uint) (info []ChatInfo, total uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
 		hashedPaginationRequest: &hashedPaginationRequest{
@@ -143,7 +143,7 @@ func (a *API) ListChats(sortOrder, pageID string, limit uint) (summary []ChatSum
 		},
 	}, &resp)
 
-	return resp.ChatsSummary, resp.TotalChats, resp.PreviousPageID, resp.NextPageID, err
+	return resp.ChatsInfo, resp.TotalChats, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // GetChat returns given thread for given chat.

@@ -393,8 +393,8 @@ type Queue struct {
 	QueuedAt time.Time `json:"queued_at"`
 }
 
-// ThreadSummary represents a short summary of a thread
-type ThreadSummary struct {
+// ThreadInfo represents a short info of a thread
+type ThreadInfo struct {
 	ID         string     `json:"id"`
 	UserIDs    []string   `json:"user_ids"`
 	Properties Properties `json:"properties,omitempty"`
@@ -412,8 +412,8 @@ type Summary struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ChatSummary represents a short summary of a chat
-type ChatSummary struct {
+// ChatInfo represents a short summary of a chat
+type ChatInfo struct {
 	ID               string `json:"id"`
 	LastEventPerType map[string]struct {
 		ThreadID              string    `json:"thread_id"`
@@ -421,11 +421,11 @@ type ChatSummary struct {
 		RestrictedEventAccess string    `json:"restricted_access,omitempty"`
 		Event                 Event     `json:"event"`
 	} `json:"last_event_per_type,omitempty"`
-	Users             []*User        `json:"users"`
-	LastThreadSummary *ThreadSummary `json:"last_thread_summary,omitempty"`
-	Properties        Properties     `json:"properties,omitempty"`
-	Access            *Access        `json:"access,omitempty"`
-	IsFollowed        bool           `json:"is_followed"`
+	Users          []*User     `json:"users"`
+	LastThreadInfo *ThreadInfo `json:"last_thread_info,omitempty"`
+	Properties     Properties  `json:"properties,omitempty"`
+	Access         *Access     `json:"access,omitempty"`
+	IsFollowed     bool        `json:"is_followed"`
 }
 
 // InitialThread represents initial chat thread used in StartChat or ResumeChat.
