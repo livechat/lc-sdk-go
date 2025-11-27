@@ -132,7 +132,7 @@ func (a *API) ResumeChat(initialChat *InitialChat, continuous, active bool) (thr
 	return resp.ThreadID, resp.EventIDs, err
 }
 
-// ListChats returns chat summaries list.
+// It returns chat info for the chats a Customer participated in.
 func (a *API) ListChats(sortOrder, pageID string, limit uint) (info []ChatInfo, total uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
