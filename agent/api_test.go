@@ -688,18 +688,18 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	if chats[0].IsFollowed {
 		t.Error("Chat is followed should be false")
 	}
-	if chats[0].LastThreadSummary.ID != "K600PKZON8" {
-		t.Errorf("Invalid last thread id. Got: %v, expected: %v", chats[0].LastThreadSummary.ID, "K600PKZON8")
+	if chats[0].LastThreadInfo.ID != "K600PKZON8" {
+		t.Errorf("Invalid last thread id. Got: %v, expected: %v", chats[0].LastThreadInfo.ID, "K600PKZON8")
 	}
-	lastThreadCreationDate := chats[0].LastThreadSummary.CreatedAt.Format(time.RFC3339Nano)
+	lastThreadCreationDate := chats[0].LastThreadInfo.CreatedAt.Format(time.RFC3339Nano)
 	if lastThreadCreationDate != "2020-05-07T07:11:28.28834Z" {
 		t.Errorf("Invalid last thread creation date. Got: %v, expected: %v", lastThreadCreationDate, "2020-05-07T07:11:28.28834Z")
 	}
-	if len(chats[0].LastThreadSummary.Properties) != 1 {
-		t.Errorf("Invalid last thread properties count. Got: %v, expected: %v", len(chats[0].LastThreadSummary.Properties), 1)
+	if len(chats[0].LastThreadInfo.Properties) != 1 {
+		t.Errorf("Invalid last thread properties count. Got: %v, expected: %v", len(chats[0].LastThreadInfo.Properties), 1)
 	}
-	if chats[0].LastThreadSummary.Queue.Position != 42 {
-		t.Errorf("Invalid last thread queue position. Got: %v, expected: %v", chats[0].LastThreadSummary.Queue.Position, 42)
+	if chats[0].LastThreadInfo.Queue.Position != 42 {
+		t.Errorf("Invalid last thread queue position. Got: %v, expected: %v", chats[0].LastThreadInfo.Queue.Position, 42)
 	}
 	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
 		t.Errorf("Invalid last event per type thread id. Got: %v, expected: %v", chats[0].LastEventPerType["message"].ThreadID, "K600PKZON8")
