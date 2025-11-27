@@ -42,7 +42,7 @@ func (a *API) SetAuthorID(authorID string) {
 	a.agentAPI.SetCustomHeader("X-Author-Id", authorID)
 }
 
-// ListChats returns chat summaries list.
+// ListChats returns chat info for the chats an Agent has access to.
 func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (info []ChatInfo, found uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{

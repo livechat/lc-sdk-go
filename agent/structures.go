@@ -270,22 +270,22 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 
 // Thread represents LiveChat chat thread
 type Thread struct {
-	ID                        string     `json:"id"`
-	Active                    bool       `json:"active"`
-	UserIDs                   []string   `json:"user_ids"`
-	RestrictedAccess          string     `json:"restricted_access"`
-	Properties                Properties `json:"properties"`
-	Access                    *Access    `json:"access"`
-	Tags                      []string   `json:"tags,omitempty"`
-	Events                    []*Event   `json:"events"`
-	PreviousThreadID          string     `json:"previous_thread_id"`
-	NextThreadID              string     `json:"next_thread_id"`
-	CreatedAt                 time.Time  `json:"created_at"`
-	PreviousAccesibleThreadID string     `json:"previous_accessible_thread_id,omitempty"`
-	NextAccessibleThreadID    string     `json:"next_accessible_thread_id,omitempty"`
-	Queue                     *Queue     `json:"queue,omitempty"`
-	QueuesDuration            *int       `json:"queues_duration,omitempty"`
-	Summary                   *Summary   `json:"summary,omitempty"`
+	ID                        string         `json:"id"`
+	Active                    bool           `json:"active"`
+	UserIDs                   []string       `json:"user_ids"`
+	RestrictedAccess          string         `json:"restricted_access"`
+	Properties                Properties     `json:"properties"`
+	Access                    *Access        `json:"access"`
+	Tags                      []string       `json:"tags,omitempty"`
+	Events                    []*Event       `json:"events"`
+	PreviousThreadID          string         `json:"previous_thread_id"`
+	NextThreadID              string         `json:"next_thread_id"`
+	CreatedAt                 time.Time      `json:"created_at"`
+	PreviousAccesibleThreadID string         `json:"previous_accessible_thread_id,omitempty"`
+	NextAccessibleThreadID    string         `json:"next_accessible_thread_id,omitempty"`
+	Queue                     *Queue         `json:"queue,omitempty"`
+	QueuesDuration            *int           `json:"queues_duration,omitempty"`
+	Summary                   *ThreadSummary `json:"summary,omitempty"`
 	CustomerVisit             *struct {
 		IP          string      `json:"ip"`
 		UserAgent   string      `json:"user_agent"`
@@ -393,7 +393,7 @@ type Queue struct {
 	QueuedAt time.Time `json:"queued_at"`
 }
 
-// ThreadInfo represents a short summary of a thread
+// ThreadInfo represents a short description of a thread
 type ThreadInfo struct {
 	ID         string     `json:"id"`
 	UserIDs    []string   `json:"user_ids"`
@@ -405,14 +405,14 @@ type ThreadInfo struct {
 	Queue      *Queue     `json:"queue,omitempty"`
 }
 
-// Summary represents summary for a thread
-type Summary struct {
+// ThreadSummary represents summary for a thread
+type ThreadSummary struct {
 	Text      string    `json:"text"`
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ChatInfo represents a short summary of a chat
+// ChatInfo represents a short description of a chat
 type ChatInfo struct {
 	ID               string `json:"id"`
 	LastEventPerType map[string]struct {
