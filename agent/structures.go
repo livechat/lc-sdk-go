@@ -393,7 +393,7 @@ type Queue struct {
 	QueuedAt time.Time `json:"queued_at"`
 }
 
-// ThreadInfo represents a short info of a thread
+// ThreadInfo represents a short summary of a thread
 type ThreadInfo struct {
 	ID         string     `json:"id"`
 	UserIDs    []string   `json:"user_ids"`
