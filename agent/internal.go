@@ -11,8 +11,8 @@ type listChatsRequest struct {
 
 type listChatsResponse struct {
 	hashedPaginationResponse
-	ChatsSummary []ChatSummary `json:"chats_summary"`
-	FoundChats   uint          `json:"found_chats"`
+	ChatsInfo  []ChatInfo `json:"chats_info"`
+	FoundChats uint       `json:"found_chats"`
 }
 
 type getChatRequest struct {
