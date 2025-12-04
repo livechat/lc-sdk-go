@@ -42,8 +42,8 @@ func (a *API) SetAuthorID(authorID string) {
 	a.agentAPI.SetCustomHeader("X-Author-Id", authorID)
 }
 
-// ListChats returns chat summaries list.
-func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (summary []ChatSummary, found uint, previousPage, nextPage string, err error) {
+// ListChats returns chat info for the chats an Agent has access to.
+func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit uint) (info []ChatInfo, found uint, previousPage, nextPage string, err error) {
 	var resp listChatsResponse
 	err = a.Call("list_chats", &listChatsRequest{
 		Filters: filters,
@@ -54,7 +54,7 @@ func (a *API) ListChats(filters *chatsFilters, sortOrder, pageID string, limit u
 		},
 	}, &resp)
 
-	return resp.ChatsSummary, resp.FoundChats, resp.PreviousPageID, resp.NextPageID, err
+	return resp.ChatsInfo, resp.FoundChats, resp.PreviousPageID, resp.NextPageID, err
 }
 
 // GetChat returns given thread for given chat.

@@ -270,22 +270,22 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 
 // Thread represents LiveChat chat thread
 type Thread struct {
-	ID                        string     `json:"id"`
-	Active                    bool       `json:"active"`
-	UserIDs                   []string   `json:"user_ids"`
-	RestrictedAccess          string     `json:"restricted_access"`
-	Properties                Properties `json:"properties"`
-	Access                    *Access    `json:"access"`
-	Tags                      []string   `json:"tags,omitempty"`
-	Events                    []*Event   `json:"events"`
-	PreviousThreadID          string     `json:"previous_thread_id"`
-	NextThreadID              string     `json:"next_thread_id"`
-	CreatedAt                 time.Time  `json:"created_at"`
-	PreviousAccesibleThreadID string     `json:"previous_accessible_thread_id,omitempty"`
-	NextAccessibleThreadID    string     `json:"next_accessible_thread_id,omitempty"`
-	Queue                     *Queue     `json:"queue,omitempty"`
-	QueuesDuration            *int       `json:"queues_duration,omitempty"`
-	Summary                   *Summary   `json:"summary,omitempty"`
+	ID                        string         `json:"id"`
+	Active                    bool           `json:"active"`
+	UserIDs                   []string       `json:"user_ids"`
+	RestrictedAccess          string         `json:"restricted_access"`
+	Properties                Properties     `json:"properties"`
+	Access                    *Access        `json:"access"`
+	Tags                      []string       `json:"tags,omitempty"`
+	Events                    []*Event       `json:"events"`
+	PreviousThreadID          string         `json:"previous_thread_id"`
+	NextThreadID              string         `json:"next_thread_id"`
+	CreatedAt                 time.Time      `json:"created_at"`
+	PreviousAccesibleThreadID string         `json:"previous_accessible_thread_id,omitempty"`
+	NextAccessibleThreadID    string         `json:"next_accessible_thread_id,omitempty"`
+	Queue                     *Queue         `json:"queue,omitempty"`
+	QueuesDuration            *int           `json:"queues_duration,omitempty"`
+	Summary                   *ThreadSummary `json:"summary,omitempty"`
 	CustomerVisit             *struct {
 		IP          string      `json:"ip"`
 		UserAgent   string      `json:"user_agent"`
@@ -393,8 +393,8 @@ type Queue struct {
 	QueuedAt time.Time `json:"queued_at"`
 }
 
-// ThreadSummary represents a short summary of a thread
-type ThreadSummary struct {
+// ThreadInfo represents a short description of a thread
+type ThreadInfo struct {
 	ID         string     `json:"id"`
 	UserIDs    []string   `json:"user_ids"`
 	Properties Properties `json:"properties,omitempty"`
@@ -405,15 +405,15 @@ type ThreadSummary struct {
 	Queue      *Queue     `json:"queue,omitempty"`
 }
 
-// Summary represents summary for a thread
-type Summary struct {
+// ThreadSummary represents summary for a thread
+type ThreadSummary struct {
 	Text      string    `json:"text"`
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ChatSummary represents a short summary of a chat
-type ChatSummary struct {
+// ChatInfo represents a short description of a chat
+type ChatInfo struct {
 	ID               string `json:"id"`
 	LastEventPerType map[string]struct {
 		ThreadID              string    `json:"thread_id"`
@@ -421,11 +421,11 @@ type ChatSummary struct {
 		RestrictedEventAccess string    `json:"restricted_access,omitempty"`
 		Event                 Event     `json:"event"`
 	} `json:"last_event_per_type,omitempty"`
-	Users             []*User        `json:"users"`
-	LastThreadSummary *ThreadSummary `json:"last_thread_summary,omitempty"`
-	Properties        Properties     `json:"properties,omitempty"`
-	Access            *Access        `json:"access,omitempty"`
-	IsFollowed        bool           `json:"is_followed"`
+	Users          []*User     `json:"users"`
+	LastThreadInfo *ThreadInfo `json:"last_thread_summary,omitempty"`
+	Properties     Properties  `json:"properties,omitempty"`
+	Access         *Access     `json:"access,omitempty"`
+	IsFollowed     bool        `json:"is_followed"`
 }
 
 // InitialThread represents initial chat thread used in StartChat or ResumeChat.
