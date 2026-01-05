@@ -262,6 +262,18 @@ var mockedResponses = map[string]string{
 			"type": "agent"
 		}
 	}`,
+	"request_welcome_message": `{
+		"id": "e5a10d9c-7a51-4166-b575-171059c8d19b",
+		"predicted_agent": {
+			"id": "agent1@example.com",
+			"name": "Name",
+			"avatar": "https://example.avatar/example.com",
+			"is_bot": false,
+			"job_title": "support hero",
+			"type": "agent"
+		},
+		"queue": false
+	}`,
 	"get_url_info": `{
 		"title": "LiveChat | Live Chat Software and Help Desk Software",
 		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
@@ -865,6 +877,28 @@ func TestGetPredictedAgentShouldReturnDataReceivedFromCustomerAPI(t *testing.T) 
 	}
 }
 
+func TestRequestWelcomeMessageShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "request_welcome_message"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	id, predictedAgent, _, rErr := api.RequestWelcomeMessage("", nil)
+	if rErr != nil {
+		t.Errorf("RequestWelcomeMessage failed: %v", rErr)
+	}
+
+	if id == "" {
+		t.Error("Invalid id")
+	}
+
+	if predictedAgent == nil {
+		t.Error("Invalid Agent")
+	}
+}
+
 func TestGetURLInfoShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	client := NewTestClient(createMockedResponder(t, "get_url_info"))
 
@@ -1208,6 +1242,18 @@ func TestGetPredictedAgentShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	_, rErr := api.GetPredictedAgent()
 	verifyErrorResponse("GetPredictedAgent", rErr, t)
+}
+
+func TestRequestWelcomeMessageShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "request_welcome_message"))
+
+	api, err := customer.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	_, _, _, rErr := api.RequestWelcomeMessage("", nil)
+	verifyErrorResponse("RequestWelcomeMessage", rErr, t)
 }
 
 func TestGetURLInfoShouldNotCrashOnErrorResponse(t *testing.T) {

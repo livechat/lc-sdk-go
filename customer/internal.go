@@ -198,3 +198,9 @@ type requestWelcomeMessageRequest struct {
 	ID      string `json:"id,omitempty"`
 	GroupID *int   `json:"group_id,omitempty"`
 }
+
+type requestWelcomeMessageResponse struct {
+	ID             string            `json:"id"`
+	PredictedAgent *PredictedAgentV2 `json:"predicted_agent"`
+	Queue          bool              `json:"queue"`
+}
