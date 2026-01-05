@@ -27,17 +27,15 @@ type Form struct {
 	} `json:"fields"`
 }
 
-// PredictedAgent is an agent returned by GetPredictedAgent method.
+// PredictedAgent is an agent returned by RequestWelcomeMessage method.
 type PredictedAgent struct {
-	Agent struct {
-		ID        string `json:"id"`
-		Name      string `json:"name"`
-		AvatarURL string `json:"avatar"`
-		IsBot     bool   `json:"is_bot"`
-		JobTitle  string `json:"job_title"`
-		Type      string `json:"type"`
-	} `json:"agent"`
-	Queue bool `json:"queue"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatar"`
+	IsBot     bool   `json:"is_bot"`
+	BotType   string `json:"bot_type,omitempty"`
+	JobTitle  string `json:"job_title"`
+	Type      string `json:"type"`
 }
 
 // URLInfo contains some OpenGraph info of the URL.
