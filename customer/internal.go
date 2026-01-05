@@ -193,3 +193,8 @@ type hashedPaginationResponse struct {
 type requestEmailVerificationRequest struct {
 	CallbackURI string `json:"callback_uri"`
 }
+
+type requestWelcomeMessageRequest struct {
+	ID      string `json:"id,omitempty"`
+	GroupID *int   `json:"group_id,omitempty"`
+}

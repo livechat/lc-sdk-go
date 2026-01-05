@@ -338,6 +338,18 @@ func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
 	return &resp, err
 }
 
+// RequestWelcomeMessage requests a welcome message for current customer. It returns a predicted agent - the one
+// the customer will chat with when the chat starts - and triggers generation of welcome message.
+// To use this method, the Customer needs to be logged in, which can be done via Customer Chat RTM Api's login method.
+func (a *API) RequestWelcomeMessage(id string, groupID *int) (*PredictedAgentV2, error) {
+	var resp PredictedAgentV2
+	err := a.Call("request_welcome_message", &requestWelcomeMessageRequest{
+		ID:      id,
+		GroupID: groupID,
+	}, &resp)
+	return &resp, err
+}
+
 // GetURLInfo returns info on a given URL.
 func (a *API) GetURLInfo(url string) (*URLInfo, error) {
 	var resp URLInfo

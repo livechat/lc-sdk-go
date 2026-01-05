@@ -40,6 +40,20 @@ type PredictedAgent struct {
 	Queue bool `json:"queue"`
 }
 
+// PredictedAgentV2 is an agent returned by RequestWelcomeMessage method.
+type PredictedAgentV2 struct {
+	Agent struct {
+		ID        string `json:"id"`
+		Name      string `json:"name"`
+		AvatarURL string `json:"avatar"`
+		IsBot     bool   `json:"is_bot"`
+		BotType   string `json:"bot_type,omitempty"`
+		JobTitle  string `json:"job_title"`
+		Type      string `json:"type"`
+	} `json:"agent"`
+	Queue bool `json:"queue"`
+}
+
 // URLInfo contains some OpenGraph info of the URL.
 type URLInfo struct {
 	Title            string `json:"title"`
