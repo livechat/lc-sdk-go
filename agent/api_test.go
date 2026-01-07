@@ -448,8 +448,6 @@ var mockedResponses = map[string]string{
 			"total_active_chats": 5
 		}
 	]`,
-	"follow_customer":   `{}`,
-	"unfollow_customer": `{}`,
 	"list_routing_statuses": `[{
 		"agent_id": "smith@example.com",
 		"status": "accepting_chats"
@@ -1754,34 +1752,6 @@ func TestRetryStrategyLastSuccess(t *testing.T) {
 		t.Error("Retries should be done 2 times")
 	}
 
-}
-
-func TestFollowCustomerShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "follow_customer"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Error("API creation failed")
-	}
-
-	err = api.FollowCustomer("foo")
-	if err != nil {
-		t.Errorf("FollowCustomer failed: %v", err)
-	}
-}
-
-func TestUnfollowCustomerShouldReturnDataReceivedFromConfAPI(t *testing.T) {
-	client := NewTestClient(createMockedResponder(t, "unfollow_customer"))
-
-	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
-	if err != nil {
-		t.Error("API creation failed")
-	}
-
-	err = api.UnfollowCustomer("foo")
-	if err != nil {
-		t.Errorf("UnfollowCustomer failed: %v", err)
-	}
 }
 
 func TestListRoutingStatusesShouldReturnDataReceivedFromConfAPI(t *testing.T) {
