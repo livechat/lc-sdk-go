@@ -210,6 +210,7 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
+	NameIsDefault bool                `json:"name_is_default"`
 	Email         string              `json:"email"`
 	EmailVerified bool                `json:"email_verified"`
 	SessionFields []map[string]string `json:"session_fields"`
