@@ -302,6 +302,7 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
+	NameIsDefault              bool                `json:"name_is_default"`
 	PhoneNumber                string              `json:"phone_number"`
 	Visit                      Visit               `json:"visit"`
 	Statistics                 CustomerStatistics  `json:"statistics"`

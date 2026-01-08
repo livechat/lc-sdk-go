@@ -750,7 +750,8 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
+	nameIsDefault := true
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, &nameIsDefault)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1146,7 +1147,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{})
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, nil)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
