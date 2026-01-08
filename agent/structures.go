@@ -20,10 +20,9 @@ type ban struct {
 	Days uint `json:"days"`
 }
 
-// MulticastRecipients aggregates Agent and Customer recipients that multicast should be sent to
+// MulticastRecipients aggregates Agent recipients that multicast should be sent to
 type MulticastRecipients struct {
-	Agents    *MulticastRecipientsAgents    `json:"agents,omitempty"`
-	Customers *MulticastRecipientsCustomers `json:"customers,omitempty"`
+	Agents *MulticastRecipientsAgents `json:"agents,omitempty"`
 }
 
 // MulticastRecipientsAgents represents recipients for multicast to agents
@@ -31,11 +30,6 @@ type MulticastRecipientsAgents struct {
 	Groups []uint   `json:"groups,omitempty"`
 	IDs    []string `json:"ids,omitempty"`
 	All    *bool    `json:"all,omitempty"`
-}
-
-// MulticastRecipientsCustomers represents recipients for multicast to customers
-type MulticastRecipientsCustomers struct {
-	IDs []string `json:"ids,omitempty"`
 }
 
 type transferTarget struct {
