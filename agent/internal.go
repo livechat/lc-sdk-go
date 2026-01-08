@@ -244,10 +244,6 @@ type listAgentsForTransferRequest struct {
 	ChatID string `json:"chat_id"`
 }
 
-type followCustomerRequest struct {
-	ID string `json:"id"`
-}
-
 type listRoutingStatusesRequest struct {
 	Filters *routingStatusesFilter `json:"filters"`
 }
