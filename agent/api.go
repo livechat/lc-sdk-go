@@ -400,20 +400,6 @@ func (a *API) ListAgentsForTransfer(chatID string) (AgentsForTransfer, error) {
 	return resp, err
 }
 
-// FollowCustomer marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes.
-func (a *API) FollowCustomer(customerID string) error {
-	return a.Call("follow_customer", &followCustomerRequest{
-		ID: customerID,
-	}, &emptyResponse{})
-}
-
-// UnfollowCustomer removes the agent from the list of customer's followers.
-func (a *API) UnfollowCustomer(customerID string) error {
-	return a.Call("unfollow_customer", &followCustomerRequest{
-		ID: customerID,
-	}, &emptyResponse{})
-}
-
 func (a *API) ListRoutingStatuses(groupIDs []int) ([]AgentStatus, error) {
 	var resp []AgentStatus
 	err := a.Call("list_routing_statuses", &listRoutingStatusesRequest{
