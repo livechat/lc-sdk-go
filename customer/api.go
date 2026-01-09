@@ -330,13 +330,17 @@ func (a *API) GetForm(groupID int, formType FormType) (form *Form, enabled bool,
 	return resp.Form, resp.Enabled, err
 }
 
-// GetPredictedAgent returns the predicted Agent - the one the Customer will chat with
-// when the chat starts. To use this method, the Customer needs to be logged in,
-// which can be done via Customer Chat RTM Api's login method.
-func (a *API) GetPredictedAgent() (*PredictedAgent, error) {
-	var resp PredictedAgent
-	err := a.Call("get_predicted_agent", nil, &resp)
-	return &resp, err
+// RequestWelcomeMessage requests a welcome message for current customer. It returns welcome message ID,
+// indication whether chat will be queued and a predicted agent - the one the customer will chat with when
+// the chat starts - and triggers generation of welcome message.
+// To use this method, the Customer needs to be logged in, which can be done via Customer Chat RTM Api's login method.
+func (a *API) RequestWelcomeMessage(welcomeMessageID string, groupID *int) (string, *PredictedAgent, bool, error) {
+	var resp requestWelcomeMessageResponse
+	err := a.Call("request_welcome_message", &requestWelcomeMessageRequest{
+		ID:      welcomeMessageID,
+		GroupID: groupID,
+	}, &resp)
+	return resp.ID, resp.PredictedAgent, resp.Queue, err
 }
 
 // GetURLInfo returns info on a given URL.
