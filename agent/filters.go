@@ -176,7 +176,7 @@ func (af *archivesFilters) ByGreetings(filters *GreetingsFilter) *archivesFilter
 	return af
 }
 
-// ByAgentTypes extends archives filter with operator types to match
+// ByAgentTypes extends archives filter with agent types to match
 func (af *archivesFilters) ByAgentTypes(filter *AgentTypesFilter) *archivesFilters {
 	af.AgentTypes = filter
 	return af
