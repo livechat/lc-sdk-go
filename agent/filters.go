@@ -33,6 +33,7 @@ func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue 
 
 type archivesFilters struct {
 	Agents        *propertyFilterType `json:"agents,omitempty"`
+	AgentTypes    *AgentTypesFilter   `json:"agent_types,omitempty"`
 	GroupIDs      []uint              `json:"group_ids,omitempty"`
 	From          string              `json:"from,omitempty"`
 	To            string              `json:"to,omitempty"`
@@ -53,6 +54,13 @@ type eventTypesFilter struct {
 	Values            []string `json:"values,omitempty"`
 	ExcludeValues     []string `json:"exclude_values,omitempty"`
 	RequireEveryValue *bool    `json:"require_every_value,omitempty"`
+}
+
+// AgentTypesFilter represents structure to match agent types when getting Archives
+type AgentTypesFilter struct {
+	AllValues     []string `json:"all_values,omitempty"`
+	AnyValues     []string `json:"any_values,omitempty"`
+	ExcludeValues []string `json:"exclude_values,omitempty"`
 }
 
 // SurveyFilter represents structure to match surveys when getting Archives
@@ -165,6 +173,12 @@ func (af *archivesFilters) ByEventTypes(includes bool, vals []string, requireEve
 // ByGreetings extends archives filter with greetings to match
 func (af *archivesFilters) ByGreetings(filters *GreetingsFilter) *archivesFilters {
 	af.Greetings = filters
+	return af
+}
+
+// ByAgentTypes extends archives filter with agent types to match
+func (af *archivesFilters) ByAgentTypes(filter *AgentTypesFilter) *archivesFilters {
+	af.AgentTypes = filter
 	return af
 }
 
