@@ -192,7 +192,7 @@ type updateLicensePropertiesRequest struct {
 }
 
 type updateGroupPropertiesRequest struct {
-	ID         int        `json:"id"`
+	GroupID    int        `json:"group_id"`
 	Properties Properties `json:"properties"`
 }
 
