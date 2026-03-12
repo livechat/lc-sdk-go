@@ -602,3 +602,52 @@ func (a *API) UpdateCompanyDetails(companyDetails CompanyDetails, enrich bool) e
 		Enrich:         enrich,
 	}, &emptyResponse{})
 }
+
+// CreateGreeting creates a new greeting and returns its ID.
+func (a *API) CreateGreeting(greetingType string, active bool, name string, group int32, rules []*ActionRule, opts *CreateGreetingRequestOptions) (int32, error) {
+	req := createGreetingRequest{
+		Type:   greetingType,
+		Active: active,
+		Name:   name,
+		Group:  group,
+		Rules:  rules,
+	}
+	if opts != nil {
+		req.CreateGreetingRequestOptions = *opts
+	}
+	var resp createGreetingResponse
+	err := a.Call("create_greeting", &req, &resp)
+	return resp.ID, err
+}
+
+// UpdateGreeting updates an existing greeting.
+func (a *API) UpdateGreeting(id int32, opts *UpdateGreetingRequestOptions) error {
+	req := updateGreetingRequest{ID: id}
+	if opts != nil {
+		req.UpdateGreetingRequestOptions = *opts
+	}
+	return a.Call("update_greeting", &req, &emptyResponse{})
+}
+
+// DeleteGreeting deletes an existing greeting.
+func (a *API) DeleteGreeting(id int32) error {
+	return a.Call("delete_greeting", &deleteGreetingRequest{ID: id}, &emptyResponse{})
+}
+
+// GetGreeting returns a greeting by ID.
+func (a *API) GetGreeting(id int32) (*Greeting, error) {
+	var resp Greeting
+	err := a.Call("get_greeting", &getGreetingRequest{ID: id}, &resp)
+	return &resp, err
+}
+
+// ListGreetings returns a list of greetings, optionally filtered by groups.
+func (a *API) ListGreetings(opts *ListGreetingsRequestOptions) (*listGreetingsResponse, error) {
+	req := listGreetingsRequest{}
+	if opts != nil {
+		req.Groups = opts.Groups
+	}
+	var resp listGreetingsResponse
+	err := a.Call("list_greetings", &req, &resp)
+	return &resp, err
+}
