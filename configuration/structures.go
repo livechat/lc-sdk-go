@@ -437,3 +437,89 @@ type ListCannedResponsesResponse struct {
 	FoundCannedResponses uint64            `json:"found_canned_responses"`
 	NextPageID           *string           `json:"next_page_id,omitempty"`
 }
+
+// RichMessageElementImage represents an image in a rich message element
+type RichMessageElementImage struct {
+	URL             string `json:"url"`
+	AlternativeText string `json:"alternative_text"`
+}
+
+// RichMessageElementButton represents a button in a rich message element
+type RichMessageElementButton struct {
+	ButtonID   string `json:"button_id,omitempty"`
+	PostbackID string `json:"postback_id,omitempty"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	Value      string `json:"value"`
+	Role       string `json:"role,omitempty"`
+}
+
+// RichMessageElement represents an element within a rich message
+type RichMessageElement struct {
+	Title    string                      `json:"title,omitempty"`
+	Subtitle string                      `json:"subtitle,omitempty"`
+	Image    *RichMessageElementImage    `json:"image,omitempty"`
+	Buttons  []*RichMessageElementButton `json:"buttons,omitempty"`
+}
+
+// RichMessage represents a rich greeting message
+type RichMessage struct {
+	TemplateID string                `json:"template_id"`
+	Elements   []*RichMessageElement `json:"elements"`
+}
+
+// ActionURL represents a URL condition within an action rule
+type ActionURL struct {
+	URL      string `json:"url,omitempty"`
+	Operator string `json:"operator,omitempty"`
+}
+
+// ActionRule represents a rule for triggering a greeting
+type ActionRule struct {
+	ID           int64             `json:"id,omitempty"`
+	Value        string            `json:"value,omitempty"`
+	Type         string            `json:"type,omitempty"`
+	Operator     string            `json:"operator,omitempty"`
+	Condition    string            `json:"condition"`
+	SessionField map[string]string `json:"session_field,omitempty"`
+	URLs         []ActionURL       `json:"urls,omitempty"`
+}
+
+// Greeting represents a greeting in LiveChat
+type Greeting struct {
+	ID          int32             `json:"id"`
+	Type        string            `json:"type,omitempty"`
+	Active      bool              `json:"active"`
+	Name        string            `json:"name"`
+	Group       int32             `json:"group"`
+	ActiveFrom  *string           `json:"active_from,omitempty"`
+	ActiveUntil *string           `json:"active_until,omitempty"`
+	Rules       []*ActionRule     `json:"rules,omitempty"`
+	Properties  map[string]string `json:"properties,omitempty"`
+	RichMessage *RichMessage      `json:"rich_message,omitempty"`
+}
+
+// CreateGreetingRequestOptions defines optional fields for CreateGreeting
+type CreateGreetingRequestOptions struct {
+	ActiveFrom  *string           `json:"active_from,omitempty"`
+	ActiveUntil *string           `json:"active_until,omitempty"`
+	Properties  map[string]string `json:"properties,omitempty"`
+	RichMessage *RichMessage      `json:"rich_message,omitempty"`
+}
+
+// UpdateGreetingRequestOptions defines optional fields for UpdateGreeting
+type UpdateGreetingRequestOptions struct {
+	Type        *string           `json:"type,omitempty"`
+	Active      *bool             `json:"active,omitempty"`
+	ActiveFrom  *string           `json:"active_from,omitempty"`
+	ActiveUntil *string           `json:"active_until,omitempty"`
+	Name        *string           `json:"name,omitempty"`
+	Rules       []*ActionRule     `json:"rules,omitempty"`
+	Properties  map[string]string `json:"properties,omitempty"`
+	RichMessage *RichMessage      `json:"rich_message,omitempty"`
+}
+
+// ListGreetingsRequestOptions defines optional fields for ListGreetings
+type ListGreetingsRequestOptions struct {
+	Groups []int32 `json:"groups,omitempty"`
+}
