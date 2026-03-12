@@ -265,3 +265,39 @@ type updateCompanyDetailsRequest struct {
 	CompanyDetails
 	Enrich bool `json:"enrich"`
 }
+
+type createGreetingRequest struct {
+	Type   string        `json:"type"`
+	Active bool          `json:"active"`
+	Name   string        `json:"name"`
+	Group  int32         `json:"group"`
+	Rules  []*ActionRule `json:"rules"`
+	CreateGreetingRequestOptions
+}
+
+type createGreetingResponse struct {
+	ID int32 `json:"id"`
+}
+
+type updateGreetingRequest struct {
+	ID int32 `json:"id"`
+	UpdateGreetingRequestOptions
+}
+
+type deleteGreetingRequest struct {
+	ID int32 `json:"id"`
+}
+
+type getGreetingRequest struct {
+	ID int32 `json:"id"`
+}
+
+type listGreetingsRequest struct {
+	Groups []int32 `json:"groups,omitempty"`
+}
+
+type listGreetingsResponse struct {
+	Greetings      []*Greeting `json:"greetings"`
+	FoundGreetings uint64      `json:"found_greetings"`
+	NextPageID     *string     `json:"next_page_id,omitempty"`
+}

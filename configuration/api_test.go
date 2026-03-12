@@ -16,6 +16,7 @@ const (
 	ExpectedNewGroupID          = 19
 	ExpectedNewAutoAccessID     = "pqi8oasdjahuakndw9nsad9na"
 	ExpectedPropertiesNamespace = "0805e283233042b37f460ed8fbf22160"
+	ExpectedNewGreetingID       = 42
 )
 
 type serverMock struct {
@@ -384,6 +385,73 @@ var mockedResponses = map[string]string{
 	]`,
 	"reactivate_email":       `{}`,
 	"update_company_details": `{}`,
+	"create_greeting":        fmt.Sprintf(`{"id": %d}`, ExpectedNewGreetingID),
+	"update_greeting":        `{}`,
+	"delete_greeting":        `{}`,
+	"get_greeting": `{
+		"id": 42,
+		"type": "normal",
+		"active": true,
+		"name": "Welcome greeting",
+		"group": 0,
+		"rules": [
+			{
+				"id": 1,
+				"type": "visit_time_page",
+				"condition": "is_equal_to",
+				"value": "15"
+			}
+		],
+		"properties": {
+			"greeting-message_text": "Hello!"
+		},
+		"rich_message": {
+			"template_id": "cards",
+			"elements": [
+				{
+					"title": "Welcome",
+					"subtitle": "How can we help?",
+					"buttons": [
+						{
+							"button_id": "btn1",
+							"text": "Start chat",
+							"type": "message",
+							"value": "Hi"
+						}
+					]
+				}
+			]
+		}
+	}`,
+	"list_greetings": `{
+		"greetings": [
+			{
+				"id": 42,
+				"type": "normal",
+				"active": true,
+				"name": "Welcome greeting",
+				"group": 0,
+				"rules": [
+					{
+						"id": 1,
+						"type": "visit_time_page",
+						"condition": "is_equal_to",
+						"value": "15"
+					}
+				],
+				"properties": {}
+			},
+			{
+				"id": 43,
+				"type": "announcement",
+				"active": false,
+				"name": "Promo",
+				"group": 1,
+				"rules": []
+			}
+		],
+		"found_greetings": 2
+	}`,
 }
 
 func getMockResponseOK(method string) *http.Response {
@@ -1765,4 +1833,178 @@ func TestUpdateCompanyDetails(t *testing.T) {
 	}
 
 	validateRequestBody(t, `{"company":"Text","url":"","enrich":true}`, serverMock.LastRequest.Body)
+}
+
+func TestCreateGreetingOK(t *testing.T) {
+	serverMock := newServerMock(t, "create_greeting")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	t.Run("Only required fields", func(t *testing.T) {
+		id, rErr := api.CreateGreeting("normal", true, "Welcome", 0, []*configuration.ActionRule{
+			{
+				Condition: "visit_time_page",
+			},
+		}, nil)
+		if rErr != nil {
+			t.Errorf("CreateGreeting failed: %v", rErr)
+		}
+		if id != int32(ExpectedNewGreetingID) {
+			t.Errorf("Invalid greeting ID: %v", id)
+		}
+		validateRequestBody(t, `{"type":"normal","active":true,"name":"Welcome","group":0,"rules":[{"condition":"visit_time_page"}]}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("All optional fields", func(t *testing.T) {
+		activeFrom := "2024-01-01T00:00:00.000000Z"
+		id, rErr := api.CreateGreeting("normal", true, "Welcome", 0, []*configuration.ActionRule{
+			{
+				Type:      "visit_time_page",
+				Condition: "is_equal_to",
+				Value:     "15",
+			},
+		}, &configuration.CreateGreetingRequestOptions{
+			ActiveFrom: &activeFrom,
+			Properties: map[string]string{"greeting-message_text": "Hello!"},
+			RichMessage: &configuration.RichMessage{
+				TemplateID: "cards",
+				Elements: []*configuration.RichMessageElement{
+					{
+						Title: "Welcome",
+						Buttons: []*configuration.RichMessageElementButton{
+							{
+								Text:  "Start",
+								Type:  "message",
+								Value: "Hi",
+							},
+						},
+					},
+				},
+			},
+		})
+		if rErr != nil {
+			t.Errorf("CreateGreeting failed: %v", rErr)
+		}
+		if id != int32(ExpectedNewGreetingID) {
+			t.Errorf("Invalid greeting ID: %v", id)
+		}
+	})
+}
+
+func TestUpdateGreetingOK(t *testing.T) {
+	serverMock := newServerMock(t, "update_greeting")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	t.Run("Only required fields", func(t *testing.T) {
+		if rErr := api.UpdateGreeting(42, nil); rErr != nil {
+			t.Errorf("UpdateGreeting failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":42}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("With optional fields", func(t *testing.T) {
+		name := "Updated greeting"
+		active := false
+		if rErr := api.UpdateGreeting(42, &configuration.UpdateGreetingRequestOptions{
+			Name:   &name,
+			Active: &active,
+		}); rErr != nil {
+			t.Errorf("UpdateGreeting failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"id":42,"active":false,"name":"Updated greeting"}`, serverMock.LastRequest.Body)
+	})
+}
+
+func TestDeleteGreetingOK(t *testing.T) {
+	client := NewTestClient(newServerMock(t, "delete_greeting"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	if rErr := api.DeleteGreeting(42); rErr != nil {
+		t.Errorf("DeleteGreeting failed: %v", rErr)
+	}
+}
+
+func TestGetGreetingOK(t *testing.T) {
+	client := NewTestClient(newServerMock(t, "get_greeting"))
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	resp, rErr := api.GetGreeting(42)
+	if rErr != nil {
+		t.Errorf("GetGreeting failed: %v", rErr)
+	}
+
+	if resp.ID != 42 {
+		t.Errorf("Invalid greeting ID: %v", resp.ID)
+	}
+	if resp.Name != "Welcome greeting" {
+		t.Errorf("Invalid greeting name: %v", resp.Name)
+	}
+	if resp.Type != "normal" {
+		t.Errorf("Invalid greeting type: %v", resp.Type)
+	}
+	if !resp.Active {
+		t.Error("Greeting should be active")
+	}
+	if resp.RichMessage == nil {
+		t.Error("RichMessage should not be nil")
+	} else if resp.RichMessage.TemplateID != "cards" {
+		t.Errorf("Invalid rich message template: %v", resp.RichMessage.TemplateID)
+	}
+}
+
+func TestListGreetingsOK(t *testing.T) {
+	serverMock := newServerMock(t, "list_greetings")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	t.Run("No filters", func(t *testing.T) {
+		resp, rErr := api.ListGreetings(nil)
+		if rErr != nil {
+			t.Errorf("ListGreetings failed: %v", rErr)
+		}
+		if resp.FoundGreetings != 2 {
+			t.Errorf("Invalid found greetings count: %v", resp.FoundGreetings)
+		}
+		if len(resp.Greetings) != 2 {
+			t.Errorf("Invalid number of greetings: %v", len(resp.Greetings))
+		}
+		if resp.Greetings[0].ID != 42 {
+			t.Errorf("Invalid greeting ID: %v", resp.Greetings[0].ID)
+		}
+		validateRequestBody(t, `{}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("With group filter", func(t *testing.T) {
+		resp, rErr := api.ListGreetings(&configuration.ListGreetingsRequestOptions{
+			Groups: []int32{0, 1},
+		})
+		if rErr != nil {
+			t.Errorf("ListGreetings failed: %v", rErr)
+		}
+		if len(resp.Greetings) != 2 {
+			t.Errorf("Invalid number of greetings: %v", len(resp.Greetings))
+		}
+		validateRequestBody(t, `{"groups":[0,1]}`, serverMock.LastRequest.Body)
+	})
 }
