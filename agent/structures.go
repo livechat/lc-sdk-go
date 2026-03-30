@@ -169,6 +169,24 @@ func (u *User) Customer() *Customer {
 	return &c
 }
 
+// FocusInterval represents a time interval during which a page tab was focused.
+type FocusInterval struct {
+	StartedAt string `json:"started_at"`
+	EndedAt   string `json:"ended_at,omitempty"`
+}
+
+// Page represents a single page visited by the customer.
+type Page struct {
+	OpenedAt             time.Time        `json:"opened_at"`
+	URL                  string           `json:"url"`
+	Title                string           `json:"title"`
+	TabID                string           `json:"tab_id,omitempty"`
+	IsFocused            *bool            `json:"is_focused,omitempty"`
+	EndedAt              string           `json:"ended_at,omitempty"`
+	FocusIntervals       []*FocusInterval `json:"focus_intervals,omitempty"`
+	PriorFocusedDuration int64            `json:"prior_focused_duration,omitempty"`
+}
+
 // Visit contains information about particular customer's visit.
 type Visit struct {
 	IP          string      `json:"ip"`
@@ -177,11 +195,7 @@ type Visit struct {
 	StartedAt   time.Time   `json:"started_at"`
 	EndedAt     time.Time   `json:"ended_at"`
 	Referrer    string      `json:"referrer"`
-	LastPages   []struct {
-		OpenedAt time.Time `json:"opened_at"`
-		URL      string    `json:"url"`
-		Title    string    `json:"title"`
-	} `json:"last_pages"`
+	LastPages   []Page      `json:"last_pages"`
 }
 
 // Geolocation contains geolocation information.
