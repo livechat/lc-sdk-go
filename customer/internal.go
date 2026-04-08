@@ -72,8 +72,15 @@ type sendRichMessagePostbackRequest struct {
 }
 
 type postback struct {
-	ID      string `json:"id"`
-	Toggled bool   `json:"toggled"`
+	ID          string `json:"id"`
+	Toggled     bool   `json:"toggled"`
+	ButtonType  string `json:"button_type"`
+	ButtonValue string `json:"button_value"`
+	Ecommerce   struct {
+		OptionID  string `json:"option_id,omitempty"`
+		ProductID string `json:"product_id,omitempty"`
+		Quantity  string `json:"quantity,omitempty"`
+	} `json:"ecommerce,omitempty"`
 }
 
 type sendSneakPeekRequest struct {
