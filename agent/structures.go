@@ -868,11 +868,11 @@ type RichMessageImage struct {
 
 // RichMessageImage represents ecommerce element in LiveChat rich message
 type RichMessageEcommerce struct {
-	ProductID string `json:"product_id"`
-	Label     string `json:"label"`
-	ViewType  string `json:"view_type"`
-	Options   []RichMessageEcommerceOption
-	Addons    []RichMessageEcommerceAddon
+	ProductID string                       `json:"product_id"`
+	Label     string                       `json:"label"`
+	ViewType  string                       `json:"view_type"`
+	Options   []RichMessageEcommerceOption `json:"options,omitempty"`
+	Addons    []RichMessageEcommerceAddon  `json:"addons,omitempty"`
 }
 
 type RichMessageEcommerceOption struct {
