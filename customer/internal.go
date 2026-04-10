@@ -77,9 +77,9 @@ type postback struct {
 	ButtonType  string `json:"button_type"`
 	ButtonValue string `json:"button_value"`
 	Ecommerce   struct {
-		OptionID  string `json:"option_id,omitempty"`
 		ProductID string `json:"product_id,omitempty"`
-		Quantity  string `json:"quantity,omitempty"`
+		OptionID  string `json:"option_id,omitempty"`
+		Quantity  int    `json:"quantity,omitempty"`
 	} `json:"ecommerce,omitempty"`
 }
 
