@@ -232,14 +232,17 @@ func (a *API) SendEvent(chatID string, event interface{}, attachToLastThread boo
 }
 
 // SendRichMessagePostback sends postback for given rich message event.
-func (a *API) SendRichMessagePostback(chatID, eventID, threadID, postbackID string, toggled bool) error {
+func (a *API) SendRichMessagePostback(chatID, eventID, threadID, postbackID string, toggled bool, buttonType, buttonValue string, ecommerce *PostbackEcommerce) error {
 	return a.Call("send_rich_message_postback", &sendRichMessagePostbackRequest{
 		ChatID:   chatID,
 		EventID:  eventID,
 		ThreadID: threadID,
 		Postback: postback{
-			ID:      postbackID,
-			Toggled: toggled,
+			ID:          postbackID,
+			Toggled:     toggled,
+			ButtonType:  buttonType,
+			ButtonValue: buttonValue,
+			Ecommerce:   ecommerce,
 		},
 	}, &emptyResponse{})
 }

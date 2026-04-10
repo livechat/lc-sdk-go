@@ -495,11 +495,18 @@ func (f *FilledFormField) GroupChooser() *FilledFormFieldGroupChooser {
 
 // Postback represents postback data in LiveChat message event.
 type Postback struct {
-	ID       string `json:"id"`
-	ThreadID string `json:"thread_id"`
-	EventID  string `json:"event_id"`
-	Type     string `json:"type,omitempty"`
-	Value    string `json:"value,omitempty"`
+	ID        string             `json:"id"`
+	ThreadID  string             `json:"thread_id"`
+	EventID   string             `json:"event_id"`
+	Type      string             `json:"type,omitempty"`
+	Value     string             `json:"value,omitempty"`
+	Ecommerce *PostbackEcommerce `json:"ecommerce,omitempty"`
+}
+
+type PostbackEcommerce struct {
+	ProductID string `json:"product_id,omitempty"`
+	OptionID  string `json:"option_id,omitempty"`
+	Quantity  int    `json:"quantity,omitempty"`
 }
 
 // Message represents LiveChat message event.

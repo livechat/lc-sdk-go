@@ -12,15 +12,11 @@ import (
 type Properties map[string]map[string]interface{}
 
 type postback struct {
-	ID          string `json:"id"`
-	Toggled     bool   `json:"toggled"`
-	ButtonType  string `json:"button_type,omitempty"`
-	ButtonValue string `json:"button_value,omitempty"`
-	Ecommerce   struct {
-		ProductID string `json:"product_id,omitempty"`
-		OptionID  string `json:"option_id,omitempty"`
-		Quantity  int    `json:"quantity,omitempty"`
-	} `json:"ecommerce,omitempty"`
+	ID          string             `json:"id"`
+	Toggled     bool               `json:"toggled"`
+	ButtonType  string             `json:"button_type,omitempty"`
+	ButtonValue string             `json:"button_value,omitempty"`
+	Ecommerce   *PostbackEcommerce `json:"ecommerce,omitempty"`
 }
 
 type ban struct {
@@ -57,6 +53,12 @@ type AgentsForTransfer []struct {
 type TransferChatOptions struct {
 	IgnoreRequesterPresence  bool
 	IgnoreAgentsAvailability bool
+}
+
+type PostbackEcommerce struct {
+	ProductID string `json:"product_id,omitempty"`
+	OptionID  string `json:"option_id,omitempty"`
+	Quantity  int    `json:"quantity,omitempty"`
 }
 
 // User represents base of both Customer and Agent
@@ -711,16 +713,12 @@ func (f *FilledFormField) GroupChooser() *FilledFormFieldGroupChooser {
 
 // Postback represents postback data in LiveChat message event.
 type Postback struct {
-	ID        string `json:"id"`
-	ThreadID  string `json:"thread_id"`
-	EventID   string `json:"event_id"`
-	Type      string `json:"type,omitempty"`
-	Value     string `json:"value,omitempty"`
-	Ecommerce struct {
-		ProductID string `json:"product_id,omitempty"`
-		OptionID  string `json:"option_id,omitempty"`
-		Quantity  int    `json:"quantity,omitempty"`
-	} `json:"ecommerce,omitempty"`
+	ID        string             `json:"id"`
+	ThreadID  string             `json:"thread_id"`
+	EventID   string             `json:"event_id"`
+	Type      string             `json:"type,omitempty"`
+	Value     string             `json:"value,omitempty"`
+	Ecommerce *PostbackEcommerce `json:"ecommerce,omitempty"`
 }
 
 // Message represents LiveChat message event.
