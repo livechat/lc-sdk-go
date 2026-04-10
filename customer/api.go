@@ -181,14 +181,17 @@ func (a *API) DeactivateChat(chatID string) error {
 }
 
 // SendRichMessagePostback sends postback for given rich message event.
-func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID string, toggled bool) error {
+func (a *API) SendRichMessagePostback(chatID, threadID, eventID, postbackID string, toggled bool, buttonType, buttonValue string, ecommerce *PostbackEcommerce) error {
 	return a.Call("send_rich_message_postback", &sendRichMessagePostbackRequest{
 		ChatID:   chatID,
 		ThreadID: threadID,
 		EventID:  eventID,
 		Postback: postback{
-			ID:      postbackID,
-			Toggled: toggled,
+			ID:          postbackID,
+			Toggled:     toggled,
+			ButtonType:  buttonType,
+			ButtonValue: buttonValue,
+			Ecommerce:   ecommerce,
 		},
 	}, &emptyResponse{})
 }
