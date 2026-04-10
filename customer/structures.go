@@ -626,10 +626,11 @@ type RichMessage struct {
 
 // RichMessageElement represents element of LiveChat rich message
 type RichMessageElement struct {
-	Buttons  []RichMessageButton `json:"buttons"`
-	Title    string              `json:"title"`
-	Subtitle string              `json:"subtitle"`
-	Image    *RichMessageImage   `json:"image,omitempty"`
+	Buttons   []RichMessageButton   `json:"buttons"`
+	Title     string                `json:"title"`
+	Subtitle  string                `json:"subtitle"`
+	Image     *RichMessageImage     `json:"image,omitempty"`
+	Ecommerce *RichMessageEcommerce `json:"ecommerce,omitempty"`
 }
 
 // RichMessageButton represents button in LiveChat rich message
@@ -654,6 +655,35 @@ type RichMessageImage struct {
 	Width           int    `json:"width,omitempty"`
 	Height          int    `json:"height,omitempty"`
 	AlternativeText string `json:"alternative_text,omitempty"`
+}
+
+// RichMessageEcommerce represents ecommerce element in LiveChat rich message
+type RichMessageEcommerce struct {
+	ProductID string                       `json:"product_id"`
+	Label     string                       `json:"label"`
+	ViewType  string                       `json:"view_type"`
+	Options   []RichMessageEcommerceOption `json:"options,omitempty"`
+	Addons    []RichMessageEcommerceAddon  `json:"addons,omitempty"`
+}
+
+type RichMessageEcommerceOption struct {
+	OptionID          string `json:"option_id"`
+	Label             string `json:"label"`
+	Price             string `json:"price,omitempty"`
+	RegularPrice      string `json:"regular_price,omitempty"`
+	Currency          string `json:"currency,omitempty"`
+	Color             string `json:"color,omitempty"`
+	ImageURL          string `json:"image_url,omitempty"`
+	ImageThumbnailURL string `json:"image_thumbnail_url,omitempty"`
+	Available         *bool  `json:"available,omitempty"`
+	Selected          *bool  `json:"selected,omitempty"`
+}
+
+type RichMessageEcommerceAddon struct {
+	AddonType string `json:"addon_type"`
+	RangeFrom string `json:"range_from,omitempty"`
+	RangeTo   string `json:"range_to,omitempty"`
+	Currency  string `json:"currency,omitempty"`
 }
 
 // RichMessage function converts Event object to RichMessage object if Event's Type is "rich_message".
