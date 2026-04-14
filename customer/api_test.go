@@ -626,7 +626,7 @@ func TestSendRichMessagePostbackShouldReturnDataReceivedFromCustomerAPI(t *testi
 		t.Error("API creation failed")
 	}
 
-	rErr := api.SendRichMessagePostback("stubChatID", "stubThreadID", "stubEventID", "stubPostbackID", false)
+	rErr := api.SendRichMessagePostback("stubChatID", "stubThreadID", "stubEventID", "stubPostbackID", false, "", "", nil)
 	if rErr != nil {
 		t.Errorf("SendRichMessagePostback failed: %v", rErr)
 	}
@@ -1043,7 +1043,7 @@ func TestSendRichMessagePostbackShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.SendRichMessagePostback("stubChatID", "stubThreadID", "stubEventID", "stubPostbackID", false)
+	rErr := api.SendRichMessagePostback("stubChatID", "stubThreadID", "stubEventID", "stubPostbackID", false, "", "", nil)
 	verifyErrorResponse("SendRichMessagePostback", rErr, t)
 }
 
