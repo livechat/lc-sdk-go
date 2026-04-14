@@ -24,8 +24,8 @@ type ban struct {
 }
 
 type PostbackEcommerce struct {
-	ProductID string `json:"product_id,omitempty"`
-	OptionID  string `json:"option_id,omitempty"`
+	ProductID string `json:"product_id"`
+	OptionID  string `json:"option_id"`
 	Quantity  int    `json:"quantity,omitempty"`
 }
 
