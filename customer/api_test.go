@@ -48,29 +48,27 @@ var mockedResponses = map[string]string{
 	"list_chats": `{
 		"chats_info": [{
 			"id": "PJ0MRSHTDG",
-			"last_thread_created_at": "2020-05-07T07:11:28.288340Z",
-			"last_thread_id": "K600PKZON8",
-			"last_event_per_type": {
-				"message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {
-						"id": "K600PKZON8_1",
-						"created_at": "2020-05-07T07:11:28.288340Z",
-						"type": "message",
-						"properties": {
-							"lc2": {
-								"welcome_message": true
-							}
-						},
-						"text": "Hello. What can I do for you?",
-						"author_id": "b5657aff34dd32e198160d54666df9d8"
+			"last_thread_info": {
+				"id": "K600PKZON8",
+				"created_at": "2020-05-07T07:11:28.288340Z",
+				"last_event_per_type": {
+					"message": {
+						"event": {
+							"id": "K600PKZON8_1",
+							"created_at": "2020-05-07T07:11:28.288340Z",
+							"type": "message",
+							"properties": {
+								"lc2": {
+									"welcome_message": true
+								}
+							},
+							"text": "Hello. What can I do for you?",
+							"author_id": "b5657aff34dd32e198160d54666df9d8"
+						}
+					},
+					"system_message": {
+						"event": {}
 					}
-				},
-				"system_message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {}
 				}
 			},
 			"users": [
