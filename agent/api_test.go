@@ -699,10 +699,7 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	if chats[0].LastThreadInfo.Queue.Position != 42 {
 		t.Errorf("Invalid last thread queue position. Got: %v, expected: %v", chats[0].LastThreadInfo.Queue.Position, 42)
 	}
-	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
-		t.Errorf("Invalid last event per type thread id. Got: %v, expected: %v", chats[0].LastEventPerType["message"].ThreadID, "K600PKZON8")
-	}
-	e := chats[0].LastEventPerType["message"].Event
+	e := chats[0].LastThreadInfo.LastEventPerType["message"].Event
 	if e.Message().Text != "Hello. What can I do for you?" {
 		t.Errorf("Invalid last message event text. Got: %v, expected: %v", e.Message().Text, "Hello. What can I do for you?")
 	}

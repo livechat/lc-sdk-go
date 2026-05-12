@@ -413,14 +413,18 @@ type Queue struct {
 
 // ThreadInfo represents a short description of a thread
 type ThreadInfo struct {
-	ID         string     `json:"id"`
-	UserIDs    []string   `json:"user_ids"`
-	Properties Properties `json:"properties,omitempty"`
-	Active     bool       `json:"active"`
-	Access     *Access    `json:"access,omitempty"`
-	Tags       []string   `json:"tags,omitempty"`
-	CreatedAt  time.Time  `json:"created_at"`
-	Queue      *Queue     `json:"queue,omitempty"`
+	ID               string     `json:"id"`
+	UserIDs          []string   `json:"user_ids"`
+	Properties       Properties `json:"properties,omitempty"`
+	Active           bool       `json:"active"`
+	Access           *Access    `json:"access,omitempty"`
+	Tags             []string   `json:"tags,omitempty"`
+	CreatedAt        time.Time  `json:"created_at"`
+	Queue            *Queue     `json:"queue,omitempty"`
+	LastEventPerType map[string]struct {
+		RestrictedEventAccess string `json:"restricted_access,omitempty"`
+		Event                 Event  `json:"event"`
+	} `json:"last_event_per_type,omitempty"`
 }
 
 // ThreadSummary represents summary for a thread
@@ -432,13 +436,7 @@ type ThreadSummary struct {
 
 // ChatInfo represents a short description of a chat
 type ChatInfo struct {
-	ID               string `json:"id"`
-	LastEventPerType map[string]struct {
-		ThreadID              string    `json:"thread_id"`
-		ThreadCreatedAt       time.Time `json:"thread_created_at"`
-		RestrictedEventAccess string    `json:"restricted_access,omitempty"`
-		Event                 Event     `json:"event"`
-	} `json:"last_event_per_type,omitempty"`
+	ID             string      `json:"id"`
 	Users          []*User     `json:"users"`
 	LastThreadInfo *ThreadInfo `json:"last_thread_info,omitempty"`
 	Properties     Properties  `json:"properties,omitempty"`

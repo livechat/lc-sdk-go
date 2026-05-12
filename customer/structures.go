@@ -214,20 +214,23 @@ type Customer struct {
 	SessionFields []map[string]string `json:"session_fields"`
 }
 
+// ThreadInfo represents a short description of a thread
+type ThreadInfo struct {
+	ID               string    `json:"id"`
+	CreatedAt        time.Time `json:"created_at"`
+	LastEventPerType map[string]struct {
+		Event Event `json:"event"`
+	} `json:"last_event_per_type,omitempty"`
+}
+
 // ChatInfo represents a short description of a chat
 type ChatInfo struct {
-	ID                  string    `json:"id"`
-	LastThreadCreatedAt time.Time `json:"last_thread_created_at"`
-	LastThreadID        string    `json:"last_thread_id,omitempty"`
-	LastEventPerType    map[string]struct {
-		ThreadID        string    `json:"thread_id"`
-		ThreadCreatedAt time.Time `json:"thread_created_at"`
-		Event           Event     `json:"event"`
-	} `json:"last_event_per_type,omitempty"`
-	Users      []*User    `json:"users"`
-	Access     *Access    `json:"access,omitempty"`
-	Properties Properties `json:"properties,omitempty"`
-	Active     bool       `json:"active"`
+	ID             string      `json:"id"`
+	LastThreadInfo *ThreadInfo `json:"last_thread_info,omitempty"`
+	Users          []*User     `json:"users,omitempty"`
+	Access         *Access     `json:"access,omitempty"`
+	Properties     Properties  `json:"properties,omitempty"`
+	Active         bool        `json:"active"`
 }
 
 // InitialThread represents initial chat thread used in StartChat or ResumeChat.
