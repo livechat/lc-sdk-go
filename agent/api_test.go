@@ -398,6 +398,7 @@ var mockedResponses = map[string]string{
 				"order_number": "#1002",
 				"currency": "USD",
 				"total_price": 123.45,
+				"total_price_usd": 123.45,
 				"created_at": "2007-10-05T14:48:00.000000Z"
 			},
 			{
@@ -407,6 +408,7 @@ var mockedResponses = map[string]string{
 				"order_number": "#1003",
 				"currency": "USD",
 				"total_price": 123.45,
+				"total_price_usd": 123.45,
 				"created_at": "2007-10-06T14:48:00.000000Z"
 			}
 		],
@@ -1097,6 +1099,8 @@ func checkGetCustomerResponse(t *testing.T, customer agent.Customer) {
 		t.Errorf("Invalid number of customer orders: %d", len(customer.Orders))
 	} else if customer.Orders[0].OrderID != "gid://shopify/Order/1234567900" || customer.Orders[0].StorePlatform != "shopify" {
 		t.Errorf("Invalid customer order: %v", customer.Tickets[0])
+	} else if customer.Orders[0].TotalPriceUSD != 123.45 {
+		t.Errorf("Invalid customer order total_price_usd: %v", customer.Orders[0].TotalPriceUSD)
 	}
 
 	if customer.Omnichannel == nil {
