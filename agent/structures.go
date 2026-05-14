@@ -76,25 +76,25 @@ type User struct {
 }
 
 type userSpecific struct {
-	PhoneNumber                json.RawMessage `json:"phone_number"`
-	RoutingStatus              json.RawMessage `json:"routing_status"`
-	Visit                      json.RawMessage `json:"visit"`
-	Statistics                 json.RawMessage `json:"statistics"`
-	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at"`
-	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at"`
-	SessionFields              json.RawMessage `json:"session_fields"`
-	Followed                   json.RawMessage `json:"followed"`
-	Online                     json.RawMessage `json:"online"`
-	EmailVerified              json.RawMessage `json:"email_verified"`
-	State                      json.RawMessage `json:"state"`
-	GroupIDs                   json.RawMessage `json:"group_ids"`
-	GreetingID                 json.RawMessage `json:"greeting_id"`
-	CreatedAt                  json.RawMessage `json:"created_at"`
-	Visibility                 json.RawMessage `json:"visibility"`
-	Chats                      json.RawMessage `json:"chats"`
-	Tickets                    json.RawMessage `json:"tickets"`
-	Orders                     json.RawMessage `json:"orders"`
-	Omnichannel                json.RawMessage `json:"omnichannel"`
+	PhoneNumber                json.RawMessage `json:"phone_number,omitempty"`
+	RoutingStatus              json.RawMessage `json:"routing_status,omitempty"`
+	Visit                      json.RawMessage `json:"visit,omitempty"`
+	Statistics                 json.RawMessage `json:"statistics,omitempty"`
+	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at,omitempty"`
+	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at,omitempty"`
+	SessionFields              json.RawMessage `json:"session_fields,omitempty"`
+	Followed                   json.RawMessage `json:"followed,omitempty"`
+	Online                     json.RawMessage `json:"online,omitempty"`
+	EmailVerified              json.RawMessage `json:"email_verified,omitempty"`
+	State                      json.RawMessage `json:"state,omitempty"`
+	GroupIDs                   json.RawMessage `json:"group_ids,omitempty"`
+	GreetingID                 json.RawMessage `json:"greeting_id,omitempty"`
+	CreatedAt                  json.RawMessage `json:"created_at,omitempty"`
+	Visibility                 json.RawMessage `json:"visibility,omitempty"`
+	Chats                      json.RawMessage `json:"chats,omitempty"`
+	Tickets                    json.RawMessage `json:"tickets,omitempty"`
+	Orders                     json.RawMessage `json:"orders,omitempty"`
+	Omnichannel                json.RawMessage `json:"omnichannel,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
