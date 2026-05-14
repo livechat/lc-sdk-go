@@ -375,6 +375,7 @@ type CustomerOrder struct {
 	OrderNumber   string  `json:"order_number"`
 	Currency      string  `json:"currency"`
 	TotalPrice    float64 `json:"total_price"`
+	TotalPriceUSD float64 `json:"total_price_usd"`
 	CreatedAt     string  `json:"created_at"`
 }
 
