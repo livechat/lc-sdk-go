@@ -268,13 +268,14 @@ func (a *API) DeleteEvent(chatID, threadID, eventID string) error {
 }
 
 // UpdateCustomer updates current customer's info.
-func (a *API) UpdateCustomer(name, email, avatarURL string, sessionFields []map[string]string, nameIsDefault *bool) error {
+func (a *API) UpdateCustomer(name, email, avatarURL string, sessionFields []map[string]string, nameIsDefault *bool, address *Address) error {
 	return a.Call("update_customer", &updateCustomerRequest{
 		Name:          name,
 		NameIsDefault: nameIsDefault,
 		Email:         email,
 		Avatar:        avatarURL,
 		SessionFields: sessionFields,
+		Address:       address,
 	}, &emptyResponse{})
 }
 
