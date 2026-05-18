@@ -70,9 +70,10 @@ type User struct {
 }
 
 type userSpecific struct {
-	SessionFields json.RawMessage `json:"session_fields"`
-	Email         json.RawMessage `json:"email"`
-	EmailVerified json.RawMessage `json:"email_verified"`
+	SessionFields json.RawMessage `json:"session_fields,omitempty"`
+	Email         json.RawMessage `json:"email,omitempty"`
+	EmailVerified json.RawMessage `json:"email_verified,omitempty"`
+	Address       json.RawMessage `json:"address,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -103,6 +104,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := json.Unmarshal(u.SessionFields, &c.SessionFields); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.Address, &c.Address); err != nil {
 		return nil
 	}
 	return &c
@@ -209,9 +213,26 @@ type Agent struct {
 type Customer struct {
 	*User
 	NameIsDefault bool                `json:"name_is_default"`
-	Email         string              `json:"email"`
-	EmailVerified bool                `json:"email_verified"`
-	SessionFields []map[string]string `json:"session_fields"`
+	Email         string              `json:"email,omitempty"`
+	EmailVerified bool                `json:"email_verified,omitempty"`
+	SessionFields []map[string]string `json:"session_fields,omitempty"`
+	Address       *Address            `json:"address,omitempty"`
+}
+
+type Address struct {
+	Address    string `json:"address,omitempty"`
+	City       string `json:"city,omitempty"`
+	Country    string `json:"country,omitempty"`
+	State      string `json:"state,omitempty"`
+	PostalCode string `json:"postal_code,omitempty"`
+}
+
+type AddressUpdate struct {
+	Address    *string `json:"address,omitempty"`
+	City       *string `json:"city,omitempty"`
+	Country    *string `json:"country,omitempty"`
+	State      *string `json:"state,omitempty"`
+	PostalCode *string `json:"postal_code,omitempty"`
 }
 
 // ChatInfo represents a short description of a chat

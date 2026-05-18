@@ -2,6 +2,7 @@ package customer_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
@@ -272,8 +273,26 @@ var mockedResponses = map[string]string{
 		"image_height": 200,
 		"url": "https://livechatinc.com"
 	}`,
-	"mark_events_as_seen":        `{}`,
-	"get_customer":               `{}`, //TODO - create some real structure here
+	"mark_events_as_seen": `{}`,
+	"get_customer": `{
+		"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+		"type": "customer",
+		"name": "John Smith",
+		"name_is_default": false,
+		"email": "customer1@example.com",
+		"email_verified": true,
+		"avatar": "example.com/avatars/1.jpg",
+		"session_fields": [{
+			"custom_key": "custom_value"
+		}, {
+			"another_custom_key": "another_custom_value"
+		}],
+		"address": {
+			"city": "Wroclaw",
+			"country": "Poland",
+			"state": "Dolnoslaskie"
+		}
+	}`,
 	"accept_greeting":            `{}`,
 	"cancel_greeting":            `{}`,
 	"request_email_verification": `{}`,
@@ -753,7 +772,11 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 
 	nameIsDefault := true
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, &nameIsDefault)
+	country := "United States"
+	address := &customer.AddressUpdate{
+		Country: &country,
+	}
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, &nameIsDefault, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -911,15 +934,75 @@ func TestGetCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	customer, rErr := api.GetCustomer()
+	c, rErr := api.GetCustomer()
 	if rErr != nil {
 		t.Errorf("GetCustomer failed: %v", rErr)
+	} else {
+		checkGetCustomerResponse(t, *c)
+	}
+}
+
+func TestGetCustomerResponseShouldConvertFromUserToCustomer(t *testing.T) {
+	rawCustomerJson := mockedResponses["get_customer"]
+
+	var user customer.User
+	if err := json.Unmarshal([]byte(rawCustomerJson), &user); err != nil {
+		t.Errorf("Unmarshal user failed: %v", err)
 	}
 
-	// TODO add better validation
+	c := user.Customer()
+	if c == nil {
+		t.Error("User conversion to customer failed")
+	} else {
+		checkGetCustomerResponse(t, *c)
+	}
+}
 
-	if customer == nil {
-		t.Error("Invalid Customer")
+func checkGetCustomerResponse(t *testing.T, c customer.Customer) {
+	if c.ID != "b7eff798-f8df-4364-8059-649c35c9ed0c" {
+		t.Errorf("Invalid customer ID: %v", c.ID)
+	}
+
+	if c.Type != "customer" {
+		t.Errorf("Invalid customer type: %v", c.Type)
+	}
+
+	if c.Name != "John Smith" {
+		t.Errorf("Invalid customer name: %v", c.Name)
+	}
+
+	if c.Email != "customer1@example.com" {
+		t.Errorf("Invalid customer email: %v", c.Email)
+	}
+
+	if c.Avatar != "example.com/avatars/1.jpg" {
+		t.Errorf("Invalid customer avatar: %v", c.Avatar)
+	}
+
+	if c.EmailVerified != true {
+		t.Errorf("Invalid customer email_verified: %v", c.EmailVerified)
+	}
+
+	if c.NameIsDefault != false {
+		t.Errorf("Invalid customer name_is_default: %v", c.NameIsDefault)
+	}
+
+	if len(c.SessionFields) != 2 {
+		t.Errorf("Invalid customer session fields: %+v", c.SessionFields)
+	}
+
+	if c.Address == nil {
+		t.Error("Missing address")
+	} else {
+		if c.Address.City != "Wroclaw" {
+			t.Errorf("Invalid customer address city: %s", c.Address.City)
+		}
+		if c.Address.Country != "Poland" {
+			t.Errorf("Invalid customer address country: %s", c.Address.Country)
+		}
+		if c.Address.State != "Dolnoslaskie" {
+			t.Errorf("Invalid customer address state: %s", c.Address.State)
+		}
 	}
 }
 
@@ -1151,7 +1234,11 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, nil)
+	country := "United States"
+	address := &customer.AddressUpdate{
+		Country: &country,
+	}
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, nil, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 

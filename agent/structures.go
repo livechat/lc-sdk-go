@@ -95,6 +95,7 @@ type userSpecific struct {
 	Tickets                    json.RawMessage `json:"tickets,omitempty"`
 	Orders                     json.RawMessage `json:"orders,omitempty"`
 	Omnichannel                json.RawMessage `json:"omnichannel,omitempty"`
+	Address                    json.RawMessage `json:"address,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -173,6 +174,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Omnichannel, &c.Omnichannel); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.Address, &c.Address); err != nil {
 		return nil
 	}
 	return &c
@@ -343,6 +347,7 @@ type Customer struct {
 	Tickets                    []*CustomerTicket   `json:"tickets,omitempty"`
 	Orders                     []*CustomerOrder    `json:"orders,omitempty"`
 	Omnichannel                *Omnichannel        `json:"omnichannel,omitempty"`
+	Address                    *Address            `json:"address,omitempty"`
 }
 
 type CustomerStatistics struct {
@@ -397,6 +402,22 @@ type FBMessenger struct {
 
 type Twilio struct {
 	PhoneNumber string `json:"phone_number"`
+}
+
+type Address struct {
+	Address    string `json:"address,omitempty"`
+	City       string `json:"city,omitempty"`
+	Country    string `json:"country,omitempty"`
+	State      string `json:"state,omitempty"`
+	PostalCode string `json:"postal_code,omitempty"`
+}
+
+type AddressUpdate struct {
+	Address    *string `json:"address,omitempty"`
+	City       *string `json:"city,omitempty"`
+	Country    *string `json:"country,omitempty"`
+	State      *string `json:"state,omitempty"`
+	PostalCode *string `json:"postal_code,omitempty"`
 }
 
 type CustomerChat struct {
