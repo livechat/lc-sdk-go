@@ -178,6 +178,7 @@ type updateCustomerRequest struct {
 	Avatar        string              `json:"avatar,omitempty"`
 	PhoneNumber   string              `json:"phone_number,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
+	Address       *Address            `json:"address,omitempty"`
 }
 
 type banCustomerRequest struct {

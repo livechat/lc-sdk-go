@@ -430,6 +430,9 @@ var mockedResponses = map[string]string{
 					"phone_number": "+48123123123"
 				}
 			]
+		},
+		"address": {
+			"country": "United States"
 		}
 	}`,
 	"update_customer":         `{}`,
@@ -1118,6 +1121,12 @@ func checkGetCustomerResponse(t *testing.T, customer agent.Customer) {
 			t.Errorf("Invalid twilio instance: %v", customer.Omnichannel.Twilio[0])
 		}
 	}
+
+	if customer.Address == nil {
+		t.Error("Missing address")
+	} else if customer.Address.Country != "United States" {
+		t.Errorf("Invalid customer address: %s", customer.Address.Country)
+	}
 }
 
 func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
@@ -1128,7 +1137,10 @@ func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{})
+	address := &agent.Address{
+		Country: "United States",
+	}
+	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{}, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1536,7 +1548,10 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{})
+	address := &agent.Address{
+		Country: "United States",
+	}
+	rErr := api.UpdateCustomer("mister_customer", "stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{}, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 

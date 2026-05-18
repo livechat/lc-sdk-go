@@ -132,6 +132,7 @@ type updateCustomerRequest struct {
 	Email         string              `json:"email,omitempty"`
 	Avatar        string              `json:"avatar,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
+	Address       *Address            `json:"address,omitempty"`
 }
 
 type setCustomerSessionFieldsRequest struct {
