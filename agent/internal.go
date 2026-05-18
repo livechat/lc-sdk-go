@@ -173,10 +173,10 @@ type getCustomersRequest struct {
 
 type updateCustomerRequest struct {
 	ID            string              `json:"id"`
-	Name          string              `json:"name,omitempty"`
-	Email         string              `json:"email,omitempty"`
-	Avatar        string              `json:"avatar,omitempty"`
-	PhoneNumber   string              `json:"phone_number,omitempty"`
+	Name          *string             `json:"name,omitempty"`
+	Email         *string             `json:"email,omitempty"`
+	Avatar        *string             `json:"avatar,omitempty"`
+	PhoneNumber   *string             `json:"phone_number,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
 	Address       *AddressUpdate      `json:"address,omitempty"`
 }

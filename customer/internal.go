@@ -127,10 +127,10 @@ type deleteEventRequest struct {
 }
 
 type updateCustomerRequest struct {
-	Name          string              `json:"name,omitempty"`
+	Name          *string             `json:"name,omitempty"`
 	NameIsDefault *bool               `json:"name_is_default,omitempty"`
-	Email         string              `json:"email,omitempty"`
-	Avatar        string              `json:"avatar,omitempty"`
+	Email         *string             `json:"email,omitempty"`
+	Avatar        *string             `json:"avatar,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
 	Address       *AddressUpdate      `json:"address,omitempty"`
 }

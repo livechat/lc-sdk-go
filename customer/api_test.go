@@ -766,12 +766,15 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
+	name := "stubName"
+	email := "stub@mail.com"
+	avatarURL := "http://stub.url"
 	nameIsDefault := true
 	country := "United States"
 	address := &customer.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, &nameIsDefault, address)
+	rErr := api.UpdateCustomer(&name, &email, &avatarURL, []map[string]string{}, &nameIsDefault, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1229,11 +1232,14 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
+	name := "stubName"
+	email := "stub@mail.com"
+	avatarURL := "http://stub.url"
 	country := "United States"
 	address := &customer.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, nil, address)
+	rErr := api.UpdateCustomer(&name, &email, &avatarURL, []map[string]string{}, nil, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
