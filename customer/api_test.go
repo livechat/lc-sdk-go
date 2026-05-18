@@ -49,29 +49,27 @@ var mockedResponses = map[string]string{
 	"list_chats": `{
 		"chats_info": [{
 			"id": "PJ0MRSHTDG",
-			"last_thread_created_at": "2020-05-07T07:11:28.288340Z",
-			"last_thread_id": "K600PKZON8",
-			"last_event_per_type": {
-				"message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {
-						"id": "K600PKZON8_1",
-						"created_at": "2020-05-07T07:11:28.288340Z",
-						"type": "message",
-						"properties": {
-							"lc2": {
-								"welcome_message": true
-							}
-						},
-						"text": "Hello. What can I do for you?",
-						"author_id": "b5657aff34dd32e198160d54666df9d8"
+			"last_thread_info": {
+				"id": "K600PKZON8",
+				"created_at": "2020-05-07T07:11:28.288340Z",
+				"last_event_per_type": {
+					"message": {
+						"event": {
+							"id": "K600PKZON8_1",
+							"created_at": "2020-05-07T07:11:28.288340Z",
+							"type": "message",
+							"properties": {
+								"lc2": {
+									"welcome_message": true
+								}
+							},
+							"text": "Hello. What can I do for you?",
+							"author_id": "b5657aff34dd32e198160d54666df9d8"
+						}
+					},
+					"system_message": {
+						"event": {}
 					}
-				},
-				"system_message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {}
 				}
 			},
 			"users": [
@@ -520,17 +518,14 @@ func TestListChatsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	if chats[0].ID != "PJ0MRSHTDG" {
 		t.Errorf("Invalid chat id. Got: %v, expected: %v", chats[0].ID, "PJ0MRSHTDG")
 	}
-	lastThreadCreatedAt := chats[0].LastThreadCreatedAt.Format(time.RFC3339Nano)
-	if lastThreadCreatedAt != "2020-05-07T07:11:28.28834Z" {
-		t.Errorf("Invalid last thread creation date. Got: %v, expected: %v", lastThreadCreatedAt, "2020-05-07T07:11:28.28834Z")
+	lastThreadCreationDate := chats[0].LastThreadInfo.CreatedAt.Format(time.RFC3339Nano)
+	if lastThreadCreationDate != "2020-05-07T07:11:28.28834Z" {
+		t.Errorf("Invalid last thread creation date. Got: %v, expected: %v", lastThreadCreationDate, "2020-05-07T07:11:28.28834Z")
 	}
-	if chats[0].LastThreadID != "K600PKZON8" {
-		t.Errorf("Invalid last thread id. Got: %v, expected: %v", chats[0].LastThreadID, "K600PKZON8")
+	if chats[0].LastThreadInfo.ID != "K600PKZON8" {
+		t.Errorf("Invalid last thread id. Got: %v, expected: %v", chats[0].LastThreadInfo.ID, "K600PKZON8")
 	}
-	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
-		t.Errorf("Invalid last event per type thread id. Got: %v, expected: %v", chats[0].LastEventPerType["message"].ThreadID, "K600PKZON8")
-	}
-	e := chats[0].LastEventPerType["message"].Event
+	e := chats[0].LastThreadInfo.LastEventPerType["message"].Event
 	if e.Message().Text != "Hello. What can I do for you?" {
 		t.Errorf("Invalid last message event text. Got: %v, expected: %v", e.Message().Text, "Hello. What can I do for you?")
 	}

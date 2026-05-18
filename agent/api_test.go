@@ -78,6 +78,25 @@ var mockedResponses = map[string]string{
 					"position": 42,
 					"wait_time": 1337,
 					"queued_at": "2020-05-12T11:42:47.383000Z"
+				},
+				"last_event_per_type": {
+					"message": {
+						"event": {
+							"id": "K600PKZON8_1",
+							"created_at": "2020-05-07T07:11:28.288340Z",
+							"type": "message",
+							"properties": {
+								"lc2": {
+									"welcome_message": true
+								}
+							},
+							"text": "Hello. What can I do for you?",
+							"author_id": "b5657aff34dd32e198160d54666df9d8"
+						}
+					},
+					"system_message": {
+						"event": {}
+					}
 				}
 			},
 			"users": [
@@ -147,29 +166,6 @@ var mockedResponses = map[string]string{
 				"group_ids": [
 					0
 				]
-			},
-			"last_event_per_type": {
-				"message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {
-						"id": "K600PKZON8_1",
-						"created_at": "2020-05-07T07:11:28.288340Z",
-						"type": "message",
-						"properties": {
-							"lc2": {
-								"welcome_message": true
-							}
-						},
-						"text": "Hello. What can I do for you?",
-						"author_id": "b5657aff34dd32e198160d54666df9d8"
-					}
-				},
-				"system_message": {
-					"thread_id": "K600PKZON8",
-					"thread_created_at": "2020-05-07T07:11:28.288340Z",
-					"event": {}
-				}
 			},
 			"is_followed": false
 		}],
@@ -704,10 +700,7 @@ func TestListChatsShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	if chats[0].LastThreadInfo.Queue.Position != 42 {
 		t.Errorf("Invalid last thread queue position. Got: %v, expected: %v", chats[0].LastThreadInfo.Queue.Position, 42)
 	}
-	if chats[0].LastEventPerType["message"].ThreadID != "K600PKZON8" {
-		t.Errorf("Invalid last event per type thread id. Got: %v, expected: %v", chats[0].LastEventPerType["message"].ThreadID, "K600PKZON8")
-	}
-	e := chats[0].LastEventPerType["message"].Event
+	e := chats[0].LastThreadInfo.LastEventPerType["message"].Event
 	if e.Message().Text != "Hello. What can I do for you?" {
 		t.Errorf("Invalid last message event text. Got: %v, expected: %v", e.Message().Text, "Hello. What can I do for you?")
 	}
