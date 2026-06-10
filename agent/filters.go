@@ -32,22 +32,23 @@ func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue 
 // Archives filters
 
 type archivesFilters struct {
-	Agents        *propertyFilterType `json:"agents,omitempty"`
-	AgentTypes    *AgentTypesFilter   `json:"agent_types,omitempty"`
-	GroupIDs      []uint              `json:"group_ids,omitempty"`
-	From          string              `json:"from,omitempty"`
-	To            string              `json:"to,omitempty"`
-	Properties    PropertiesFilters   `json:"properties,omitempty"`
-	Tags          *propertyFilterType `json:"tags,omitempty"`
-	Sales         *propertyFilterType `json:"sales,omitempty"`
-	Goals         *propertyFilterType `json:"goals,omitempty"`
-	Surveys       []SurveyFilter      `json:"surveys,omitempty"`
-	ThreadIDs     []string            `json:"thread_ids,omitempty"`
-	Query         string              `json:"query,omitempty"`
-	EventTypes    *eventTypesFilter   `json:"event_types,omitempty"`
-	Greetings     *GreetingsFilter    `json:"greetings,omitempty"`
-	CustomerID    string              `json:"customer_id,omitempty"`
-	CustomerEmail string              `json:"customer_email,omitempty"`
+	Agents         *propertyFilterType   `json:"agents,omitempty"`
+	AgentTypes     *AgentTypesFilter     `json:"agent_types,omitempty"`
+	GroupIDs       []uint                `json:"group_ids,omitempty"`
+	From           string                `json:"from,omitempty"`
+	To             string                `json:"to,omitempty"`
+	Properties     PropertiesFilters     `json:"properties,omitempty"`
+	Tags           *propertyFilterType   `json:"tags,omitempty"`
+	Sales          *propertyFilterType   `json:"sales,omitempty"`
+	Goals          *propertyFilterType   `json:"goals,omitempty"`
+	Surveys        []SurveyFilter        `json:"surveys,omitempty"`
+	ThreadIDs      []string              `json:"thread_ids,omitempty"`
+	Query          string                `json:"query,omitempty"`
+	EventTypes     *eventTypesFilter     `json:"event_types,omitempty"`
+	Greetings      *GreetingsFilter      `json:"greetings,omitempty"`
+	CustomerID     string                `json:"customer_id,omitempty"`
+	CustomerEmail  string                `json:"customer_email,omitempty"`
+	EcommerceSales *EcommerceSalesFilter `json:"ecommerce_sales,omitempty"`
 }
 
 type eventTypesFilter struct {
@@ -58,6 +59,13 @@ type eventTypesFilter struct {
 
 // AgentTypesFilter represents structure to match agent types when getting Archives
 type AgentTypesFilter struct {
+	AllValues     []string `json:"all_values,omitempty"`
+	AnyValues     []string `json:"any_values,omitempty"`
+	ExcludeValues []string `json:"exclude_values,omitempty"`
+}
+
+// EcommerceSalesFilter represents structure to match ecommerce sales when getting Archives
+type EcommerceSalesFilter struct {
 	AllValues     []string `json:"all_values,omitempty"`
 	AnyValues     []string `json:"any_values,omitempty"`
 	ExcludeValues []string `json:"exclude_values,omitempty"`
@@ -179,6 +187,12 @@ func (af *archivesFilters) ByGreetings(filters *GreetingsFilter) *archivesFilter
 // ByAgentTypes extends archives filter with agent types to match
 func (af *archivesFilters) ByAgentTypes(filter *AgentTypesFilter) *archivesFilters {
 	af.AgentTypes = filter
+	return af
+}
+
+// ByEcommerceSales extends archives filter with ecommerce sales to match
+func (af *archivesFilters) ByEcommerceSales(filter *EcommerceSalesFilter) *archivesFilters {
+	af.EcommerceSales = filter
 	return af
 }
 
