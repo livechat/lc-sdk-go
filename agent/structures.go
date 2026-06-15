@@ -382,6 +382,7 @@ type CustomerOrder struct {
 	TotalPrice    float64 `json:"total_price"`
 	TotalPriceUSD float64 `json:"total_price_usd"`
 	CreatedAt     string  `json:"created_at"`
+	Source        string  `json:"source"`
 }
 
 type Omnichannel struct {
