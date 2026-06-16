@@ -96,6 +96,7 @@ type userSpecific struct {
 	Orders                     json.RawMessage `json:"orders,omitempty"`
 	Omnichannel                json.RawMessage `json:"omnichannel,omitempty"`
 	Address                    json.RawMessage `json:"address,omitempty"`
+	CustomerProperties         json.RawMessage `json:"customer_properties,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -177,6 +178,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Address, &c.Address); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.CustomerProperties, &c.CustomerProperties); err != nil {
 		return nil
 	}
 	return &c
@@ -329,25 +333,26 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
-	NameIsDefault              bool                `json:"name_is_default"`
-	PhoneNumber                string              `json:"phone_number"`
-	Visit                      Visit               `json:"visit"`
-	Statistics                 CustomerStatistics  `json:"statistics"`
-	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`
-	CustomerLastEventCreatedAt time.Time           `json:"customer_last_event_created_at"`
-	CreatedAt                  time.Time           `json:"created_at"`
-	SessionFields              []map[string]string `json:"session_fields"`
-	Followed                   bool                `json:"followed"`
-	Online                     bool                `json:"online"`
-	EmailVerified              bool                `json:"email_verified"`
-	State                      string              `json:"state,omitempty"`
-	GroupIDs                   []int               `json:"group_ids"`
-	GreetingID                 int                 `json:"greeting_id,omitempty"`
-	Chats                      []*CustomerChat     `json:"chats,omitempty"`
-	Tickets                    []*CustomerTicket   `json:"tickets,omitempty"`
-	Orders                     []*CustomerOrder    `json:"orders,omitempty"`
-	Omnichannel                *Omnichannel        `json:"omnichannel,omitempty"`
-	Address                    *Address            `json:"address,omitempty"`
+	NameIsDefault              bool                              `json:"name_is_default"`
+	PhoneNumber                string                            `json:"phone_number"`
+	Visit                      Visit                             `json:"visit"`
+	Statistics                 CustomerStatistics                `json:"statistics"`
+	AgentLastEventCreatedAt    time.Time                         `json:"agent_last_event_created_at"`
+	CustomerLastEventCreatedAt time.Time                         `json:"customer_last_event_created_at"`
+	CreatedAt                  time.Time                         `json:"created_at"`
+	SessionFields              []map[string]string               `json:"session_fields"`
+	Followed                   bool                              `json:"followed"`
+	Online                     bool                              `json:"online"`
+	EmailVerified              bool                              `json:"email_verified"`
+	State                      string                            `json:"state,omitempty"`
+	GroupIDs                   []int                             `json:"group_ids"`
+	GreetingID                 int                               `json:"greeting_id,omitempty"`
+	Chats                      []*CustomerChat                   `json:"chats,omitempty"`
+	Tickets                    []*CustomerTicket                 `json:"tickets,omitempty"`
+	Orders                     []*CustomerOrder                  `json:"orders,omitempty"`
+	Omnichannel                *Omnichannel                      `json:"omnichannel,omitempty"`
+	Address                    *Address                          `json:"address,omitempty"`
+	CustomerProperties         map[string]*CustomerPropertyValue `json:"customer_properties,omitempty"`
 }
 
 type CustomerStatistics struct {
@@ -419,6 +424,13 @@ type AddressUpdate struct {
 	Country    *string `json:"country,omitempty"`
 	State      *string `json:"state,omitempty"`
 	PostalCode *string `json:"postal_code,omitempty"`
+}
+
+type CustomerPropertyValue struct {
+	Value                     json.RawMessage `json:"value"`
+	LastUpdatedAt             string          `json:"last_updated_at,omitempty"`
+	LastUpdatedAgentAccountID string          `json:"last_updated_agent_account_id,omitempty"`
+	LastUpdatedAgentClientID  string          `json:"last_updated_agent_client_id,omitempty"`
 }
 
 type CustomerChat struct {
