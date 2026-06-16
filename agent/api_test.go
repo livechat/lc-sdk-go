@@ -429,6 +429,20 @@ var mockedResponses = map[string]string{
 		},
 		"address": {
 			"country": "United States"
+		},
+		"customer_properties": {
+			"9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11": {
+				"value": 42,
+				"last_updated_at": "2019-08-24T14:15:22Z",
+				"last_updated_agent_account_id": "464d206a-ba7d-4ce1-98d6-d03f8f14970e",
+				"last_updated_agent_client_id": "71d32c598862b01b9e2298281339dbc2"
+			},
+			"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
+				"value": "hello",
+				"last_updated_at": "2019-08-24T14:17:47Z",
+				"last_updated_agent_account_id": "464d206a-ba7d-4ce1-98d6-d03f8f14970e",
+				"last_updated_agent_client_id": "71d32c598862b01b9e2298281339dbc2"
+			}
 		}
 	}`,
 	"update_customer":         `{}`,
@@ -1119,6 +1133,10 @@ func checkGetCustomerResponse(t *testing.T, customer agent.Customer) {
 		t.Error("Missing address")
 	} else if customer.Address.Country != "United States" {
 		t.Errorf("Invalid customer address: %s", customer.Address.Country)
+	}
+
+	if len(customer.CustomerProperties) != 2 {
+		t.Errorf("Invalid number of customer properties: %d", len(customer.CustomerProperties))
 	}
 }
 
