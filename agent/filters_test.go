@@ -200,16 +200,21 @@ func TestArchiveFiltersByThreadsClearsOtherFilters(t *testing.T) {
 
 func TestChatsFilters(t *testing.T) {
 	cf := agent.NewChatsFilters()
-	if !cf.IncludeActive {
-		t.Error("ChatsFilters.IncludeActive should be true by default")
+	if cf.Active != nil {
+		t.Error("ChatsFilters.Active should be nil by default")
 	}
 
-	cf.WithoutActiveChats().ByGroups([]uint{1})
-	if cf.IncludeActive {
-		t.Error("ChatsFilters.IncludeActive should be toggled to false")
+	cf.OnlyActiveChats().ByGroups([]uint{1})
+	if cf.Active == nil || !*cf.Active {
+		t.Error("ChatsFilters.Active should be toggled to true")
 	}
 	if cf.GroupIDs[0] != 1 {
 		t.Errorf("ChatsFilters.GroupIDs invalid: %v", cf.GroupIDs)
+	}
+
+	cf.OnlyInactiveChats()
+	if cf.Active == nil || *cf.Active {
+		t.Error("ChatsFilters.Active should be toggled to false.")
 	}
 }
 
