@@ -216,23 +216,29 @@ func NewIntegerFilter(values []int64, inclusive bool) *integerFilter {
 
 // Chats Filters
 type chatsFilters struct {
-	IncludeActive              bool              `json:"include_active,omitempty"`
+	Active                     *bool             `json:"active,omitempty"`
 	IncludeChatsWithoutThreads bool              `json:"include_chats_without_threads,omitempty"`
 	GroupIDs                   []uint            `json:"group_ids,omitempty"`
 	Properties                 PropertiesFilters `json:"properties,omitempty"`
 }
 
 // NewChatsFilters creates empty structure to aggregate filters for Chats in ListChats method
-// By default filters include also active chats
+// By default no active filter is set, returning both active and inactive chats
 func NewChatsFilters() *chatsFilters {
-	return &chatsFilters{
-		IncludeActive: true,
-	}
+	return &chatsFilters{}
 }
 
-// WithoutActiveChats extends chat filters to not include active chats
-func (cf *chatsFilters) WithoutActiveChats() *chatsFilters {
-	cf.IncludeActive = false
+// OnlyActiveChats extends chat filters to return only active chats
+func (cf *chatsFilters) OnlyActiveChats() *chatsFilters {
+	active := true
+	cf.Active = &active
+	return cf
+}
+
+// OnlyInactiveChats extends chat filters to return only inactive chats
+func (cf *chatsFilters) OnlyInactiveChats() *chatsFilters {
+	active := false
+	cf.Active = &active
 	return cf
 }
 
