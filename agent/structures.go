@@ -542,27 +542,27 @@ func ValidateEvent(e interface{}) error {
 }
 
 type eventSpecific struct {
-	Text              json.RawMessage `json:"text"`
-	TextVars          json.RawMessage `json:"text_vars"`
-	Fields            json.RawMessage `json:"fields"`
-	FormType          json.RawMessage `json:"form_type"`
-	ContentType       json.RawMessage `json:"content_type"`
-	Name              json.RawMessage `json:"name"`
-	URL               json.RawMessage `json:"url"`
-	ThumbnailURL      json.RawMessage `json:"thumbnail_url"`
-	Thumbnail2xURL    json.RawMessage `json:"thumbnail2x_url"`
-	Width             json.RawMessage `json:"width"`
-	Height            json.RawMessage `json:"height"`
-	Size              json.RawMessage `json:"size"`
-	TemplateID        json.RawMessage `json:"template_id"`
-	Elements          json.RawMessage `json:"elements"`
-	Postback          json.RawMessage `json:"postback"`
-	AlternativeText   json.RawMessage `json:"alternative_text"`
-	SystemMessageType json.RawMessage `json:"system_message_type"`
-	Source            json.RawMessage `json:"source"`
-	Subtype           json.RawMessage `json:"subtype"`
-	Details           json.RawMessage `json:"details"`
-	Version           json.RawMessage `json:"version"`
+	Text              json.RawMessage `json:"text,omitempty"`
+	TextVars          json.RawMessage `json:"text_vars,omitempty"`
+	Fields            json.RawMessage `json:"fields,omitempty"`
+	FormType          json.RawMessage `json:"form_type,omitempty"`
+	ContentType       json.RawMessage `json:"content_type,omitempty"`
+	Name              json.RawMessage `json:"name,omitempty"`
+	URL               json.RawMessage `json:"url,omitempty"`
+	ThumbnailURL      json.RawMessage `json:"thumbnail_url,omitempty"`
+	Thumbnail2xURL    json.RawMessage `json:"thumbnail2x_url,omitempty"`
+	Width             json.RawMessage `json:"width,omitempty"`
+	Height            json.RawMessage `json:"height,omitempty"`
+	Size              json.RawMessage `json:"size,omitempty"`
+	TemplateID        json.RawMessage `json:"template_id,omitempty"`
+	Elements          json.RawMessage `json:"elements,omitempty"`
+	Postback          json.RawMessage `json:"postback,omitempty"`
+	AlternativeText   json.RawMessage `json:"alternative_text,omitempty"`
+	SystemMessageType json.RawMessage `json:"system_message_type,omitempty"`
+	Source            json.RawMessage `json:"source,omitempty"`
+	Subtype           json.RawMessage `json:"subtype,omitempty"`
+	Details           json.RawMessage `json:"details,omitempty"`
+	Version           json.RawMessage `json:"version,omitempty"`
 }
 
 // Event represents base of all LiveChat chat events.
