@@ -540,7 +540,7 @@ func (a *API) DeleteAllowedDomain(domain string) error {
 }
 
 // ListAllowedDomains returns all allowed domains.
-func (a *API) ListAllowedDomains() ([]string, error) {
+func (a *API) ListAllowedDomains() ([]AllowedDomain, error) {
 	var resp listAllowedDomainsResponse
 	err := a.Call("list_allowed_domains", &listAllowedDomainsRequest{}, &resp)
 	return resp.Domains, err

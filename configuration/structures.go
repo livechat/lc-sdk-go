@@ -1,7 +1,17 @@
 package configuration
 
+import "time"
+
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.
 type Properties map[string]map[string]interface{}
+
+type AllowedDomain struct {
+	Domain       string    `json:"domain"`
+	CreationDate time.Time `json:"creation_date"`
+	CreatedBy    string    `json:"created_by"`
+	UpdateDate   time.Time `json:"update_date"`
+	UpdatedBy    string    `json:"updated_by"`
+}
 
 type ListGroupsPropertiesRequestOptions struct {
 	Namespace  string `json:"namespace,omitempty"`
