@@ -325,16 +325,16 @@ var mockedResponses = map[string]string{
 		"domains": [
 			{
 				"domain": "example.com",
-				"creation_date": "2026-07-01T10:00:00Z",
+				"created_at": "2026-07-01T10:00:00Z",
 				"created_by": "admin@example.com",
-				"update_date": "2026-07-02T11:30:00Z",
+				"updated_at": "2026-07-02T11:30:00Z",
 				"updated_by": "admin@example.com"
 			},
 			{
 				"domain": "test.com",
-				"creation_date": "2026-07-03T09:15:00Z",
+				"created_at": "2026-07-03T09:15:00Z",
 				"created_by": "owner@example.com",
-				"update_date": "2026-07-03T09:15:00Z",
+				"updated_at": "2026-07-03T09:15:00Z",
 				"updated_by": "owner@example.com"
 			}
 		]
@@ -417,9 +417,9 @@ var mockedResponses = map[string]string{
 	}`,
 	"update_translations": `{}`,
 	"list_translations":   `{"phrases":{"hello":"cześć","bye":"do widzenia"}}`,
-	"create_greeting":        fmt.Sprintf(`{"id": %d}`, ExpectedNewGreetingID),
-	"update_greeting":        `{}`,
-	"delete_greeting":        `{}`,
+	"create_greeting":     fmt.Sprintf(`{"id": %d}`, ExpectedNewGreetingID),
+	"update_greeting":     `{}`,
+	"delete_greeting":     `{}`,
 	"get_greeting": `{
 		"id": 42,
 		"type": "normal",
@@ -2000,7 +2000,7 @@ func TestListAllowedDomainsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 	if resp[0].CreatedBy != "admin@example.com" {
 		t.Errorf("Invalid first domain created_by: %v", resp[0].CreatedBy)
 	}
-	if resp[0].CreationDate.IsZero() || resp[0].UpdateDate.IsZero() {
+	if resp[0].CreatedAt.IsZero() || resp[0].UpdatedAt.IsZero() {
 		t.Errorf("First domain dates not parsed: %+v", resp[0])
 	}
 	if resp[0].UpdatedBy != "admin@example.com" {

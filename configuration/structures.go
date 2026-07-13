@@ -6,11 +6,11 @@ import "time"
 type Properties map[string]map[string]interface{}
 
 type AllowedDomain struct {
-	Domain       string    `json:"domain"`
-	CreationDate time.Time `json:"creation_date"`
-	CreatedBy    string    `json:"created_by"`
-	UpdateDate   time.Time `json:"update_date"`
-	UpdatedBy    string    `json:"updated_by"`
+	Domain    string    `json:"domain"`
+	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
+	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedBy string    `json:"updated_by"`
 }
 
 type ListGroupsPropertiesRequestOptions struct {
