@@ -239,7 +239,7 @@ type listAllowedDomainsRequest struct {
 }
 
 type listAllowedDomainsResponse struct {
-	Domains []string `json:"domains"`
+	Domains []AllowedDomain `json:"domains"`
 }
 
 type checkProductLimitsForPlanRequest struct {

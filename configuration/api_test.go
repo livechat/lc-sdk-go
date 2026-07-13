@@ -322,7 +322,22 @@ var mockedResponses = map[string]string{
 	"add_allowed_domain":    `{}`,
 	"delete_allowed_domain": `{}`,
 	"list_allowed_domains": `{
-		"domains": ["example.com", "test.com"]
+		"domains": [
+			{
+				"domain": "example.com",
+				"created_at": "2026-07-01T10:00:00Z",
+				"created_by": "admin@example.com",
+				"updated_at": "2026-07-02T11:30:00Z",
+				"updated_by": "admin@example.com"
+			},
+			{
+				"domain": "test.com",
+				"created_at": "2026-07-03T09:15:00Z",
+				"created_by": "owner@example.com",
+				"updated_at": "2026-07-03T09:15:00Z",
+				"updated_by": "owner@example.com"
+			}
+		]
 	}`,
 	"check_product_limits_for_plan": `[
 		{
@@ -402,9 +417,9 @@ var mockedResponses = map[string]string{
 	}`,
 	"update_translations": `{}`,
 	"list_translations":   `{"phrases":{"hello":"cześć","bye":"do widzenia"}}`,
-	"create_greeting":        fmt.Sprintf(`{"id": %d}`, ExpectedNewGreetingID),
-	"update_greeting":        `{}`,
-	"delete_greeting":        `{}`,
+	"create_greeting":     fmt.Sprintf(`{"id": %d}`, ExpectedNewGreetingID),
+	"update_greeting":     `{}`,
+	"delete_greeting":     `{}`,
 	"get_greeting": `{
 		"id": 42,
 		"type": "normal",
@@ -1979,12 +1994,21 @@ func TestListAllowedDomainsShouldReturnDataReceivedFromConfAPI(t *testing.T) {
 		t.Errorf("Invalid response length: %v", len(resp))
 	}
 
-	if resp[0] != "example.com" {
-		t.Errorf("Invalid first domain: %v", resp[0])
+	if resp[0].Domain != "example.com" {
+		t.Errorf("Invalid first domain: %v", resp[0].Domain)
+	}
+	if resp[0].CreatedBy != "admin@example.com" {
+		t.Errorf("Invalid first domain created_by: %v", resp[0].CreatedBy)
+	}
+	if resp[0].CreatedAt.IsZero() || resp[0].UpdatedAt.IsZero() {
+		t.Errorf("First domain dates not parsed: %+v", resp[0])
+	}
+	if resp[0].UpdatedBy != "admin@example.com" {
+		t.Errorf("Invalid first domain updated_by: %v", resp[0].UpdatedBy)
 	}
 
-	if resp[1] != "test.com" {
-		t.Errorf("Invalid second domain: %v", resp[1])
+	if resp[1].Domain != "test.com" {
+		t.Errorf("Invalid second domain: %v", resp[1].Domain)
 	}
 }
 
