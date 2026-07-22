@@ -227,6 +227,7 @@ type Customer struct {
 	*User
 	NameIsDefault bool                `json:"name_is_default"`
 	Email         string              `json:"email,omitempty"`
+	PhoneNumber   string              `json:"phone_number,omitempty"`
 	EmailVerified bool                `json:"email_verified,omitempty"`
 	SessionFields []map[string]string `json:"session_fields,omitempty"`
 	Address       *Address            `json:"address,omitempty"`
