@@ -86,6 +86,7 @@ type userSpecific struct {
 	SessionFields json.RawMessage `json:"session_fields,omitempty"`
 	Email         json.RawMessage `json:"email,omitempty"`
 	EmailVerified json.RawMessage `json:"email_verified,omitempty"`
+	PhoneNumber   json.RawMessage `json:"phone_number,omitempty"`
 	Address       json.RawMessage `json:"address,omitempty"`
 }
 
@@ -117,6 +118,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := json.Unmarshal(u.SessionFields, &c.SessionFields); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.PhoneNumber, &c.PhoneNumber); err != nil {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Address, &c.Address); err != nil {
