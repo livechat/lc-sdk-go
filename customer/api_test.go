@@ -785,7 +785,7 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	address := &customer.Address{
 		Country: "United States",
 	}
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, &nameIsDefault, address)
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{}, &nameIsDefault, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1266,7 +1266,7 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	address := &customer.Address{
 		Country: "United States",
 	}
-	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", []map[string]string{}, nil, address)
+	rErr := api.UpdateCustomer("stubName", "stub@mail.com", "http://stub.url", "+48123123123", []map[string]string{}, nil, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
