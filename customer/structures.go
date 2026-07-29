@@ -242,11 +242,9 @@ type AddressUpdate struct {
 
 // ThreadInfo represents a short description of a thread
 type ThreadInfo struct {
-	ID               string    `json:"id"`
-	CreatedAt        time.Time `json:"created_at"`
-	LastEventPerType map[string]struct {
-		Event Event `json:"event"`
-	} `json:"last_event_per_type,omitempty"`
+	ID               string           `json:"id"`
+	CreatedAt        time.Time        `json:"created_at"`
+	LastEventPerType map[string]Event `json:"last_event_per_type,omitempty"`
 }
 
 // ChatInfo represents a short description of a chat
