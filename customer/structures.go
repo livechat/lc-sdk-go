@@ -422,7 +422,7 @@ type FilledFormFieldGroupChooser struct {
 }
 
 // Single method converts FilledFormField object to FilledFormFieldSingle object
-// if FilledFormField's Type is one of "name", "email", "question", "textarea", "subject".
+// if FilledFormField's Type is one of "name", "email", "question", "textarea", "subject", "phone", "date".
 // If Type is different or FilledFormField is malformed, then it returns nil.
 func (f *FilledFormField) Single() *FilledFormFieldSingle {
 	supportedTypes := map[string]struct{}{
@@ -431,6 +431,8 @@ func (f *FilledFormField) Single() *FilledFormFieldSingle {
 		"question": {},
 		"textarea": {},
 		"subject":  {},
+		"phone":    {},
+		"date":     {},
 	}
 	if _, ok := supportedTypes[f.Type]; !ok {
 		return nil
