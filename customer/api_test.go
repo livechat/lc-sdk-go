@@ -275,6 +275,7 @@ var mockedResponses = map[string]string{
 		"name_is_default": false,
 		"email": "customer1@example.com",
 		"email_verified": true,
+		"suggested_email": "guessed@example.com",
 		"avatar": "example.com/avatars/1.jpg",
 		"session_fields": [{
 			"custom_key": "custom_value"
@@ -768,10 +769,11 @@ func TestUpdateCustomerShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	phone := "+48123123123"
 	nameIsDefault := true
 	country := "United States"
+	suggestedEmail := "guessed@example.com"
 	address := &customer.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer(&name, &email, &avatarURL, &phone, []map[string]string{}, &nameIsDefault, address)
+	rErr := api.UpdateCustomer(&name, &email, &avatarURL, &phone, &suggestedEmail, []map[string]string{}, &nameIsDefault, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -968,6 +970,10 @@ func checkGetCustomerResponse(t *testing.T, c customer.Customer) {
 
 	if c.Email != "customer1@example.com" {
 		t.Errorf("Invalid customer email: %v", c.Email)
+	}
+
+	if c.SuggestedEmail != "guessed@example.com" {
+		t.Errorf("Invalid customer suggested email: %v", c.SuggestedEmail)
 	}
 
 	if c.Avatar != "example.com/avatars/1.jpg" {
@@ -1234,10 +1240,11 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	avatarURL := "http://stub.url"
 	phone := "+48123123123"
 	country := "United States"
+	suggestedEmail := "guessed@example.com"
 	address := &customer.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer(&name, &email, &avatarURL, &phone, []map[string]string{}, nil, address)
+	rErr := api.UpdateCustomer(&name, &email, &avatarURL, &phone, &suggestedEmail, []map[string]string{}, nil, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 

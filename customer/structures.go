@@ -70,11 +70,12 @@ type User struct {
 }
 
 type userSpecific struct {
-	SessionFields json.RawMessage `json:"session_fields,omitempty"`
-	Email         json.RawMessage `json:"email,omitempty"`
-	EmailVerified json.RawMessage `json:"email_verified,omitempty"`
-	PhoneNumber   json.RawMessage `json:"phone_number,omitempty"`
-	Address       json.RawMessage `json:"address,omitempty"`
+	SessionFields  json.RawMessage `json:"session_fields,omitempty"`
+	Email          json.RawMessage `json:"email,omitempty"`
+	EmailVerified  json.RawMessage `json:"email_verified,omitempty"`
+	PhoneNumber    json.RawMessage `json:"phone_number,omitempty"`
+	SuggestedEmail json.RawMessage `json:"suggested_email,omitempty"`
+	Address        json.RawMessage `json:"address,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -108,6 +109,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.PhoneNumber, &c.PhoneNumber); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.SuggestedEmail, &c.SuggestedEmail); err != nil {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Address, &c.Address); err != nil {
@@ -216,12 +220,13 @@ type Agent struct {
 // Customer represents LiveChat customer.
 type Customer struct {
 	*User
-	NameIsDefault bool                `json:"name_is_default"`
-	Email         string              `json:"email,omitempty"`
-	PhoneNumber   string              `json:"phone_number,omitempty"`
-	EmailVerified bool                `json:"email_verified,omitempty"`
-	SessionFields []map[string]string `json:"session_fields,omitempty"`
-	Address       *Address            `json:"address,omitempty"`
+	NameIsDefault  bool                `json:"name_is_default"`
+	Email          string              `json:"email,omitempty"`
+	PhoneNumber    string              `json:"phone_number,omitempty"`
+	SuggestedEmail string              `json:"suggested_email,omitempty"`
+	EmailVerified  bool                `json:"email_verified,omitempty"`
+	SessionFields  []map[string]string `json:"session_fields,omitempty"`
+	Address        *Address            `json:"address,omitempty"`
 }
 
 type Address struct {
