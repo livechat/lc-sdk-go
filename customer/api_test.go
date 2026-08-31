@@ -792,7 +792,7 @@ func TestCheckGoalsShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.CheckGoals("http://page.url", 0, map[string]string{})
+	rErr := api.CheckGoals("http://page.url", 0, []map[string]string{})
 	if rErr != nil {
 		t.Errorf("CheckGoals failed: %v", rErr)
 	}
@@ -1154,7 +1154,7 @@ func TestCheckGoalsShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	rErr := api.CheckGoals("http://page.url", 0, map[string]string{})
+	rErr := api.CheckGoals("http://page.url", 0, []map[string]string{})
 	verifyErrorResponse("CheckGoals", rErr, t)
 }
 
