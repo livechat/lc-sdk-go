@@ -138,9 +138,9 @@ type listGroupStatusesResponse struct {
 }
 
 type checkGoalsRequest struct {
-	PageURL        string            `json:"page_url"`
-	GroupID        int               `json:"group_id"`
-	CustomerFields map[string]string `json:"customer_fields"`
+	PageURL       string              `json:"page_url"`
+	GroupID       int                 `json:"group_id"`
+	SessionFields []map[string]string `json:"session_fields"`
 }
 
 type getFormRequest struct {

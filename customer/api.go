@@ -300,11 +300,11 @@ func (a *API) ListGroupStatuses(groupIDs []int) (map[int]GroupStatus, error) {
 // CheckGoals triggers checking if goals were achieved. Then, Agents receive the information.
 // You should call this method to provide goals parameters for the server when the customers limit is reached.
 // Works only for offline Customers.
-func (a *API) CheckGoals(pageURL string, groupID int, customerFields map[string]string) error {
+func (a *API) CheckGoals(pageURL string, groupID int, sessionFields []map[string]string) error {
 	return a.Call("check_goals", &checkGoalsRequest{
-		PageURL:        pageURL,
-		GroupID:        groupID,
-		CustomerFields: customerFields,
+		PageURL:       pageURL,
+		GroupID:       groupID,
+		SessionFields: sessionFields,
 	}, &emptyResponse{})
 }
 
