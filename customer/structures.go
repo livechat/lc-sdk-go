@@ -11,20 +11,27 @@ import (
 // Properties represents LiveChat properties in form of property_namespace -> property -> value.
 type Properties map[string]map[string]interface{}
 
-// Form struct describes schema of custom form (e-mail, prechat or postchat survey).
+// Form struct describes schema of custom form (e-mail, prechat, postchat or ticket survey).
 type Form struct {
-	ID     string `json:"id"`
-	Fields []struct {
-		ID       string `json:"id"`
-		Type     string `json:"type"`
-		Label    string `json:"label"`
-		Required bool   `json:"required"`
-		Options  []struct {
-			ID    string `json:"id"`
-			Type  int    `json:"group_id"`
-			Label string `json:"label"`
-		} `json:"options"`
-	} `json:"fields"`
+	ID     string      `json:"id"`
+	Fields []FormField `json:"fields"`
+}
+
+type FormField struct {
+	ID           string            `json:"id,omitempty"`
+	Type         string            `json:"type"`
+	Label        string            `json:"label"`
+	Required     bool              `json:"required,omitempty"`
+	CommentLabel string            `json:"comment_label,omitempty"`
+	Checked      bool              `json:"checked,omitempty"`
+	Options      []FormFieldOption `json:"options,omitempty"`
+}
+
+type FormFieldOption struct {
+	ID      string `json:"id"`
+	Label   string `json:"label"`
+	Checked bool   `json:"checked,omitempty"`
+	GroupID *int32 `json:"group_id,omitempty"`
 }
 
 // PredictedAgent is an agent returned by GetPredictedAgent method.

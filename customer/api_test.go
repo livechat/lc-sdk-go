@@ -248,6 +248,31 @@ var mockedResponses = map[string]string{
 							"label": "General"
 						}
 					]
+				},
+				{
+					"id": "157986144052009332",
+					"type": "radio",
+					"label": "Have you contacted us before?",
+					"required": true,
+					"options": [
+						{
+							"id": "0",
+							"label": "Yes",
+							"checked": true
+						},
+						{
+							"id": "1",
+							"label": "No",
+							"checked": false
+						}
+					]
+				},
+				{
+					"id": "157986144052009333",
+					"type": "rating",
+					"label": "How would you rate this chat?",
+					"required": true,
+					"comment_label": "Thank you for the rating! You can leave a comment in the box below:"
 				}
 			]
 		},
@@ -862,7 +887,6 @@ func TestGetFormShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("GetForm failed: %v", rErr)
 	}
 
-	// TODO add better validation
 	if !enabled {
 		t.Errorf("Invalid enabled state: %v", enabled)
 	}
@@ -871,12 +895,32 @@ func TestGetFormShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 		t.Errorf("Invalid form id: %v", form.ID)
 	}
 
-	if len(form.Fields) != 4 {
-		t.Errorf("Invalid length of form fields array: %v", len(form.Fields))
+	if len(form.Fields) != 6 {
+		t.Fatalf("Invalid length of form fields array: %v", len(form.Fields))
 	}
 
-	if len(form.Fields[3].Options) != 3 {
-		t.Errorf("Invalid length of form group_chooser field options array: %v", len(form.Fields[3].Options))
+	groupChooser := form.Fields[3]
+	if len(groupChooser.Options) != 3 {
+		t.Errorf("Invalid length of form group_chooser field options array: %v", len(groupChooser.Options))
+	}
+	if groupChooser.Options[0].GroupID == nil || *groupChooser.Options[0].GroupID != 1 {
+		t.Errorf("Invalid group_chooser option group_id: %v", groupChooser.Options[0].GroupID)
+	}
+
+	radio := form.Fields[4]
+	if len(radio.Options) != 2 {
+		t.Errorf("Invalid length of form radio field options array: %v", len(radio.Options))
+	}
+	if !radio.Options[0].Checked {
+		t.Errorf("Expected radio option 0 to be checked")
+	}
+	if radio.Options[1].Checked {
+		t.Errorf("Expected radio option 1 to be unchecked")
+	}
+
+	rating := form.Fields[5]
+	if rating.CommentLabel != "Thank you for the rating! You can leave a comment in the box below:" {
+		t.Errorf("Invalid rating field comment_label: %v", rating.CommentLabel)
 	}
 }
 
