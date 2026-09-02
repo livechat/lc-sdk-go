@@ -886,8 +886,8 @@ func TestGetFormShouldReturnDataReceivedFromCustomerAPI(t *testing.T) {
 	}
 
 	groupChooser := form.Fields[3]
-	if len(groupChooser.Options) != 3 {
-		t.Errorf("Invalid length of form group_chooser field options array: %v", len(groupChooser.Options))
+if len(groupChooser.Options) != 3 {
+		t.Fatalf("Invalid length of form group_chooser field options array: %v", len(groupChooser.Options))
 	}
 	if groupChooser.Options[0].GroupID == nil || *groupChooser.Options[0].GroupID != 1 {
 		t.Errorf("Invalid group_chooser option group_id: %v", groupChooser.Options[0].GroupID)
