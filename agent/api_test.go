@@ -305,6 +305,7 @@ var mockedResponses = map[string]string{
 		"email": "customer1@example.com",
 		"avatar": "example.com/avatars/1.jpg",
 		"phone_number": "+48123123123",
+		"suggested_email": "guessed@example.com",
 		"session_fields": [{
 			"custom_key": "custom_value"
 		}, {
@@ -1085,6 +1086,10 @@ func checkGetCustomerResponse(t *testing.T, customer agent.Customer) {
 		t.Errorf("Invalid customer phone number: %v", customer.PhoneNumber)
 	}
 
+	if customer.SuggestedEmail != "guessed@example.com" {
+		t.Errorf("Invalid customer suggested email: %v", customer.SuggestedEmail)
+	}
+
 	if len(customer.SessionFields) != 2 {
 		t.Errorf("Invalid customer session fields: %+v", customer.SessionFields)
 	}
@@ -1149,10 +1154,11 @@ func TestUpdateCustomerShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
 	avatarURL := "http://stub.url"
 	phoneNumber := "+48123123123"
 	country := "United States"
+	suggestedEmail := "guessed@example.com"
 	address := &agent.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer("mister_customer", &name, &email, &avatarURL, &phoneNumber, []map[string]string{}, address)
+	rErr := api.UpdateCustomer("mister_customer", &name, &email, &avatarURL, &phoneNumber, &suggestedEmail, []map[string]string{}, address)
 	if rErr != nil {
 		t.Errorf("UpdateCustomer failed: %v", rErr)
 	}
@@ -1565,10 +1571,11 @@ func TestUpdateCustomerShouldNotCrashOnErrorResponse(t *testing.T) {
 	avatarURL := "http://stub.url"
 	phoneNumber := "+48123123123"
 	country := "United States"
+	suggestedEmail := "guessed@example.com"
 	address := &agent.AddressUpdate{
 		Country: &country,
 	}
-	rErr := api.UpdateCustomer("mister_customer", &name, &email, &avatarURL, &phoneNumber, []map[string]string{}, address)
+	rErr := api.UpdateCustomer("mister_customer", &name, &email, &avatarURL, &phoneNumber, &suggestedEmail, []map[string]string{}, address)
 	verifyErrorResponse("UpdateCustomer", rErr, t)
 }
 
