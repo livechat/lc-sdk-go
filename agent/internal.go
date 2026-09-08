@@ -172,13 +172,14 @@ type getCustomersRequest struct {
 }
 
 type updateCustomerRequest struct {
-	ID            string              `json:"id"`
-	Name          string              `json:"name,omitempty"`
-	Email         string              `json:"email,omitempty"`
-	Avatar        string              `json:"avatar,omitempty"`
-	PhoneNumber   string              `json:"phone_number,omitempty"`
-	SessionFields []map[string]string `json:"session_fields,omitempty"`
-	Address       *Address            `json:"address,omitempty"`
+	ID             string              `json:"id"`
+	Name           string              `json:"name,omitempty"`
+	Email          string              `json:"email,omitempty"`
+	Avatar         string              `json:"avatar,omitempty"`
+	PhoneNumber    string              `json:"phone_number,omitempty"`
+	SuggestedEmail string              `json:"suggested_email,omitempty"`
+	SessionFields  []map[string]string `json:"session_fields,omitempty"`
+	Address        *Address            `json:"address,omitempty"`
 }
 
 type banCustomerRequest struct {

@@ -77,6 +77,7 @@ type User struct {
 
 type userSpecific struct {
 	PhoneNumber                json.RawMessage `json:"phone_number,omitempty"`
+	SuggestedEmail             json.RawMessage `json:"suggested_email,omitempty"`
 	RoutingStatus              json.RawMessage `json:"routing_status,omitempty"`
 	Visit                      json.RawMessage `json:"visit,omitempty"`
 	Statistics                 json.RawMessage `json:"statistics,omitempty"`
@@ -162,6 +163,9 @@ func (u *User) Customer() *Customer {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.PhoneNumber, &c.PhoneNumber); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(u.SuggestedEmail, &c.SuggestedEmail); err != nil {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(u.Chats, &c.Chats); err != nil {
@@ -331,6 +335,7 @@ type Customer struct {
 	*User
 	NameIsDefault              bool                `json:"name_is_default"`
 	PhoneNumber                string              `json:"phone_number"`
+	SuggestedEmail             string              `json:"suggested_email,omitempty"`
 	Visit                      Visit               `json:"visit"`
 	Statistics                 CustomerStatistics  `json:"statistics"`
 	AgentLastEventCreatedAt    time.Time           `json:"agent_last_event_created_at"`

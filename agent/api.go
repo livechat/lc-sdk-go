@@ -330,15 +330,16 @@ func (a *API) GetCustomer(customerID string) (customer Customer, err error) {
 }
 
 // UpdateCustomer updates customer's info.
-func (a *API) UpdateCustomer(customerID, name, email, avatar, phoneNumber string, sessionFields []map[string]string, address *Address) error {
+func (a *API) UpdateCustomer(customerID, name, email, avatar, phoneNumber, suggestedEmail string, sessionFields []map[string]string, address *Address) error {
 	return a.Call("update_customer", &updateCustomerRequest{
-		ID:            customerID,
-		Name:          name,
-		Email:         email,
-		Avatar:        avatar,
-		PhoneNumber:   phoneNumber,
-		SessionFields: sessionFields,
-		Address:       address,
+		ID:             customerID,
+		Name:           name,
+		Email:          email,
+		Avatar:         avatar,
+		PhoneNumber:    phoneNumber,
+		SuggestedEmail: suggestedEmail,
+		SessionFields:  sessionFields,
+		Address:        address,
 	}, &emptyResponse{})
 }
 
