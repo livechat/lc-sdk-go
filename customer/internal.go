@@ -202,8 +202,9 @@ type requestEmailVerificationRequest struct {
 }
 
 type requestWelcomeMessageRequest struct {
-	ID      string `json:"id,omitempty"`
-	GroupID *int   `json:"group_id,omitempty"`
+	ID                   string `json:"id,omitempty"`
+	GroupID              *int   `json:"group_id,omitempty"`
+	AIAgentResponseScope string `json:"ai_agent_response_scope,omitempty"`
 }
 
 type requestWelcomeMessageResponse struct {
