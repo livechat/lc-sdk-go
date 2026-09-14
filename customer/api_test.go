@@ -953,7 +953,7 @@ func TestRequestWelcomeMessageShouldReturnDataReceivedFromCustomerAPI(t *testing
 		t.Error("API creation failed")
 	}
 
-	id, predictedAgent, _, rErr := api.RequestWelcomeMessage("", nil)
+	id, predictedAgent, _, rErr := api.RequestWelcomeMessage("", nil, "")
 	if rErr != nil {
 		t.Errorf("RequestWelcomeMessage failed: %v", rErr)
 	}
@@ -1387,7 +1387,7 @@ func TestRequestWelcomeMessageShouldNotCrashOnErrorResponse(t *testing.T) {
 		t.Error("API creation failed")
 	}
 
-	_, _, _, rErr := api.RequestWelcomeMessage("", nil)
+	_, _, _, rErr := api.RequestWelcomeMessage("", nil, "")
 	verifyErrorResponse("RequestWelcomeMessage", rErr, t)
 }
 
