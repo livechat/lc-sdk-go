@@ -1,6 +1,7 @@
 package agent_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/livechat/lc-sdk-go/v7/agent"
@@ -186,7 +187,7 @@ func TestArchiveFiltersPropertyFilterTypeFields(t *testing.T) {
 
 func TestArchiveFiltersByThreadsClearsOtherFilters(t *testing.T) {
 	af := agent.NewArchivesFilters()
-	af.ByQuery("query")
+	af.ByQuery("query").ByChats([]string{"chat"})
 	af.ByThreads([]string{"thread"})
 
 	if af.ThreadIDs[0] != "thread" {
@@ -195,6 +196,21 @@ func TestArchiveFiltersByThreadsClearsOtherFilters(t *testing.T) {
 
 	if af.Query != "" {
 		t.Errorf("ArchivesFilters.Query should not be set: %v", af.Query)
+	}
+	if af.ChatIDs != nil {
+		t.Errorf("ArchivesFilters.ChatIDs should not be set: %v", af.ChatIDs)
+	}
+}
+
+func TestArchiveFiltersByChatsSerializesChatIDs(t *testing.T) {
+	af := agent.NewArchivesFilters().ByChats([]string{"chat-1", "chat-2"}).ByQuery("query")
+
+	data, err := json.Marshal(af)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != `{"chat_ids":["chat-1","chat-2"],"query":"query"}` {
+		t.Errorf("ArchivesFilters JSON invalid: %s", data)
 	}
 }
 
