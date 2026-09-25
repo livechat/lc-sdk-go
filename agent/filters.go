@@ -34,6 +34,7 @@ func NewPropertyFilterType(includes bool, vals []interface{}, requireEveryValue 
 type archivesFilters struct {
 	Agents         *propertyFilterType   `json:"agents,omitempty"`
 	AgentTypes     *AgentTypesFilter     `json:"agent_types,omitempty"`
+	ChatIDs        []string              `json:"chat_ids,omitempty"`
 	GroupIDs       []uint                `json:"group_ids,omitempty"`
 	From           string                `json:"from,omitempty"`
 	To             string                `json:"to,omitempty"`
@@ -102,6 +103,12 @@ func (af *archivesFilters) ByAgents(includes bool, vals []interface{}, requireEv
 // ByGroups extends archives filter with list of group IDs to match
 func (af *archivesFilters) ByGroups(groupIDs []uint) *archivesFilters {
 	af.GroupIDs = groupIDs
+	return af
+}
+
+// ByChats extends archives filter with a list of chat IDs to match (up to 1000).
+func (af *archivesFilters) ByChats(chatIDs []string) *archivesFilters {
+	af.ChatIDs = chatIDs
 	return af
 }
 
