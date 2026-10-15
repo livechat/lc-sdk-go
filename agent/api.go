@@ -430,3 +430,14 @@ func (a *API) RequestThreadSummary(chatID, threadID string) error {
 		ThreadID: threadID,
 	}, &emptyResponse{})
 }
+
+// GetThreadTranscript returns a plain-text transcript of given thread in a chat
+func (a *API) GetThreadTranscript(chatID, threadID string) (ThreadTranscript, error) {
+	var resp ThreadTranscript
+	err := a.Call("get_thread_transcript", &getThreadTranscriptRequest{
+		ChatID:   chatID,
+		ThreadID: threadID,
+	}, &resp)
+
+	return resp, err
+}
