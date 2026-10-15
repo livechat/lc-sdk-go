@@ -287,6 +287,35 @@ var mockedResponses = map[string]string{
 	"untag_thread":           `{}`,
 	"logout":                 `{}`,
 	"request_thread_summary": `{}`,
+	"get_thread_transcript": `{
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8",
+		"transcript": "LiveChat conversation transcript:\n----------\nJohn (Tue, 12/17/2019, 08:53:20 am UTC)\nHello",
+		"users": [
+			{
+				"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+				"type": "customer",
+				"name": "John"
+			},
+			{
+				"id": "smith@example.com",
+				"type": "agent",
+				"name": "Agent Smith",
+				"email": "smith@example.com",
+				"avatar": "https://example.com/avatar.png",
+				"visibility": "all"
+			}
+		],
+		"properties": {
+			"routing": {
+				"continuous": true
+			}
+		},
+		"duration": 3600,
+		"created_at": "2019-12-17T07:57:41.512000Z",
+		"timezone": "UTC",
+		"active": false
+	}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
@@ -1873,4 +1902,61 @@ func TestRequestThreadSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	rErr := api.RequestThreadSummary("stubChatID", "stubThreadID")
 	verifyErrorResponse("RequestThreadSummary", rErr, t)
+}
+
+func TestGetThreadTranscriptShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_thread_transcript"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	transcript, rErr := api.GetThreadTranscript("stubChatID", "stubThreadID")
+	if rErr != nil {
+		t.Errorf("GetThreadTranscript failed: %v", rErr)
+	}
+
+	if transcript.ChatID != "PJ0MRSHTDG" {
+		t.Errorf("Invalid chat_id: %v", transcript.ChatID)
+	}
+	if transcript.ThreadID != "K600PKZON8" {
+		t.Errorf("Invalid thread_id: %v", transcript.ThreadID)
+	}
+	if transcript.Transcript != "LiveChat conversation transcript:\n----------\nJohn (Tue, 12/17/2019, 08:53:20 am UTC)\nHello" {
+		t.Errorf("Invalid transcript: %v", transcript.Transcript)
+	}
+	if len(transcript.Users) != 2 {
+		t.Fatalf("Invalid users length: %v", len(transcript.Users))
+	}
+	if transcript.Users[0].Type != "customer" || transcript.Users[1].Type != "agent" {
+		t.Errorf("Invalid users types: %v, %v", transcript.Users[0].Type, transcript.Users[1].Type)
+	}
+	if transcript.Properties["routing"]["continuous"] != true {
+		t.Errorf("Invalid properties: %v", transcript.Properties)
+	}
+	if transcript.Duration != 3600 {
+		t.Errorf("Invalid duration: %v", transcript.Duration)
+	}
+	if !transcript.CreatedAt.Equal(time.Date(2019, time.December, 17, 7, 57, 41, 512000000, time.UTC)) {
+		t.Errorf("Invalid created_at: %v", transcript.CreatedAt)
+	}
+	if transcript.Timezone != "UTC" {
+		t.Errorf("Invalid timezone: %v", transcript.Timezone)
+	}
+	if transcript.Active {
+		t.Errorf("Invalid active: %v", transcript.Active)
+	}
+}
+
+func TestGetThreadTranscriptShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_thread_transcript"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	_, rErr := api.GetThreadTranscript("stubChatID", "stubThreadID")
+	verifyErrorResponse("GetThreadTranscript", rErr, t)
 }
