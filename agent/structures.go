@@ -297,6 +297,13 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// ThreadTranscript represents a plain-text transcript of LiveChat chat thread
+type ThreadTranscript struct {
+	ChatID     string `json:"chat_id"`
+	ThreadID   string `json:"thread_id"`
+	Transcript string `json:"transcript"`
+}
+
 // Thread represents LiveChat chat thread
 type Thread struct {
 	ID                        string         `json:"id"`

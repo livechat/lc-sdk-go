@@ -243,3 +243,8 @@ type requestThreadSummaryRequest struct {
 	ChatID   string `json:"chat_id"`
 	ThreadID string `json:"thread_id"`
 }
+
+type getThreadTranscriptRequest struct {
+	ChatID   string `json:"chat_id"`
+	ThreadID string `json:"thread_id"`
+}
