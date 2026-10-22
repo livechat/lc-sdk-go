@@ -295,6 +295,11 @@ var mockedResponses = map[string]string{
 	"untag_thread":           `{}`,
 	"logout":                 `{}`,
 	"request_thread_summary": `{}`,
+	"get_thread_transcript": `{
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8",
+		"transcript": "LiveChat conversation transcript:\n----------\nJohn (Tue, 12/17/2019, 08:53:20 am UTC)\nHello"
+	}`,
 	"upload_file": `{
 		"url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 	}`,
@@ -1854,4 +1859,40 @@ func TestRequestThreadSummaryShouldNotCrashOnErrorResponse(t *testing.T) {
 
 	rErr := api.RequestThreadSummary("stubChatID", "stubThreadID")
 	verifyErrorResponse("RequestThreadSummary", rErr, t)
+}
+
+func TestGetThreadTranscriptShouldReturnDataReceivedFromAgentAPI(t *testing.T) {
+	client := NewTestClient(createMockedResponder(t, "get_thread_transcript"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	transcript, rErr := api.GetThreadTranscript("stubChatID", "stubThreadID")
+	if rErr != nil {
+		t.Errorf("GetThreadTranscript failed: %v", rErr)
+	}
+
+	if transcript.ChatID != "PJ0MRSHTDG" {
+		t.Errorf("Invalid chat_id: %v", transcript.ChatID)
+	}
+	if transcript.ThreadID != "K600PKZON8" {
+		t.Errorf("Invalid thread_id: %v", transcript.ThreadID)
+	}
+	if transcript.Transcript != "LiveChat conversation transcript:\n----------\nJohn (Tue, 12/17/2019, 08:53:20 am UTC)\nHello" {
+		t.Errorf("Invalid transcript: %v", transcript.Transcript)
+	}
+}
+
+func TestGetThreadTranscriptShouldNotCrashOnErrorResponse(t *testing.T) {
+	client := NewTestClient(createMockedErrorResponder(t, "get_thread_transcript"))
+
+	api, err := agent.NewAPI(stubBearerTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	_, rErr := api.GetThreadTranscript("stubChatID", "stubThreadID")
+	verifyErrorResponse("GetThreadTranscript", rErr, t)
 }
