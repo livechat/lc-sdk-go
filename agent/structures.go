@@ -295,15 +295,9 @@ func (c *Chat) UnmarshalJSON(data []byte) error {
 
 // ThreadTranscript represents a plain-text transcript of LiveChat chat thread
 type ThreadTranscript struct {
-	ChatID     string     `json:"chat_id"`
-	ThreadID   string     `json:"thread_id"`
-	Transcript string     `json:"transcript"`
-	Users      []*User    `json:"users"`
-	Properties Properties `json:"properties,omitempty"`
-	Duration   int        `json:"duration"`
-	CreatedAt  time.Time  `json:"created_at"`
-	Timezone   string     `json:"timezone"`
-	Active     bool       `json:"active"`
+	ChatID     string `json:"chat_id"`
+	ThreadID   string `json:"thread_id"`
+	Transcript string `json:"transcript"`
 }
 
 // Thread represents LiveChat chat thread
