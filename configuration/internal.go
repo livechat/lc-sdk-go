@@ -353,3 +353,18 @@ type listGreetingsResponse struct {
 	FoundGreetings uint64      `json:"found_greetings"`
 	NextPageID     *string     `json:"next_page_id,omitempty"`
 }
+
+type formRequest struct {
+	Type    string `json:"type"`
+	GroupID int32  `json:"group_id"`
+}
+
+type formResponse struct {
+	Form *Form `json:"form"`
+}
+
+type updateFormRequest struct {
+	Type    string `json:"type"`
+	GroupID int32  `json:"group_id"`
+	UpdateFormRequestOptions
+}
