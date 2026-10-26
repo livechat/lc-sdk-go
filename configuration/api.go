@@ -728,11 +728,11 @@ func (a *API) ListGreetings(opts *ListGreetingsRequestOptions) (*listGreetingsRe
 	return &resp, err
 }
 
-// GetForm returns the form of the given type (prechat, postchat, offline, queued, email, ask_for_email, ask_for_email_mm).
+// GetForm returns the form of the given type.
 // Use groupID 0 for the default group.
 //
 // Requires the surveys_read scope for survey forms (prechat, postchat) or forms_manage for custom forms.
-func (a *API) GetForm(formType string, groupID int32) (*Form, error) {
+func (a *API) GetForm(formType FormType, groupID int32) (*Form, error) {
 	var resp formResponse
 	err := a.Call("get_form", &formRequest{Type: formType, GroupID: groupID}, &resp)
 	return resp.Form, err
@@ -742,7 +742,7 @@ func (a *API) GetForm(formType string, groupID int32) (*Form, error) {
 // Use groupID 0 for the default group.
 //
 // Requires the surveys_manage scope for survey forms (prechat, postchat) or forms_manage for custom forms.
-func (a *API) UpdateForm(formType string, groupID int32, opts *UpdateFormRequestOptions) (*Form, error) {
+func (a *API) UpdateForm(formType FormType, groupID int32, opts *UpdateFormRequestOptions) (*Form, error) {
 	req := updateFormRequest{Type: formType, GroupID: groupID}
 	if opts != nil {
 		req.UpdateFormRequestOptions = *opts
@@ -756,6 +756,6 @@ func (a *API) UpdateForm(formType string, groupID int32, opts *UpdateFormRequest
 // Use groupID 0 for the default group.
 //
 // Requires the surveys_manage scope for survey forms (prechat, postchat) or forms_manage for custom forms.
-func (a *API) DeleteForm(formType string, groupID int32) error {
+func (a *API) DeleteForm(formType FormType, groupID int32) error {
 	return a.Call("delete_form", &formRequest{Type: formType, GroupID: groupID}, &emptyResponse{})
 }

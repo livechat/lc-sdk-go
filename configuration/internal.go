@@ -355,8 +355,8 @@ type listGreetingsResponse struct {
 }
 
 type formRequest struct {
-	Type    string `json:"type"`
-	GroupID int32  `json:"group_id"`
+	Type    FormType `json:"type"`
+	GroupID int32    `json:"group_id"`
 }
 
 type formResponse struct {
@@ -364,7 +364,7 @@ type formResponse struct {
 }
 
 type updateFormRequest struct {
-	Type    string `json:"type"`
-	GroupID int32  `json:"group_id"`
+	Type    FormType `json:"type"`
+	GroupID int32    `json:"group_id"`
 	UpdateFormRequestOptions
 }

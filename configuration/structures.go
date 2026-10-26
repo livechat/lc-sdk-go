@@ -558,7 +558,7 @@ type FormField struct {
 // Form represents a survey (prechat, postchat) or custom (offline, queued, email, ask_for_email, ask_for_email_mm) form.
 type Form struct {
 	ID      string      `json:"id"`
-	Type    string      `json:"type"`
+	Type    FormType    `json:"type"`
 	Enabled bool        `json:"enabled"`
 	Fields  []FormField `json:"fields"`
 }
