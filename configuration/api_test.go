@@ -484,6 +484,37 @@ var mockedResponses = map[string]string{
 		],
 		"found_greetings": 2
 	}`,
+	"get_form": `{
+		"form": {
+			"id": "1",
+			"type": "prechat",
+			"enabled": true,
+			"fields": [
+				{"id": "153925275950librarydetails", "type": "name", "label": "Name", "required": true},
+				{
+					"id": "153925275950librarytopics",
+					"type": "checkbox",
+					"label": "Pick topics",
+					"required": false,
+					"answers": [
+						{"label": "Billing", "checked": true},
+						{"label": "Support", "checked": false}
+					]
+				}
+			]
+		}
+	}`,
+	"update_form": `{
+		"form": {
+			"id": "1",
+			"type": "prechat",
+			"enabled": true,
+			"fields": [
+				{"id": "153925275950libraryquestion", "type": "question", "label": "What is your name?", "required": true}
+			]
+		}
+	}`,
+	"delete_form": `{}`,
 }
 
 func getMockResponseOK(method string) *http.Response {
@@ -2226,4 +2257,112 @@ func TestListGreetingsOK(t *testing.T) {
 		}
 		validateRequestBody(t, `{"groups":[0,1]}`, serverMock.LastRequest.Body)
 	})
+}
+
+func TestGetFormOK(t *testing.T) {
+	serverMock := newServerMock(t, "get_form")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	form, rErr := api.GetForm(configuration.FormTypePrechat, 0)
+	if rErr != nil {
+		t.Errorf("GetForm failed: %v", rErr)
+	}
+	validateRequestBody(t, `{"type":"prechat","group_id":0}`, serverMock.LastRequest.Body)
+
+	if form.ID != "1" {
+		t.Errorf("Invalid form ID: %v", form.ID)
+	}
+	if form.Type != configuration.FormTypePrechat {
+		t.Errorf("Invalid form type: %v", form.Type)
+	}
+	if !form.Enabled {
+		t.Error("Form should be enabled")
+	}
+	if len(form.Fields) != 2 {
+		t.Fatalf("Invalid number of fields: %v", len(form.Fields))
+	}
+	if form.Fields[0].Type != "name" || !form.Fields[0].Required {
+		t.Errorf("Invalid first field: %+v", form.Fields[0])
+	}
+	answers := form.Fields[1].Answers
+	if len(answers) != 2 {
+		t.Fatalf("Invalid number of answers: %v", len(answers))
+	}
+	if answers[0].Label != "Billing" || answers[0].Checked == nil || !*answers[0].Checked {
+		t.Errorf("Invalid first answer: %+v", answers[0])
+	}
+}
+
+func TestUpdateFormOK(t *testing.T) {
+	serverMock := newServerMock(t, "update_form")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	t.Run("Only required fields", func(t *testing.T) {
+		form, rErr := api.UpdateForm(configuration.FormTypePrechat, 0, nil)
+		if rErr != nil {
+			t.Errorf("UpdateForm failed: %v", rErr)
+		}
+		if form.Fields[0].ID != "153925275950libraryquestion" {
+			t.Errorf("Invalid field ID: %v", form.Fields[0].ID)
+		}
+		validateRequestBody(t, `{"type":"prechat","group_id":0}`, serverMock.LastRequest.Body)
+	})
+
+	t.Run("With optional fields", func(t *testing.T) {
+		enabled := true
+		checked, unchecked := true, false
+		destinationGroup := int32(2)
+		if _, rErr := api.UpdateForm(configuration.FormTypePrechat, 1, &configuration.UpdateFormRequestOptions{
+			Enabled: &enabled,
+			Fields: []configuration.FormField{
+				{Type: "question", Label: "What is your name?", Required: true},
+				{
+					Type:  "checkbox",
+					Label: "Pick topics",
+					Answers: []configuration.FormAnswer{
+						{Label: "Billing", Checked: &checked},
+						{Label: "Support", Checked: &unchecked},
+					},
+				},
+				{
+					Type:     "group",
+					Label:    "Pick team",
+					Required: true,
+					Answers:  []configuration.FormAnswer{{Label: "Sales", DestinationGroup: &destinationGroup}},
+				},
+			},
+		}); rErr != nil {
+			t.Errorf("UpdateForm failed: %v", rErr)
+		}
+		validateRequestBody(t, `{"type":"prechat","group_id":1,"enabled":true,"fields":[`+
+			`{"type":"question","label":"What is your name?","required":true},`+
+			`{"type":"checkbox","label":"Pick topics","required":false,"answers":[{"label":"Billing","checked":true},{"label":"Support","checked":false}]},`+
+			`{"type":"group","label":"Pick team","required":true,"answers":[{"label":"Sales","destination_group":2}]}]}`,
+			serverMock.LastRequest.Body)
+	})
+}
+
+func TestDeleteFormOK(t *testing.T) {
+	serverMock := newServerMock(t, "delete_form")
+	client := NewTestClient(serverMock)
+
+	api, err := configuration.NewAPI(stubTokenGetter, client, "client_id")
+	if err != nil {
+		t.Error("API creation failed")
+	}
+
+	if rErr := api.DeleteForm(configuration.FormTypeOffline, 3); rErr != nil {
+		t.Errorf("DeleteForm failed: %v", rErr)
+	}
+	validateRequestBody(t, `{"type":"offline","group_id":3}`, serverMock.LastRequest.Body)
 }
