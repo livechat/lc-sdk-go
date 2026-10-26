@@ -727,3 +727,35 @@ func (a *API) ListGreetings(opts *ListGreetingsRequestOptions) (*listGreetingsRe
 	err := a.Call("list_greetings", &req, &resp)
 	return &resp, err
 }
+
+// GetForm returns the form of the given type.
+// Use groupID 0 for the default group.
+//
+// Requires the surveys_read scope for survey forms (prechat, postchat) or forms_manage for custom forms.
+func (a *API) GetForm(formType FormType, groupID int32) (*Form, error) {
+	var resp formResponse
+	err := a.Call("get_form", &formRequest{Type: formType, GroupID: groupID}, &resp)
+	return resp.Form, err
+}
+
+// UpdateForm creates or replaces the form of the given type and returns the updated form.
+// Use groupID 0 for the default group.
+//
+// Requires the surveys_manage scope for survey forms (prechat, postchat) or forms_manage for custom forms.
+func (a *API) UpdateForm(formType FormType, groupID int32, opts *UpdateFormRequestOptions) (*Form, error) {
+	req := updateFormRequest{Type: formType, GroupID: groupID}
+	if opts != nil {
+		req.UpdateFormRequestOptions = *opts
+	}
+	var resp formResponse
+	err := a.Call("update_form", &req, &resp)
+	return resp.Form, err
+}
+
+// DeleteForm deletes the form of the given type. Survey forms are deactivated, custom forms are removed.
+// Use groupID 0 for the default group.
+//
+// Requires the surveys_manage scope for survey forms (prechat, postchat) or forms_manage for custom forms.
+func (a *API) DeleteForm(formType FormType, groupID int32) error {
+	return a.Call("delete_form", &formRequest{Type: formType, GroupID: groupID}, &emptyResponse{})
+}

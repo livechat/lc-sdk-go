@@ -533,3 +533,41 @@ type UpdateGreetingRequestOptions struct {
 type ListGreetingsRequestOptions struct {
 	Groups []int32 `json:"groups,omitempty"`
 }
+
+// FormAnswer represents an answer of a radio, select, checkbox or group form field.
+// Checked and DestinationGroup apply to survey forms only.
+type FormAnswer struct {
+	Label            string `json:"label"`
+	Checked          *bool  `json:"checked,omitempty"`
+	DestinationGroup *int32 `json:"destination_group,omitempty"`
+}
+
+// FormField represents a single field of a form.
+// ID is assigned by the server and ignored when updating a form.
+type FormField struct {
+	ID                  string       `json:"id,omitempty"`
+	Type                string       `json:"type"`
+	Label               string       `json:"label"`
+	Required            bool         `json:"required"`
+	Answers             []FormAnswer `json:"answers,omitempty"`
+	CommentLabel        string       `json:"comment_label,omitempty"`
+	ConfirmationText    string       `json:"confirmation_text,omitempty"`
+	ConfirmationChecked *bool        `json:"confirmation_checked,omitempty"`
+}
+
+// Form represents a survey (prechat, postchat) or custom (offline, queued, email, ask_for_email, ask_for_email_mm) form.
+type Form struct {
+	ID      string      `json:"id"`
+	Type    FormType    `json:"type"`
+	Enabled bool        `json:"enabled"`
+	Fields  []FormField `json:"fields"`
+}
+
+// UpdateFormRequestOptions defines optional fields for UpdateForm.
+//
+// Enabled is supported by survey forms only. Fields are optional for survey forms
+// (existing fields stay unchanged when omitted) and required for custom forms.
+type UpdateFormRequestOptions struct {
+	Enabled *bool       `json:"enabled,omitempty"`
+	Fields  []FormField `json:"fields,omitempty"`
+}

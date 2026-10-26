@@ -56,3 +56,17 @@ const (
 	// DoNotAssign - Bot will not be assigned to any chats. This can be used only in `default_group_priority`.
 	DoNotAssign GroupPriority = "supervisor"
 )
+
+// FormType represents allowed values for form type
+type FormType string
+
+// Following form types are supported. Prechat and postchat are survey forms, the rest are custom forms.
+const (
+	FormTypePrechat       FormType = "prechat"
+	FormTypePostchat      FormType = "postchat"
+	FormTypeOffline       FormType = "offline"
+	FormTypeQueued        FormType = "queued"
+	FormTypeEmail         FormType = "email"
+	FormTypeAskForEmail   FormType = "ask_for_email"
+	FormTypeAskForEmailMM FormType = "ask_for_email_mm"
+)
