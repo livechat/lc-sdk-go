@@ -335,6 +335,7 @@ type eventSpecific struct {
 	Height            json.RawMessage `json:"height"`
 	Size              json.RawMessage `json:"size"`
 	TemplateID        json.RawMessage `json:"template_id"`
+	Layout            json.RawMessage `json:"layout"`
 	Elements          json.RawMessage `json:"elements"`
 	Postback          json.RawMessage `json:"postback"`
 	AlternativeText   json.RawMessage `json:"alternative_text"`
@@ -653,6 +654,7 @@ func (e *Event) File() *File {
 type RichMessage struct {
 	Event
 	TemplateID string               `json:"template_id"`
+	Layout     string               `json:"layout,omitempty"`
 	Elements   []RichMessageElement `json:"elements"`
 }
 
@@ -728,6 +730,9 @@ func (e *Event) RichMessage() *RichMessage {
 
 	rm.Event = *e
 	if err := json.Unmarshal(e.TemplateID, &rm.TemplateID); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(e.Layout, &rm.Layout); err != nil {
 		return nil
 	}
 	if err := json.Unmarshal(e.Elements, &rm.Elements); err != nil {
