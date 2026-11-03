@@ -215,7 +215,7 @@ func (a *API) SendEventPreview(chatID string, event interface{}) error {
 // SendEvent sends event of supported type to given chat.
 // It returns event ID.
 //
-// Supported event types are: event, message, system_message and file.
+// Supported event types are: event, message, rich_message, system_message, system, file and form.
 func (a *API) SendEvent(chatID string, event interface{}, attachToLastThread bool) (string, error) {
 	if err := ValidateEvent(event); err != nil {
 		return "", err
