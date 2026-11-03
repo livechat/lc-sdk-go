@@ -522,12 +522,14 @@ func ValidateEvent(e interface{}) error {
 	case *RichMessage:
 	case *SystemMessage:
 	case *System:
+	case *Form:
 	case Event:
 	case File:
 	case Message:
 	case RichMessage:
 	case SystemMessage:
 	case System:
+	case Form:
 	default:
 		return fmt.Errorf("event type %T not supported", v)
 	}
@@ -540,6 +542,7 @@ type eventSpecific struct {
 	TextVars          json.RawMessage `json:"text_vars,omitempty"`
 	Fields            json.RawMessage `json:"fields,omitempty"`
 	FormType          json.RawMessage `json:"form_type,omitempty"`
+	FormID            json.RawMessage `json:"form_id,omitempty"`
 	ContentType       json.RawMessage `json:"content_type,omitempty"`
 	Name              json.RawMessage `json:"name,omitempty"`
 	URL               json.RawMessage `json:"url,omitempty"`
@@ -575,10 +578,59 @@ type Event struct {
 	eventSpecific
 }
 
+// Form represents LiveChat form event: an empty form for the customer to fill.
+// Set Event.Type to "form" before sending it.
+type Form struct {
+	FormID   string      `json:"form_id"`
+	FormType string      `json:"form_type,omitempty"`
+	Fields   []FormField `json:"fields"`
+	Event
+}
+
+// Form function converts Event object to Form object if Event's Type is "form".
+// If Type is different or Event is malformed, then it returns nil.
+func (e *Event) Form() *Form {
+	if e.Type != "form" {
+		return nil
+	}
+	var f Form
+
+	f.Event = *e
+	if err := json.Unmarshal(e.Fields, &f.Fields); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(e.FormType, &f.FormType); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(e.FormID, &f.FormID); err != nil {
+		return nil
+	}
+	return &f
+}
+
+// FormField represents a field of LiveChat form event.
+// Choice fields (checkbox, radio, select) need Options.
+type FormField struct {
+	ID                 string       `json:"id"`
+	Type               string       `json:"type"`
+	Label              string       `json:"label"`
+	Required           bool         `json:"required,omitempty"`
+	CustomerPropertyID string       `json:"customer_property_id,omitempty"`
+	Options            []FormOption `json:"options,omitempty"`
+}
+
+// FormOption represents an option of a choice field in LiveChat form event.
+// ID has to be a numeric string.
+type FormOption struct {
+	ID    string `json:"id"`
+	Label string `json:"label"`
+}
+
 // FilledForm represents LiveChat filled form event.
 type FilledForm struct {
 	Fields   []FilledFormField `json:"fields"`
 	FormType string            `json:"form_type"`
+	FormID   string            `json:"form_id"`
 	Event
 }
 
@@ -595,6 +647,9 @@ func (e *Event) FilledForm() *FilledForm {
 		return nil
 	}
 	if err := internal.UnmarshalOptionalRawField(e.FormType, &f.FormType); err != nil {
+		return nil
+	}
+	if err := internal.UnmarshalOptionalRawField(e.FormID, &f.FormID); err != nil {
 		return nil
 	}
 	return &f
