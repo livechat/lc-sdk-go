@@ -3,6 +3,7 @@ package agent_test
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/livechat/lc-sdk-go/v6/agent"
@@ -122,4 +123,134 @@ func FilledFormFieldFromJSON(t *testing.T, rawFields json.RawMessage) *agent.Fil
 	}
 
 	return &filledForm.Fields[0]
+}
+
+func newTestForm() agent.Form {
+	return agent.Form{
+		Event:    agent.Event{Type: "form", Visibility: "all"},
+		FormID:   "841954e1-49dd-40bd-8f60-019df106c34a",
+		FormType: "custom_form",
+		Fields: []agent.FormField{
+			{
+				ID:                 "field-1",
+				Type:               "select",
+				Label:              "What is your industry?",
+				CustomerPropertyID: "14a484e0-591b-4b90-b9b4-6e64d3e7abc1",
+				Options:            []agent.FormOption{{ID: "0", Label: "Automotive"}},
+			},
+			{ID: "field-2", Type: "email", Label: "What is your email?", Required: true},
+		},
+	}
+}
+
+func TestValidateEventAcceptsForm(t *testing.T) {
+	form := newTestForm()
+	if err := agent.ValidateEvent(form); err != nil {
+		t.Errorf("ValidateEvent(Form) failed: %v", err)
+	}
+	if err := agent.ValidateEvent(&form); err != nil {
+		t.Errorf("ValidateEvent(*Form) failed: %v", err)
+	}
+	if err := agent.ValidateEventPreview(form); err == nil {
+		t.Error("ValidateEventPreview(Form) should fail")
+	}
+}
+
+func TestFormMarshalUsesOuterFields(t *testing.T) {
+	raw, err := json.Marshal(newTestForm())
+	if err != nil {
+		t.Fatalf("marshalling form failed: %s", err)
+	}
+
+	var got map[string]interface{}
+	if err := json.Unmarshal(raw, &got); err != nil {
+		t.Fatalf("unmarshalling marshalled form failed: %s", err)
+	}
+
+	var want map[string]interface{}
+	wantJSON := `{
+		"type": "form",
+		"form_id": "841954e1-49dd-40bd-8f60-019df106c34a",
+		"form_type": "custom_form",
+		"visibility": "all",
+		"created_at": "0001-01-01T00:00:00Z",
+		"author_id": "",
+		"fields": [
+			{
+				"id": "field-1",
+				"type": "select",
+				"label": "What is your industry?",
+				"customer_property_id": "14a484e0-591b-4b90-b9b4-6e64d3e7abc1",
+				"options": [{"id": "0", "label": "Automotive"}]
+			},
+			{"id": "field-2", "type": "email", "label": "What is your email?", "required": true}
+		]
+	}`
+	if err := json.Unmarshal([]byte(wantJSON), &want); err != nil {
+		t.Fatalf("unmarshalling expected JSON failed: %s", err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("unexpected form JSON.\nExpected: %s\nGot: %s", wantJSON, raw)
+	}
+}
+
+func TestEventFormRoundTrip(t *testing.T) {
+	raw, err := json.Marshal(newTestForm())
+	if err != nil {
+		t.Fatalf("marshalling form failed: %s", err)
+	}
+
+	var event agent.Event
+	if err := json.Unmarshal(raw, &event); err != nil {
+		t.Fatalf("unmarshalling base event failed: %s", err)
+	}
+
+	form := event.Form()
+	if form == nil {
+		t.Fatal("Form() returned nil")
+	}
+	if form.FormID != "841954e1-49dd-40bd-8f60-019df106c34a" || form.FormType != "custom_form" {
+		t.Errorf("Form() did not set form_id and form_type correctly: %q, %q", form.FormID, form.FormType)
+	}
+	if !reflect.DeepEqual(form.Fields, newTestForm().Fields) {
+		t.Errorf("Form() did not return expected fields: %+v", form.Fields)
+	}
+
+	event.Type = "message"
+	if event.Form() != nil {
+		t.Error("Form() should return nil for other event type")
+	}
+}
+
+func TestFilledFormFormID(t *testing.T) {
+	rawEvent := json.RawMessage(`{"type":"filled_form","form_id":"abc","fields":[]}`)
+	if got := FilledFormFromJSON(t, rawEvent).FormID; got != "abc" {
+		t.Errorf("FilledForm() did not set FormID correctly. Expected %q, got %q", "abc", got)
+	}
+}
+
+func TestEventFormGroupChooserRoundTrip(t *testing.T) {
+	rawEvent := json.RawMessage(`{"type":"form","form_id":"form-1","fields":[{"id":"f1","type":"group_chooser","label":"Group","groups":[{"id":"7","label":"Sales"}]}]}`)
+
+	var event agent.Event
+	if err := json.Unmarshal(rawEvent, &event); err != nil {
+		t.Fatalf("unmarshalling base event failed: %s", err)
+	}
+
+	form := event.Form()
+	if form == nil {
+		t.Fatal("Form() returned nil")
+	}
+	if want := []agent.FormOption{{ID: "7", Label: "Sales"}}; !reflect.DeepEqual(form.Fields[0].Groups, want) {
+		t.Fatalf("Form() did not return expected groups: %+v", form.Fields[0].Groups)
+	}
+
+	raw, err := json.Marshal(form.Fields)
+	if err != nil {
+		t.Fatalf("marshalling fields failed: %s", err)
+	}
+	if want := `[{"id":"f1","type":"group_chooser","label":"Group","groups":[{"id":"7","label":"Sales"}]}]`; string(raw) != want {
+		t.Errorf("unexpected fields JSON.\nExpected: %s\nGot: %s", want, raw)
+	}
 }

@@ -1896,3 +1896,69 @@ func TestGetThreadTranscriptShouldNotCrashOnErrorResponse(t *testing.T) {
 	_, rErr := api.GetThreadTranscript("stubChatID", "stubThreadID")
 	verifyErrorResponse("GetThreadTranscript", rErr, t)
 }
+
+func createBodyCapturingResponder(t *testing.T, method string, body *[]byte) roundTripFunc {
+	respond := createMockedResponder(t, method)
+	return func(req *http.Request) *http.Response {
+		var err error
+		if *body, err = io.ReadAll(req.Body); err != nil {
+			t.Fatalf("reading request body failed: %v", err)
+		}
+		return respond(req)
+	}
+}
+
+func TestSendEventShouldSendForm(t *testing.T) {
+	var body []byte
+	api, err := agent.NewAPI(stubBearerTokenGetter, NewTestClient(createBodyCapturingResponder(t, "send_event", &body)), "client_id")
+	if err != nil {
+		t.Fatal("API creation failed")
+	}
+
+	form := newTestForm()
+	if _, err := api.SendEvent("stubChatID", form, false); err != nil {
+		t.Fatalf("SendEvent failed: %v", err)
+	}
+
+	var req struct {
+		ChatID string          `json:"chat_id"`
+		Event  json.RawMessage `json:"event"`
+	}
+	if err := json.Unmarshal(body, &req); err != nil {
+		t.Fatalf("unmarshalling request body failed: %v", err)
+	}
+	wantEvent, _ := json.Marshal(form)
+	if req.ChatID != "stubChatID" || !bytes.Equal(req.Event, wantEvent) {
+		t.Errorf("unexpected request body: %s", body)
+	}
+}
+
+func TestStartAndResumeChatShouldSendForm(t *testing.T) {
+	for _, method := range []string{"start_chat", "resume_chat"} {
+		t.Run(method, func(t *testing.T) {
+			var body []byte
+			api, err := agent.NewAPI(stubBearerTokenGetter, NewTestClient(createBodyCapturingResponder(t, method, &body)), "client_id")
+			if err != nil {
+				t.Fatal("API creation failed")
+			}
+
+			chat := &agent.InitialChat{
+				ID:     "stubChatID",
+				Thread: &agent.InitialThread{Events: []interface{}{newTestForm()}},
+			}
+			if method == "start_chat" {
+				_, _, _, err = api.StartChat(chat, true, true)
+			} else {
+				_, _, err = api.ResumeChat(chat, true, true)
+			}
+			if err != nil {
+				t.Fatalf("%s failed: %v", method, err)
+			}
+
+			wantEvent, _ := json.Marshal(newTestForm())
+			if !bytes.Contains(body, wantEvent) {
+				t.Errorf("request body does not contain form event.\nBody: %s\nWant: %s", body, wantEvent)
+			}
+		})
+	}
+}
