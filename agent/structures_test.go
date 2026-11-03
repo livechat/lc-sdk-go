@@ -229,3 +229,28 @@ func TestFilledFormFormID(t *testing.T) {
 		t.Errorf("FilledForm() did not set FormID correctly. Expected %q, got %q", "abc", got)
 	}
 }
+
+func TestEventFormGroupChooserRoundTrip(t *testing.T) {
+	rawEvent := json.RawMessage(`{"type":"form","form_id":"form-1","fields":[{"id":"f1","type":"group_chooser","label":"Group","groups":[{"id":"7","label":"Sales"}]}]}`)
+
+	var event agent.Event
+	if err := json.Unmarshal(rawEvent, &event); err != nil {
+		t.Fatalf("unmarshalling base event failed: %s", err)
+	}
+
+	form := event.Form()
+	if form == nil {
+		t.Fatal("Form() returned nil")
+	}
+	if want := []agent.FormOption{{ID: "7", Label: "Sales"}}; !reflect.DeepEqual(form.Fields[0].Groups, want) {
+		t.Fatalf("Form() did not return expected groups: %+v", form.Fields[0].Groups)
+	}
+
+	raw, err := json.Marshal(form.Fields)
+	if err != nil {
+		t.Fatalf("marshalling fields failed: %s", err)
+	}
+	if want := `[{"id":"f1","type":"group_chooser","label":"Group","groups":[{"id":"7","label":"Sales"}]}]`; string(raw) != want {
+		t.Errorf("unexpected fields JSON.\nExpected: %s\nGot: %s", want, raw)
+	}
+}
