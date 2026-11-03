@@ -625,7 +625,7 @@ func (e *Event) Form() *Form {
 }
 
 // FormField represents a field of LiveChat form event.
-// Choice fields (checkbox, radio, select) need Options.
+// Choice fields (checkbox, radio, select, group_chooser, skill) need either Options or Groups, not both.
 type FormField struct {
 	ID                 string       `json:"id"`
 	Type               string       `json:"type"`
@@ -633,10 +633,11 @@ type FormField struct {
 	Required           bool         `json:"required,omitempty"`
 	CustomerPropertyID string       `json:"customer_property_id,omitempty"`
 	Options            []FormOption `json:"options,omitempty"`
+	Groups             []FormOption `json:"groups,omitempty"`
 }
 
-// FormOption represents an option of a choice field in LiveChat form event.
-// ID has to be a numeric string.
+// FormOption represents an option or a group of a choice field in LiveChat form event.
+// ID has to be a numeric string (for a group, the group ID).
 type FormOption struct {
 	ID    string `json:"id"`
 	Label string `json:"label"`
