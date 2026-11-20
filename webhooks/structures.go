@@ -331,19 +331,19 @@ type User struct {
 }
 
 type userSpecific struct {
-	RoutingStatus              json.RawMessage `json:"routing_status"`
-	LastVisit                  json.RawMessage `json:"last_visit"`
-	Statistics                 json.RawMessage `json:"statistics"`
-	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at"`
-	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at"`
-	SessionFields              json.RawMessage `json:"session_fields"`
-	Followed                   json.RawMessage `json:"followed"`
-	Online                     json.RawMessage `json:"online"`
-	State                      json.RawMessage `json:"state"`
-	GroupIDs                   json.RawMessage `json:"group_ids"`
-	EmailVerified              json.RawMessage `json:"email_verified"`
-	CreatedAt                  json.RawMessage `json:"created_at"`
-	Visibility                 json.RawMessage `json:"visibility"`
+	RoutingStatus              json.RawMessage `json:"routing_status,omitempty"`
+	LastVisit                  json.RawMessage `json:"last_visit,omitempty"`
+	Statistics                 json.RawMessage `json:"statistics,omitempty"`
+	AgentLastEventCreatedAt    json.RawMessage `json:"agent_last_event_created_at,omitempty"`
+	CustomerLastEventCreatedAt json.RawMessage `json:"customer_last_event_created_at,omitempty"`
+	SessionFields              json.RawMessage `json:"session_fields,omitempty"`
+	Followed                   json.RawMessage `json:"followed,omitempty"`
+	Online                     json.RawMessage `json:"online,omitempty"`
+	State                      json.RawMessage `json:"state,omitempty"`
+	GroupIDs                   json.RawMessage `json:"group_ids,omitempty"`
+	EmailVerified              json.RawMessage `json:"email_verified,omitempty"`
+	CreatedAt                  json.RawMessage `json:"created_at,omitempty"`
+	Visibility                 json.RawMessage `json:"visibility,omitempty"`
 }
 
 // Agent function converts User object to Agent object if User's Type is "agent".
@@ -582,28 +582,28 @@ func ValidateEvent(e interface{}) error {
 }
 
 type eventSpecific struct {
-	Text              json.RawMessage `json:"text"`
-	TextVars          json.RawMessage `json:"text_vars"`
-	Fields            json.RawMessage `json:"fields"`
-	FormType          json.RawMessage `json:"form_type"`
-	ContentType       json.RawMessage `json:"content_type"`
-	Name              json.RawMessage `json:"name"`
-	URL               json.RawMessage `json:"url"`
-	ThumbnailURL      json.RawMessage `json:"thumbnail_url"`
-	Thumbnail2xURL    json.RawMessage `json:"thumbnail2x_url"`
-	Width             json.RawMessage `json:"width"`
-	Height            json.RawMessage `json:"height"`
-	Size              json.RawMessage `json:"size"`
-	TemplateID        json.RawMessage `json:"template_id"`
-	Layout            json.RawMessage `json:"layout"`
-	Elements          json.RawMessage `json:"elements"`
-	Postback          json.RawMessage `json:"postback"`
-	AlternativeText   json.RawMessage `json:"alternative_text"`
-	SystemMessageType json.RawMessage `json:"system_message_type"`
-	Source            json.RawMessage `json:"source"`
-	Subtype           json.RawMessage `json:"subtype"`
-	Details           json.RawMessage `json:"details"`
-	Version           json.RawMessage `json:"version"`
+	Text              json.RawMessage `json:"text,omitempty"`
+	TextVars          json.RawMessage `json:"text_vars,omitempty"`
+	Fields            json.RawMessage `json:"fields,omitempty"`
+	FormType          json.RawMessage `json:"form_type,omitempty"`
+	ContentType       json.RawMessage `json:"content_type,omitempty"`
+	Name              json.RawMessage `json:"name,omitempty"`
+	URL               json.RawMessage `json:"url,omitempty"`
+	ThumbnailURL      json.RawMessage `json:"thumbnail_url,omitempty"`
+	Thumbnail2xURL    json.RawMessage `json:"thumbnail2x_url,omitempty"`
+	Width             json.RawMessage `json:"width,omitempty"`
+	Height            json.RawMessage `json:"height,omitempty"`
+	Size              json.RawMessage `json:"size,omitempty"`
+	TemplateID        json.RawMessage `json:"template_id,omitempty"`
+	Layout            json.RawMessage `json:"layout,omitempty"`
+	Elements          json.RawMessage `json:"elements,omitempty"`
+	Postback          json.RawMessage `json:"postback,omitempty"`
+	AlternativeText   json.RawMessage `json:"alternative_text,omitempty"`
+	SystemMessageType json.RawMessage `json:"system_message_type,omitempty"`
+	Source            json.RawMessage `json:"source,omitempty"`
+	Subtype           json.RawMessage `json:"subtype,omitempty"`
+	Details           json.RawMessage `json:"details,omitempty"`
+	Version           json.RawMessage `json:"version,omitempty"`
 }
 
 // Event represents base of all LiveChat chat events.
